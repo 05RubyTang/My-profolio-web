@@ -3,7 +3,8 @@ import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
 import WorksSection from "@/components/WorksSection";
 import VinylPlayer from "@/components/VinylPlayer";
-import { Heart } from "lucide-react";
+import MarqueeFooter from "@/components/MarqueeFooter";
+import ClickSparkle from "@/components/ClickSparkle";
 import { cdnUrl } from "@/lib/cdn";
 
 function SideDeco({ side }: { side: "left" | "right" }) {
@@ -39,18 +40,11 @@ export default function Home() {
         <HeroSection />
         <AboutSection />
         <WorksSection />
-
         {/* Footer */}
-        <footer className="py-12 px-6 border-t border-ink/10 text-center">
-          <p className="text-sm text-ink-muted flex items-center justify-center gap-1">
-            Made with <Heart size={14} className="text-accent" /> by Ruby Tang
-          </p>
-          <p className="text-xs text-ink-muted/50 mt-2 typewriter">
-            © 2026 · Built with Next.js + Tailwind CSS
-          </p>
-        </footer>
+        <MarqueeFooter />
 
         <VinylPlayer />
+        <ClickSparkle />
       </main>
     </>
   );

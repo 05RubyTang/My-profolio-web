@@ -1,6 +1,6 @@
 "use client";
 
-import { Mail, MessageCircle, BookOpen, Code2, ArrowUpRight, Heart } from "lucide-react";
+import { Mail, MessageCircle, BookOpen, Code2, ArrowUpRight } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
 
 const contactLinks = [
@@ -40,12 +40,21 @@ export default function ConnectSection() {
       <div className="max-w-5xl mx-auto">
         {/* Section 标题 */}
         <ScrollReveal>
-          <div className="flex items-center gap-4 mb-16">
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-ink">
-              Connect
-            </h2>
-            <div className="flex-1 h-px bg-ink/10" />
-            <span className="text-ink-muted text-sm typewriter">03</span>
+          <div className="flex flex-col items-center mb-14">
+            <div className="relative inline-flex items-center">
+              {/* 左侧小星星 */}
+              <svg className="absolute -left-9 -top-3 w-5 h-5 pointer-events-none" viewBox="0 0 24 24" fill="none">
+                <path d="M12 4 C12 4, 13 9, 12 12 C12 12, 17 11, 20 12 C20 12, 17 13, 12 12 C12 12, 13 17, 12 20 C12 20, 11 17, 12 12 C12 12, 7 13, 4 12 C4 12, 7 11, 12 12 C12 12, 11 9, 12 4Z" stroke="var(--accent)" strokeWidth="1.5" fill="none" opacity="0.45" strokeLinecap="round" />
+              </svg>
+              {/* 右上小星星 */}
+              <svg className="absolute -right-8 -top-4 w-4 h-4 pointer-events-none" viewBox="0 0 24 24" fill="none">
+                <path d="M12 4 C12 4, 13 9, 12 12 C12 12, 17 11, 20 12 C20 12, 17 13, 12 12 C12 12, 13 17, 12 20 C12 20, 11 17, 12 12 C12 12, 7 13, 4 12 C4 12, 7 11, 12 12 C12 12, 11 9, 12 4Z" stroke="var(--accent)" strokeWidth="1.5" fill="none" opacity="0.5" strokeLinecap="round" />
+              </svg>
+              <h2 className="text-3xl md:text-4xl font-handwriting font-bold text-ink">
+                Connect
+              </h2>
+            </div>
+            <div className="w-12 h-[2px] bg-accent/30 mt-3 rounded-full" />
           </div>
         </ScrollReveal>
 
@@ -126,17 +135,6 @@ export default function ConnectSection() {
           </ScrollReveal>
         </div>
 
-        {/* Footer */}
-        <ScrollReveal delay={300}>
-          <footer className="mt-24 pt-8 border-t border-ink/10 text-center">
-            <p className="text-sm text-ink-muted flex items-center justify-center gap-1">
-              Made with <Heart size={14} className="text-accent" /> by Ruby Tang
-            </p>
-            <p className="text-xs text-ink-muted/50 mt-2 typewriter">
-              © 2026 · Built with Next.js + Tailwind CSS
-            </p>
-          </footer>
-        </ScrollReveal>
       </div>
     </section>
   );

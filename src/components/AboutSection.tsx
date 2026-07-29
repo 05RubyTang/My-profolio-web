@@ -262,6 +262,13 @@ export default function AboutSection() {
         <ScrollReveal>
           <div className="flex flex-col items-center mb-14">
             <div className="relative inline-flex items-center">
+              {/* 小黑猫 - 滑板猫在标题左上方 */}
+              <img
+                src={cdnUrl("/cat-skateboard.png")}
+                alt="小黑猫"
+                className="absolute -left-28 -top-16 w-24 h-auto pointer-events-none select-none"
+                draggable={false}
+              />
               {/* 左侧小星星 */}
               <svg className="absolute -left-10 -top-2 w-6 h-6 pointer-events-none" viewBox="0 0 24 24" fill="none">
                 <path d="M12 2 C12 2, 13 8, 12 12 C12 12, 18 11, 22 12 C22 12, 18 13, 12 12 C12 12, 13 18, 12 22 C12 22, 11 18, 12 12 C12 12, 6 13, 2 12 C2 12, 6 11, 12 12 C12 12, 11 8, 12 2Z" stroke="var(--ink)" strokeWidth="1.2" fill="none" opacity="0.35" strokeLinecap="round" strokeLinejoin="round" />

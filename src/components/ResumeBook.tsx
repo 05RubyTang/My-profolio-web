@@ -1,20 +1,8 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef, forwardRef } from "react";
-import { X, ChevronLeft, ChevronRight, FileText } from "lucide-react";
-import dynamic from "next/dynamic";
-
-/* ============================================================
-   动态导入 react-pageflip（仅客户端渲染，避免 SSR 问题）
-   ============================================================ */
-const HTMLFlipBook = dynamic(() => import("react-pageflip").then((mod) => mod.default), {
-  ssr: false,
-  loading: () => (
-    <div className="w-full h-full flex items-center justify-center bg-white rounded-lg">
-      <span className="text-ink-muted text-sm">加载中...</span>
-    </div>
-  ),
-});
+import { useState, useEffect, useCallback, useRef } from "react";
+import { X, FileText, ArrowLeft } from "lucide-react";
+import VariableProximity from "./VariableProximity";
 
 /* ============================================================
    简历数据
@@ -33,7 +21,6 @@ interface ResumeEntry {
   period: string;
   responsibility: string;
   projects: ResumeProject[];
-  image?: string;
 }
 
 const resumeData: ResumeEntry[] = [
@@ -44,7 +31,6 @@ const resumeData: ResumeEntry[] = [
     role: "AI产品经理实习生",
     period: "2026年03月 - 2026年06月",
     responsibility: "",
-    image: undefined,
     projects: [
       {
         name: "购物Agent专项",
@@ -74,7 +60,6 @@ const resumeData: ResumeEntry[] = [
     period: "2026年01月 - 2026年03月",
     responsibility:
       "通过多渠道形式的增长玩法设计，强化秒杀频道「低价好货」的认知，达成「心智DAU」的北极星指标提升，同时负责AI提效工具的搭建",
-    image: undefined,
     projects: [
       {
         name: "改了么-竞品监测Agent",
@@ -104,7 +89,6 @@ const resumeData: ResumeEntry[] = [
     period: "2025年08月 - 2026年01月",
     responsibility:
       "聚焦抖店商家入驻与资质管理模块，针对中小微商家诉求，通过产品化手段，降低因规则模糊、流程受阻产生的CPO（千活商家进线量），实现商家入驻的减负提效；针对特殊白名单商家搭建产品化入驻功能，提高商家入驻效率与成功率、提高平台商家增量、夯实电商基建。",
-    image: undefined,
     projects: [
       {
         name: "商家入驻产品优化",
@@ -124,17 +108,6 @@ const resumeData: ResumeEntry[] = [
           "参与定准定邀类目准出/准入建设，把类目定准定邀的管理模式从针对「单个店铺」的处理方式，升级为「运营规则」，实现「类目定准/定邀规则」的线上配置管理，解决高风险类目（如燃油、滋补保健）因规则分散、人工配置错误导致17万+商家获取不当经营权限问题，上线后实现内外部规则一致率从77.8%提升至98.5%，相关场景CPO下降51%，释放治理团队35%人力。",
         ],
       },
-    ],
-  },
-  {
-    company: "字节跳动",
-    department: "抖音电商（上海）",
-    location: "上海",
-    role: "商家端产品经理实习生（基建方向/b端）",
-    period: "2025年08月 - 2026年01月",
-    responsibility: "",
-    image: undefined,
-    projects: [
       {
         name: "类目资质配置组件",
         details: [
@@ -157,7 +130,6 @@ const resumeData: ResumeEntry[] = [
     period: "2024年08月 - 2025年02月",
     responsibility:
       "聚焦抖音来客（本地商家一站式经营平台）的商家服务与体验优化，以用户体验为核心优化商家服务体验流程，助力商家经营体验提效",
-    image: undefined,
     projects: [
       {
         name: "商家服务-智能客服设计",
@@ -193,7 +165,6 @@ const resumeData: ResumeEntry[] = [
     period: "2025年02月 - 2025年07月",
     responsibility:
       "针对小红书社区发布侧相关业务的需求设计调研方案，通过多种调研手段摸清体验侧业务现状、洞察用户痛点与需求，支撑产品开发决策",
-    image: undefined,
     projects: [
       {
         name: "调研设计与执行",
@@ -206,296 +177,305 @@ const resumeData: ResumeEntry[] = [
 ];
 
 /* ============================================================
-   判断字节电商的续页（第二页）
+   邮票数据
    ============================================================ */
-const isBytedanceEcomContinuation = (index: number) => index === 3;
+
+interface StampData {
+  id: number;
+  company: string;
+  companyEn: string;
+  department: string;
+  departmentEn: string;
+  role: string;
+  roleEn: string;
+  period: string;
+  color: string;
+  bgImage: string;
+  /** 详情页背景图 */
+  detailBg: string;
+  /** 对应 resumeData 的索引（字节电商合并后映射多页） */
+  resumeIndices: number[];
+  description: string;
+}
+
+const stamps: StampData[] = [
+  {
+    id: 0,
+    company: "小红书",
+    companyEn: "Xiaohongshu (REDnote)",
+    department: "Dots（点点）",
+    departmentEn: "Dots AI Agent",
+    role: "AI产品经理",
+    roleEn: "AI Product Manager Intern",
+    period: "2026.03 - 2026.06",
+    color: "#c04a3f",
+    bgImage: "/picture/id-project/myresume/rednote-card.png",
+    detailBg: "/picture/id-project/myresume/rednote-bg.png",
+    resumeIndices: [0],
+    description: `负责点点独立端的端内外主框架产品设计与用户增长、评测体系搭建与AI能力持续提升，实现从"模型能跑"到"用户好用"的体验闭环`,
+  },
+  {
+    id: 1,
+    company: "淘天集团",
+    companyEn: "Taotian Group (Alibaba)",
+    department: "淘宝秒杀",
+    departmentEn: "Taobao Flash Sale",
+    role: "AI产品经理",
+    roleEn: "AI Product Manager Intern",
+    period: "2026.01 - 2026.03",
+    color: "#f57c00",
+    bgImage: "/picture/id-project/myresume/taobao-card.png",
+    detailBg: "/picture/id-project/myresume/taobao-bg.png",
+    resumeIndices: [1],
+    description:
+      "通过多渠道形式的增长玩法设计，强化秒杀频道「低价好货」的认知，达成「心智DAU」的北极星指标提升，同时负责AI提效工具的搭建",
+  },
+  {
+    id: 2,
+    company: "字节跳动",
+    companyEn: "ByteDance",
+    department: "抖音电商",
+    departmentEn: "Douyin E-commerce",
+    role: "商家端产品经理",
+    roleEn: "Merchant Product Manager Intern",
+    period: "2025.08 - 2026.01",
+    color: "#5F83D8",
+    bgImage: "/picture/id-project/myresume/bytedance-card.png",
+    detailBg: "/picture/id-project/myresume/bytedance-bg.png",
+    resumeIndices: [2],
+    description:
+      "聚焦抖店商家入驻与资质管理模块，通过产品化手段降低因规则模糊、流程受阻产生的CPO，实现商家入驻的减负提效；针对特殊白名单商家搭建产品化入驻功能，提高商家入驻效率与成功率",
+  },
+  {
+    id: 3,
+    company: "小红书",
+    companyEn: "Xiaohongshu (REDnote)",
+    department: "产品设计部",
+    departmentEn: "Product Design Dept.",
+    role: "用户研究",
+    roleEn: "User Research Intern",
+    period: "2025.02 - 2025.07",
+    color: "#c04a3f",
+    bgImage: "/picture/id-project/myresume/rednote-card.png",
+    detailBg: "/picture/id-project/myresume/rednote-bg.png",
+    resumeIndices: [4],
+    description:
+      "针对小红书社区发布侧相关业务设计调研方案，通过多种调研手段摸清体验侧业务现状、洞察用户痛点与需求，支撑产品开发决策",
+  },
+  {
+    id: 4,
+    company: "字节跳动",
+    companyEn: "ByteDance",
+    department: "抖音生活服务",
+    departmentEn: "Douyin Local Services",
+    role: "体验产品设计",
+    roleEn: "UX Product Design Intern",
+    period: "2024.08 - 2025.02",
+    color: "#5F83D8",
+    bgImage: "/picture/id-project/myresume/bytedance-card.png",
+    detailBg: "/picture/id-project/myresume/bytedance-bg.png",
+    resumeIndices: [3],
+    description:
+      "聚焦抖音来客（本地商家一站式经营平台）的商家服务与体验优化，以用户体验为核心优化商家服务体验流程，助力商家经营体验提效",
+  },
+];
 
 /* ============================================================
-   单页组件 —— 必须用 forwardRef 包裹，PageFlip 需要 ref
+   拱形弧度参数
    ============================================================ */
-const ResumePage = forwardRef<
-  HTMLDivElement,
-  { entry: ResumeEntry; pageIndex: number; totalPages: number }
->(function ResumePage({ entry, pageIndex, totalPages }, ref) {
-  const isContinuation = isBytedanceEcomContinuation(pageIndex);
-  const pageNum = String(pageIndex + 1).padStart(2, "0");
-  const displayNum = isContinuation ? "03-2" : pageNum;
+const arcTransforms: { ty: number; rot: number }[] = [
+  { ty: 18, rot: -4 },
+  { ty: 5, rot: -1.5 },
+  { ty: 0, rot: 0 },
+  { ty: 5, rot: 1.5 },
+  { ty: 18, rot: 4 },
+];
 
-  return (
-    <div ref={ref} className="resume-page-container">
-      <div className="flex w-full h-full">
-        {/* ====== 左侧窄栏 - 主题红色系 ====== */}
+/* ============================================================
+   邮票卡片组件（画廊模式 & 详情模式共用）
+   ============================================================ */
+function StampCard({
+  stamp,
+  index,
+  onClick,
+  size = "normal",
+  disableArc = false,
+  className = "",
+  style: extraStyle,
+}: {
+  stamp: StampData;
+  index: number;
+  onClick?: () => void;
+  size?: "normal" | "large" | "small";
+  disableArc?: boolean;
+  className?: string;
+  style?: React.CSSProperties;
+}) {
+  const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
+  const [isHovered, setIsHovered] = useState(false);
+  const cardRef = useRef<HTMLButtonElement>(null);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    setMousePos({
+      x: (e.clientX - rect.left) / rect.width,
+      y: (e.clientY - rect.top) / rect.height,
+    });
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    setMousePos({ x: 0.5, y: 0.5 });
+    setIsHovered(false);
+  }, []);
+
+  const arc = disableArc ? { ty: 0, rot: 0 } : arcTransforms[index] || { ty: 0, rot: 0 };
+
+ const sizeStyles: Record<string, React.CSSProperties> = {
+   normal: { height: "320px", aspectRatio: "259 / 368" },
+   large: { width: "100%", aspectRatio: "259 / 368" },
+   small: { height: "100px", aspectRatio: "259 / 368" },
+ };
+
+ return (
+   <button
+     ref={cardRef}
+     onClick={onClick}
+     onMouseMove={handleMouseMove}
+     onMouseEnter={() => setIsHovered(true)}
+     onMouseLeave={handleMouseLeave}
+     className={`stamp-card-v2 stamp-enter group focus:outline-none ${className}`}
+     style={{
+       ...sizeStyles[size],
+        animationDelay: `${index * 0.08}s`,
+        animationFillMode: "backwards",
+        backgroundImage: `url(${stamp.bgImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        transform:
+          size === "normal"
+            ? isHovered
+              ? `translateY(${arc.ty - 22}px) rotate(${arc.rot * 0.3}deg) scale(1.05)`
+              : `translateY(${arc.ty}px) rotate(${arc.rot}deg)`
+            : undefined,
+        boxShadow:
+          size === "normal"
+            ? isHovered
+              ? "0 20px 40px rgba(0,0,0,0.4), 0 8px 16px rgba(0,0,0,0.3)"
+              : "0 4px 12px rgba(0,0,0,0.2)"
+            : "0 4px 12px rgba(0,0,0,0.2)",
+        ...extraStyle,
+      }}
+    >
+      <div className="relative flex flex-col h-full">
+        {/* 镭射全息光泽 */}
         <div
-          className="w-[72px] relative flex flex-col items-center flex-shrink-0 overflow-hidden"
-          style={{ backgroundColor: "var(--accent)" }}
-        >
-          {/* 纸张纹理叠加 */}
-          <div
-            className="absolute inset-0 opacity-[0.08] pointer-events-none"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-            }}
-          />
-          {/* 渐变叠加 */}
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background:
-                "linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 30%, transparent 70%, rgba(0,0,0,0.1) 100%)",
-            }}
-          />
-          {/* 右侧中缝线 */}
-          <div
-            className="absolute right-0 top-0 bottom-0 w-[2px] z-10"
-            style={{ background: "rgba(0,0,0,0.15)" }}
-          />
-          <div
-            className="absolute right-0 top-0 bottom-0 w-5 z-10"
-            style={{ background: "linear-gradient(to left, rgba(0,0,0,0.08), transparent)" }}
-          />
+          className="stamp-hologram-v2"
+          style={{
+            background: `radial-gradient(
+              ellipse at ${mousePos.x * 100}% ${mousePos.y * 100}%,
+              ${stamp.color}55 0%,
+              ${stamp.color}30 15%,
+              rgba(255, 255, 255, 0.25) 30%,
+              ${stamp.color}20 50%,
+              rgba(255, 255, 255, 0.15) 70%,
+              ${stamp.color}15 85%,
+              transparent 100%
+            )`,
+            opacity: mousePos.x !== 0.5 || mousePos.y !== 0.5 ? 1 : 0,
+          }}
+        />
 
-          {/* 竖排内容 */}
-          <div className="relative z-[5] flex flex-col items-center h-full py-6">
-            <span className="text-[10px] text-white/60 tracking-widest uppercase mb-3">
-              No.
-            </span>
-            <span className="text-2xl font-black text-white leading-none mb-6">
-              {displayNum}
-            </span>
+        {/* 主内容区 —— 小尺寸时隐藏 */}
+        {size !== "small" && (
+          <div className="flex-1 flex flex-col items-center justify-center relative px-4 py-6">
+            <div className="relative z-[2] flex flex-col items-center gap-1">
+              <span
+                className="text-[11px] tracking-[0.15em] opacity-70 text-center leading-snug"
+                style={{ color: stamp.color }}
+              >
+                {stamp.department}
+              </span>
+              <span
+                className="text-[7px] tracking-[0.1em] uppercase opacity-40 text-center leading-tight"
+                style={{ color: stamp.color }}
+              >
+                {stamp.departmentEn}
+              </span>
+              <span
+                className="text-2xl font-black leading-tight text-center mt-2"
+                style={{ color: stamp.color }}
+              >
+                {stamp.company}
+              </span>
+              <span
+                className="text-[8px] tracking-wider opacity-45 text-center leading-tight mt-0.5"
+                style={{ color: stamp.color }}
+              >
+                {stamp.companyEn}
+              </span>
+              <div
+                className="w-10 h-[1.5px] rounded-full my-2.5 opacity-25"
+                style={{ backgroundColor: stamp.color }}
+              />
+              <span
+                className="text-[12px] tracking-wider opacity-60 text-center leading-relaxed font-bold"
+                style={{ color: stamp.color }}
+              >
+                {stamp.role}
+              </span>
+              <span
+                className="text-[7px] tracking-wide opacity-35 text-center leading-tight"
+                style={{ color: stamp.color }}
+              >
+                {stamp.roleEn}
+              </span>
+            </div>
+          </div>
+        )}
 
-            <div
-              className="flex-1 flex items-center justify-center"
-              style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
+        {/* 底部信息区 —— 小尺寸时隐藏 */}
+        {size !== "small" && (
+          <div className="px-5 pb-4 flex items-end justify-between relative z-[2]">
+            <span
+              className="text-[9px] tracking-wider opacity-45"
+              style={{ color: stamp.color }}
             >
-              <span className="text-base font-bold text-white tracking-[0.15em] leading-relaxed">
-                {entry.company}
-              </span>
-            </div>
-
-            <div
-              className="mt-4"
-              style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
+              No.{String(index + 1).padStart(2, "0")}
+            </span>
+            <span
+              className="text-[8px] tracking-wider opacity-45"
+              style={{ color: stamp.color }}
             >
-              <span className="text-[10px] text-white/50 tracking-wider">
-                {entry.department}
-              </span>
-            </div>
-
-            {/* 页码指示器（纯展示，不可点击，因为 PageFlip 管理翻页） */}
-            <div className="flex flex-col items-center gap-1.5 mt-5">
-              {resumeData.map((_, i) => (
-                <div
-                  key={i}
-                  className={`w-1.5 rounded-full transition-all ${
-                    i === pageIndex ? "bg-white h-4" : "bg-white/25 h-1.5"
-                  }`}
-                />
-              ))}
-            </div>
+              {stamp.period}
+            </span>
           </div>
-        </div>
-
-        {/* ====== 右侧宽栏 - 白色纸张 + 纹理装饰 ====== */}
-        <div className="flex-1 bg-white relative flex flex-col overflow-hidden">
-          {/* 纸张纹理 */}
-          <div
-            className="absolute inset-0 opacity-[0.025] pointer-events-none"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-            }}
-          />
-
-          {/* 笔记本横线 */}
-          <div
-            className="absolute inset-0 pointer-events-none opacity-[0.04]"
-            style={{
-              backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 31px, var(--ink) 31px, var(--ink) 32px)`,
-              backgroundPosition: "0 8px",
-            }}
-          />
-
-          {/* 右上角圆点装饰 */}
-          <div className="absolute top-6 right-6 pointer-events-none opacity-[0.04]">
-            <svg width="80" height="80" viewBox="0 0 80 80">
-              {[0, 1, 2, 3, 4].map((row) =>
-                [0, 1, 2, 3, 4].map((col) => (
-                  <circle
-                    key={`${row}-${col}`}
-                    cx={8 + col * 16}
-                    cy={8 + row * 16}
-                    r="1.5"
-                    fill="var(--ink)"
-                  />
-                ))
-              )}
-            </svg>
-          </div>
-
-          {/* 左下角十字装饰 */}
-          <div className="absolute bottom-8 left-10 pointer-events-none opacity-[0.035]">
-            <svg width="60" height="60" viewBox="0 0 60 60">
-              {[0, 1, 2].map((row) =>
-                [0, 1, 2].map((col) => (
-                  <g key={`${row}-${col}`}>
-                    <line
-                      x1={8 + col * 20}
-                      y1={5 + row * 20}
-                      x2={8 + col * 20}
-                      y2={11 + row * 20}
-                      stroke="var(--ink)"
-                      strokeWidth="1"
-                    />
-                    <line
-                      x1={5 + col * 20}
-                      y1={8 + row * 20}
-                      x2={11 + col * 20}
-                      y2={8 + row * 20}
-                      stroke="var(--ink)"
-                      strokeWidth="1"
-                    />
-                  </g>
-                ))
-              )}
-            </svg>
-          </div>
-
-          {/* 左侧中缝阴影 */}
-          <div
-            className="absolute left-0 top-0 bottom-0 w-5"
-            style={{ background: "linear-gradient(to right, rgba(0,0,0,0.05), transparent)" }}
-          />
-
-          <div className="relative z-10 p-8 md:p-10 flex flex-col h-full overflow-y-auto resume-book-scroll">
-            {/* 标题区 */}
-            <div className="mb-8 flex-shrink-0">
-              {isContinuation ? (
-                <>
-                  <div className="flex items-baseline gap-2 mb-1">
-                    <span className="text-ink-muted text-sm font-handwriting">03-2 —</span>
-                    <span className="text-2xl md:text-3xl font-bold text-ink leading-tight font-handwriting">
-                      {entry.company}.
-                    </span>
-                  </div>
-                  <div className="inline-block mt-1">
-                    <span
-                      className="text-lg md:text-xl font-bold text-ink leading-tight font-handwriting px-2 py-0.5 relative"
-                      style={{ backgroundColor: "rgba(134, 31, 21, 0.12)" }}
-                    >
-                      {entry.role}
-                    </span>
-                    <span className="inline-block w-2 h-2 rounded-full bg-accent ml-2 relative -top-1" />
-                  </div>
-                  <p className="text-[11px] text-ink-muted mt-2 tracking-wide italic">
-                    — 续上页 —
-                  </p>
-                </>
-              ) : (
-                <>
-                  <div className="flex items-baseline gap-2 mb-1">
-                    <span className="text-ink-muted text-sm font-handwriting">{pageNum} —</span>
-                    <span className="text-2xl md:text-3xl font-bold text-ink leading-tight font-handwriting">
-                      {entry.company}.
-                    </span>
-                  </div>
-                  <div className="inline-block mt-1">
-                    <span
-                      className="text-xl md:text-2xl font-bold text-ink leading-tight font-handwriting px-2 py-0.5 relative"
-                      style={{ backgroundColor: "rgba(134, 31, 21, 0.15)" }}
-                    >
-                      {entry.role}
-                    </span>
-                    <span className="inline-block w-2 h-2 rounded-full bg-accent ml-2 relative -top-1" />
-                  </div>
-                  <p className="text-xs text-ink-muted mt-3 tracking-wide">
-                    {entry.period}
-                    {entry.location && <span className="ml-2">· {entry.location}</span>}
-                  </p>
-                </>
-              )}
-            </div>
-
-            {/* 职责概述 */}
-            {entry.responsibility && (
-              <div className="mb-8 flex-shrink-0 max-w-[85%]">
-                <p className="text-sm text-ink-light leading-[1.8]">{entry.responsibility}</p>
-              </div>
-            )}
-
-            {/* 项目列表 */}
-            <div className="space-y-6 flex-1">
-              {entry.projects.map((project, pi) => (
-                <div key={pi} className="max-w-[90%]">
-                  <div className="flex items-baseline gap-2.5 mb-2">
-                    <span className="text-accent font-black text-xs">●</span>
-                    <h4 className="text-[15px] font-bold text-ink">{project.name}</h4>
-                  </div>
-                  <div className="pl-5 space-y-2">
-                    {project.details.map((detail, di) => (
-                      <p
-                        key={di}
-                        className="text-[13px] text-ink-light leading-[1.85] tracking-wide"
-                      >
-                        {detail}
-                      </p>
-                    ))}
-                  </div>
-                  {pi < entry.projects.length - 1 && (
-                    <div className="mt-5 flex items-center gap-2 pl-5">
-                      <div className="w-1 h-1 rounded-full bg-ink/10" />
-                      <div className="flex-1 border-t border-dashed border-ink/8" />
-                      <div className="w-1 h-1 rounded-full bg-ink/10" />
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {/* 底部页码 */}
-            <div className="flex items-center justify-center mt-8 pt-5 border-t border-ink/5 flex-shrink-0">
-              <span className="text-[10px] text-ink-muted tracking-widest">
-                {pageIndex + 1} / {totalPages}
-              </span>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
-    </div>
+    </button>
   );
-});
+}
 
 /* ============================================================
-   简历大书组件 —— 使用 react-pageflip 实现真实 3D 翻页
+   邮票画廊组件
    ============================================================ */
-export default function ResumeBook({ onClose }: { onClose: () => void }) {
-  const [currentPage, setCurrentPage] = useState(0);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const flipBookRef = useRef<any>(null);
-  const totalPages = resumeData.length;
+function StampGallery({
+  onSelectStamp,
+  onClose,
+}: {
+  onSelectStamp: (stampIndex: number) => void;
+  onClose: () => void;
+}) {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
-  const goNext = useCallback(() => {
-    if (flipBookRef.current) {
-      flipBookRef.current.pageFlip().flipNext();
-    }
-  }, []);
-
-  const goPrev = useCallback(() => {
-    if (flipBookRef.current) {
-      flipBookRef.current.pageFlip().flipPrev();
-    }
-  }, []);
-
-  /* 键盘事件 */
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
-      if (e.key === "ArrowRight") goNext();
-      if (e.key === "ArrowLeft") goPrev();
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [onClose, goNext, goPrev]);
+  }, [onClose]);
 
-  /* 锁定 body 滚动 */
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
@@ -503,107 +483,361 @@ export default function ResumeBook({ onClose }: { onClose: () => void }) {
     };
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onFlip = useCallback((e: any) => {
-    setCurrentPage(e.data);
-  }, []);
+  const hoveredStamp = hoveredIndex !== null ? stamps[hoveredIndex] : null;
 
   return (
-    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
-      {/* 遮罩 */}
+    <div className="fixed inset-0 z-[1000] flex flex-col">
       <div
-        className="absolute inset-0 bg-ink/40 backdrop-blur-sm"
-        onClick={onClose}
-        style={{ animation: "fadeIn 0.2s ease-out" }}
+        className="absolute inset-0 bg-[#1a1a1a]"
+        style={{ animation: "fadeIn 0.3s ease-out" }}
       />
 
-      {/* 整体布局：左按钮 + 书本 + 右按钮 */}
+      {/* 顶部栏 */}
       <div
-        className="relative z-10 flex items-center gap-4 md:gap-6"
-        style={{ animation: "bookOpen 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards" }}
+        className="relative z-10 flex items-center justify-between px-8 py-5"
+        style={{ animation: "fadeInDown 0.4s ease-out" }}
       >
-        {/* 左侧翻页按钮 */}
+        <div className="flex items-center gap-3">
+          <FileText size={18} className="text-white/70" />
+          <h3 className="text-xl font-bold text-white">My Resume</h3>
+          <span className="text-xs text-white/40">·</span>
+          <span className="text-sm text-white/50">Ruby 的实习经历</span>
+        </div>
         <button
-          onClick={goPrev}
-          disabled={currentPage === 0}
-          className={`flex-shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-all duration-200 ${
-            currentPage === 0
-              ? "bg-white/10 text-white/20 cursor-not-allowed"
-              : "bg-white/20 text-white/80 hover:bg-white/30 hover:text-white hover:scale-110 active:scale-95"
-          }`}
-          aria-label="上一页"
+          onClick={onClose}
+          className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/80 hover:text-white transition-colors"
         >
-          <ChevronLeft size={22} />
+          <X size={18} />
         </button>
+      </div>
 
-        {/* 书本主体 */}
-        <div className="relative">
-          {/* 关闭按钮 */}
-          <button
-            onClick={onClose}
-            className="absolute -top-12 right-0 w-9 h-9 rounded-full bg-white/90 shadow-md flex items-center justify-center text-ink hover:bg-white transition-colors z-20"
-          >
-            <X size={18} />
-          </button>
-
-          {/* 书本标题 */}
-          <div className="absolute -top-12 left-0 flex items-center gap-2 text-white/90">
-            <FileText size={16} />
-            <span className="text-sm font-medium">Ruby 的实习经历</span>
-            <span className="text-xs text-white/50 ml-2">← → 翻页 · ESC 关闭</span>
-          </div>
-
-          {/* PageFlip 翻页书 */}
-          {/* @ts-expect-error - react-pageflip types are incomplete */}
-          <HTMLFlipBook
-            ref={flipBookRef}
-            width={530}
-            height={620}
-            size="stretch"
-            minWidth={400}
-            maxWidth={1060}
-            minHeight={480}
-            maxHeight={720}
-            showCover={false}
-            mobileScrollSupport={true}
-            usePortrait={true}
-            startPage={0}
-            drawShadow={true}
-            maxShadowOpacity={0.3}
-            flippingTime={800}
-            useMouseEvents={true}
-            swipeDistance={30}
-            clickEventForward={true}
-            startZIndex={0}
-            autoSize={true}
-            disableFlipByClick={false}
-            onFlip={onFlip}
-            className="resume-flipbook"
-            style={{
-              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-              borderRadius: "8px",
-            }}
-          >
-            {resumeData.map((entry, i) => (
-              <ResumePage key={i} entry={entry} pageIndex={i} totalPages={totalPages} />
-            ))}
-          </HTMLFlipBook>
+      {/* 邮票 + 职责说明 */}
+      <div
+        className="relative z-10 flex-1 flex flex-col items-center justify-center px-8"
+        style={{ animation: "fadeIn 0.5s ease-out 0.1s both" }}
+      >
+        <div className="h-[72px] flex items-end justify-center mb-40 max-w-[700px] w-full">
+          {hoveredStamp ? (
+            <div
+              key={hoveredStamp.id}
+              className="text-center"
+              style={{ animation: "fadeIn 0.25s ease-out" }}
+            >
+              <p className="text-[13px] text-white/60 leading-relaxed tracking-wide">
+                {hoveredStamp.description}
+              </p>
+            </div>
+          ) : (
+            <span className="text-xs text-white/30 tracking-wider">
+              点击邮票查看详细经历 · ESC 关闭
+            </span>
+          )}
         </div>
 
-        {/* 右侧翻页按钮 */}
-        <button
-          onClick={goNext}
-          disabled={currentPage === totalPages - 1}
-          className={`flex-shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-all duration-200 ${
-            currentPage === totalPages - 1
-              ? "bg-white/10 text-white/20 cursor-not-allowed"
-              : "bg-white/20 text-white/80 hover:bg-white/30 hover:text-white hover:scale-110 active:scale-95"
-          }`}
-          aria-label="下一页"
-        >
-          <ChevronRight size={22} />
-        </button>
+        <div className="flex items-end justify-center gap-5">
+          {stamps.map((stamp, index) => (
+            <div
+              key={stamp.id}
+              onMouseEnter={() => setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(null)}
+            >
+              <StampCard
+                stamp={stamp}
+                index={index}
+                onClick={() => onSelectStamp(index)}
+              />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
+}
+
+/* ============================================================
+   详情视图 —— 选中邮票左上 + 其他邮票左下 + 右侧文字
+   ============================================================ */
+function ResumeDetailView({
+  stampIndex,
+  onBack,
+  onClose,
+  onSwitchStamp,
+}: {
+  stampIndex: number;
+  onBack: () => void;
+  onClose: () => void;
+  onSwitchStamp: (index: number) => void;
+}) {
+  const selectedStamp = stamps[stampIndex];
+  const otherStamps = stamps.filter((_, i) => i !== stampIndex);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  // 合并该邮票对应的所有 resumeData 条目的项目
+  const allProjects: { entry: ResumeEntry; project: ResumeProject }[] = [];
+  for (const ri of selectedStamp.resumeIndices) {
+    const entry = resumeData[ri];
+    if (entry) {
+      for (const project of entry.projects) {
+        allProjects.push({ entry, project });
+      }
+    }
+  }
+
+  const mainEntry = resumeData[selectedStamp.resumeIndices[0]];
+
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onBack();
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [onBack]);
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
+
+  return (
+  <div
+    className="fixed inset-0 z-[1000] resume-detail-selection"
+    style={{
+      animation: "fadeIn 0.3s ease-out",
+      "--selection-color": selectedStamp.color,
+    } as React.CSSProperties}
+  >
+    {/* 背景图 */}
+    <div
+      className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: `url(${selectedStamp.detailBg})` }}
+    />
+    {/* 黑色半透明蒙层 */}
+    <div className="absolute inset-0 bg-black/80" />
+
+    {/* 内容区域 —— 带内边距 */}
+    <div className="relative z-10 w-full h-full flex p-8 lg:p-12">
+
+    {/* ====== 左侧 —— 邮票区域（百分比宽度，overflow-hidden 防止溢出） ====== */}
+    <div
+      className="relative z-10 w-[30%] min-w-[260px] max-w-[380px] flex-shrink-0 flex flex-col py-2 pl-16 pr-8 overflow-hidden"
+      style={{ animation: "fadeIn 0.4s ease-out" }}
+    >
+        {/* 返回按钮 */}
+        <button
+          onClick={onBack}
+          className="flex items-center gap-2 text-white/60 hover:text-white/90 transition-colors mb-6 self-start"
+        >
+          <ArrowLeft size={16} />
+          <span className="text-xs tracking-wider">返回</span>
+        </button>
+
+        {/* 选中的邮票 —— 大尺寸 */}
+        <div
+          className="mb-auto"
+          style={{ animation: "fadeIn 0.5s ease-out 0.1s both" }}
+        >
+          <StampCard
+            stamp={selectedStamp}
+            index={stampIndex}
+            size="large"
+            disableArc
+          />
+        </div>
+
+        {/* 其他邮票 —— 缩小排列在底部 */}
+        <div
+          className="flex items-center gap-2 mt-4"
+          style={{ animation: "fadeIn 0.5s ease-out 0.2s both" }}
+        >
+          {otherStamps.map((stamp) => {
+            const originalIndex = stamps.findIndex((s) => s.id === stamp.id);
+            return (
+              <StampCard
+                key={stamp.id}
+                stamp={stamp}
+                index={originalIndex}
+                size="small"
+                disableArc
+                onClick={() => onSwitchStamp(originalIndex)}
+                className="cursor-pointer hover:!opacity-100 opacity-60 transition-opacity"
+              />
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ====== 右侧 —— 文字内容（flex 纵向布局：固定标题 + 可滚动项目列表） ====== */}
+      <div
+        ref={contentRef}
+        className="relative z-10 flex-1 min-w-0 flex flex-col overflow-hidden pr-16"
+        style={{ animation: "fadeIn 0.5s ease-out 0.15s both" }}
+      >
+        {/* ---- 固定区域：关闭按钮 + 标题信息 + 职责描述 ---- */}
+        <div className="flex-shrink-0">
+          {/* 关闭按钮 */}
+          <div className="flex justify-end pb-2">
+            <button
+              onClick={onClose}
+              className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/80 hover:text-white transition-colors"
+            >
+              <X size={18} />
+            </button>
+          </div>
+
+          <div className="pl-8 pr-4">
+            {/* 英文部门名 —— 更亮、更细、放大 */}
+            <div className="flex items-baseline gap-3 mb-3">
+              <span
+                className="text-sm font-light tracking-[0.2em] uppercase"
+                style={{ color: selectedStamp.color }}
+              >
+                {selectedStamp.departmentEn}
+              </span>
+            </div>
+
+            <h2 className="text-4xl font-black text-white leading-tight mb-2">
+              {mainEntry.company}
+              <span className="text-white/30 mx-3">·</span>
+              <span className="text-2xl font-bold text-white/70">{mainEntry.department}</span>
+            </h2>
+
+            {/* Role 标签 —— 主题色实色背景 + 白色文字 + 无圆角 */}
+            <div className="flex items-center gap-4 mt-3">
+              <span
+                className="text-sm font-bold px-4 py-1.5 text-white"
+                style={{ backgroundColor: selectedStamp.color }}
+              >
+                {mainEntry.role}
+              </span>
+              <span className="text-xs text-white/50 tracking-wider">
+                {selectedStamp.period}
+              </span>
+              {mainEntry.location && (
+                <span className="text-xs text-white/40 inline-flex items-center gap-1">
+                  <svg viewBox="0 0 1024 1024" fill="currentColor" className="w-3 h-3 flex-shrink-0">
+                    <path d="M511.983627 1022.005576c-177.413666 0-356.430852-48.131207-356.430852-155.653059 0-83.935668 122.605386-135.997394 236.549507-148.835793l6.237051-0.718361L240.863766 464.627063c-5.077645-9.096169-9.868765-18.74697-14.093996-28.512381l-4.1536-8.400321-0.652869-3.360538c-13.843286-35.848463-20.852934-73.371054-20.852934-111.49842 0-171.404812 139.484821-310.86098 310.917262-310.86098 171.427324 0 310.887586 139.456169 310.887586 310.86098 0 38.164205-7.024997 75.670423-20.906146 111.49842l-2.082428 5.38873 0.194428 0-1.603521 3.300162c-4.535293 10.694573-9.552563 20.965497-15.000646 30.699186L511.853667 914.597311l-64.345494-105.092523-2.430352 0.211824c-104.22783 8.933463-170.69873 37.702694-188.130751 53.720505l-3.148713 2.898003 3.148713 2.914376c22.738887 21.12411 110.175285 54.535057 248.78825 55.520501l12.375865 0.020466-0.016373-0.020466c138.357138-0.969071 225.969545-34.304294 248.898767-55.385425l3.229554-2.967588-3.284813-2.898003c-12.722766-11.271718-59.075467-33.511231-130.370233-46.566572l54.754045-87.675852c114.248044 25.745361 177.125093 74.360592 177.125093 137.074935 0 107.527992-179.017186 155.653059-356.453365 155.653059L511.983627 1022.004553zM511.977487 145.159054c-73.081459 0-132.527362 59.488883-132.527362 132.598994 0 73.05076 59.440787 132.48029 132.527362 132.48029 73.132624 0 132.62253-59.429531 132.62253-132.48029C644.600017 204.647937 585.110111 145.159054 511.977487 145.159054L511.977487 145.159054zM511.977487 145.159054" />
+                  </svg>
+                  {mainEntry.location}
+                </span>
+              )}
+            </div>
+
+            {/* 职责概述 —— 更白更亮 */}
+            {mainEntry.responsibility && (
+              <div className="mt-6">
+                <VariableProximity
+                  label={mainEntry.responsibility}
+                  containerRef={contentRef}
+                  fromFontWeight={300}
+                  toFontWeight={700}
+                  fromOpacity={0.7}
+                  toOpacity={1}
+                  fromColor="#d0d0d0"
+                  toColor="#ffffff"
+                  radius={120}
+                  falloff="gaussian"
+                  className="text-[15px] leading-[2] tracking-wide"
+                />
+              </div>
+            )}
+
+            {/* 分隔线 */}
+            <div className="flex items-center gap-3 mt-8 mb-0">
+              <div
+                className="w-8 h-[2px] rounded-full"
+                style={{ backgroundColor: selectedStamp.color, opacity: 0.4 }}
+              />
+              <span className="text-[10px] text-white/25 tracking-[0.3em] uppercase">
+                Projects
+              </span>
+              <div className="flex-1 h-px bg-white/5" />
+            </div>
+          </div>
+        </div>
+
+        {/* ---- 可滚动区域：项目列表（内容不超出容器） ---- */}
+        <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden resume-book-scroll">
+          <div className="pl-8 pr-4 pt-6 pb-16">
+            <div className="space-y-10">
+              {allProjects.map(({ project }, pi) => (
+                <div key={pi} className="group">
+                  {/* 项目名 */}
+                  <div className="flex items-baseline gap-3 mb-4">
+                    <span
+                      className="w-2 h-2 rounded-full flex-shrink-0 mt-1"
+                      style={{ backgroundColor: selectedStamp.color }}
+                    />
+                    <h3 className="text-lg font-bold text-white/90 leading-tight">
+                      {project.name}
+                    </h3>
+                  </div>
+
+                  {/* 项目详情 —— VariableProximity 效果 */}
+                  <div className="pl-5 space-y-3">
+                    {project.details.map((detail, di) => (
+                      <div key={di}>
+                        <VariableProximity
+                          label={detail}
+                          containerRef={contentRef}
+                          fromFontWeight={300}
+                          toFontWeight={600}
+                          fromOpacity={0.5}
+                          toOpacity={0.9}
+                          fromColor="#a0a0a0"
+                          toColor="#f0f0f0"
+                          radius={100}
+                          falloff="gaussian"
+                          className="text-[14px] leading-[2] tracking-wide"
+                        />
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* 项目间分隔 */}
+                  {pi < allProjects.length - 1 && (
+                    <div className="mt-8 flex items-center gap-2 pl-5">
+                      <div className="w-1 h-1 rounded-full bg-white/10" />
+                      <div className="flex-1 border-t border-dashed border-white/8" />
+                      <div className="w-1 h-1 rounded-full bg-white/10" />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   主组件 —— 管理两层状态：邮票画廊 → 详情视图
+   ============================================================ */
+export default function ResumeBook({ onClose }: { onClose: () => void }) {
+  const [selectedStampIndex, setSelectedStampIndex] = useState<number | null>(null);
+
+  const handleSelectStamp = useCallback((index: number) => {
+    setSelectedStampIndex(index);
+  }, []);
+
+  const handleBackToStamps = useCallback(() => {
+    setSelectedStampIndex(null);
+  }, []);
+
+  if (selectedStampIndex !== null) {
+    return (
+      <ResumeDetailView
+        stampIndex={selectedStampIndex}
+        onBack={handleBackToStamps}
+        onClose={onClose}
+        onSwitchStamp={setSelectedStampIndex}
+      />
+    );
+  }
+
+  return <StampGallery onSelectStamp={handleSelectStamp} onClose={onClose} />;
 }

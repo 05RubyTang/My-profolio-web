@@ -243,10 +243,17 @@ class Title {
     });
     this.mesh = new Mesh(this.gl, { geometry, program });
     const aspect = width / height;
-    const textHeight = this.plane.scale.y * 0.15;
-    const textWidth = textHeight * aspect;
-    this.mesh.scale.set(textWidth, textHeight, 1);
-    this.mesh.position.y = -this.plane.scale.y * 0.5 - textHeight * 0.5 - 0.05;
+    // 文字在世界空间中的目标高度
+    const textHeightWorld = this.plane.scale.y * 0.15;
+    const textWidthWorld = textHeightWorld * aspect;
+    // 因为 mesh 是 plane 的子节点，scale 会被父节点叠加
+    // 需要除以父节点的 scale 来反向补偿，保持文字不变形
+    this.mesh.scale.set(
+      textWidthWorld / this.plane.scale.x,
+      textHeightWorld / this.plane.scale.y,
+      1
+    );
+    this.mesh.position.y = -0.5 - (textHeightWorld / this.plane.scale.y) * 0.5 - 0.05 / this.plane.scale.y;
     this.mesh.setParent(this.plane);
   }
 }
@@ -275,6 +282,8 @@ class Media {
   textColor: string;
   borderRadius: number;
   font: string;
+  /** 卡片宽高比（width / height），跟随图片原始比例 */
+  aspectRatio: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   program: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -305,6 +314,7 @@ class Media {
     textColor,
     borderRadius = 0,
     font,
+    aspectRatio = 1.414,
   }: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     geometry: any;
@@ -324,6 +334,7 @@ class Media {
     textColor: string;
     borderRadius?: number;
     font: string;
+    aspectRatio?: number;
   }) {
     this.geometry = geometry;
     this.gl = gl;
@@ -339,6 +350,7 @@ class Media {
     this.textColor = textColor;
     this.borderRadius = borderRadius;
     this.font = font;
+    this.aspectRatio = aspectRatio;
     this.createShader();
     this.createMesh();
     this.createTitle();
@@ -405,7 +417,10 @@ class Media {
     });
 
     const img = new Image();
-    img.crossOrigin = "anonymous";
+    // 只有跨域 URL 才设置 crossOrigin，同源路径（以 / 开头）不需要
+    if (this.image.startsWith("http")) {
+      img.crossOrigin = "anonymous";
+    }
     img.src = this.image;
     img.onload = () => {
       texture.image = img;
@@ -419,6 +434,8 @@ class Media {
   }
 
   createTitle() {
+    // text 为空时不创建文字标题
+    if (!this.text) return;
     this.title = new Title({
       gl: this.gl,
       plane: this.plane,
@@ -475,10 +492,9 @@ class Media {
     if (viewport) this.viewport = viewport;
     this.scale = this.screen.height / 1500;
 
-    // 横版 A4 比例 (√2 : 1 ≈ 1.414 : 1)
-    // 先算高度，再按 A4 横版比例算宽度
-    this.plane.scale.y = (this.viewport.height * (700 * this.scale)) / this.screen.height;
-    this.plane.scale.x = this.plane.scale.y * 1.414;
+    // 先算高度，再按传入的宽高比算宽度（900 基准值让图片更大）
+    this.plane.scale.y = (this.viewport.height * (900 * this.scale)) / this.screen.height;
+    this.plane.scale.x = this.plane.scale.y * this.aspectRatio;
 
     this.plane.program.uniforms.uPlaneSizes.value = [this.plane.scale.x, this.plane.scale.y];
     this.padding = 2;
@@ -528,6 +544,8 @@ class GalleryApp {
   boundOnTouchMove!: (e: MouseEvent | TouchEvent) => void;
   boundOnTouchUp!: () => void;
 
+  aspectRatio: number;
+
   constructor(
     container: HTMLElement,
     {
@@ -538,6 +556,7 @@ class GalleryApp {
       font = "bold 30px Figtree",
       scrollSpeed = 2,
       scrollEase = 0.05,
+      aspectRatio = 1.414,
     }: {
       items?: GalleryItem[];
       bend?: number;
@@ -546,10 +565,12 @@ class GalleryApp {
       font?: string;
       scrollSpeed?: number;
       scrollEase?: number;
+      aspectRatio?: number;
     } = {}
   ) {
     this.container = container;
     this.scrollSpeed = scrollSpeed;
+    this.aspectRatio = aspectRatio;
     this.scroll = { ease: scrollEase, current: 0, target: 0, last: 0, position: 0 };
     this.onCheckDebounce = debounce(this.onCheck.bind(this), 200);
     this.createRenderer();
@@ -607,6 +628,7 @@ class GalleryApp {
         textColor,
         borderRadius,
         font,
+        aspectRatio: this.aspectRatio,
       });
     });
   }
@@ -721,6 +743,8 @@ interface CircularGalleryProps {
   fontUrl?: string;
   scrollSpeed?: number;
   scrollEase?: number;
+  /** 卡片宽高比（width / height），默认 1.414（A4 横版） */
+  aspectRatio?: number;
 }
 
 export default function CircularGallery({
@@ -732,6 +756,7 @@ export default function CircularGallery({
   fontUrl,
   scrollSpeed = 2,
   scrollEase = 0.05,
+  aspectRatio = 1.414,
 }: CircularGalleryProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -750,6 +775,7 @@ export default function CircularGallery({
         font: resolvedFont,
         scrollSpeed,
         scrollEase,
+        aspectRatio,
       });
     });
 
@@ -757,7 +783,7 @@ export default function CircularGallery({
       isMounted = false;
       if (app) app.destroy();
     };
-  }, [items, bend, textColor, borderRadius, font, fontUrl, scrollSpeed, scrollEase]);
+  }, [items, bend, textColor, borderRadius, font, fontUrl, scrollSpeed, scrollEase, aspectRatio]);
 
   return (
     <div

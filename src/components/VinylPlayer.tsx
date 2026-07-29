@@ -8,6 +8,7 @@ import {
   SkipBack,
   Music,
 } from "lucide-react";
+import { cdnUrl } from "@/lib/cdn";
 
 // 歌单数据
 const playlist = [
@@ -422,6 +423,14 @@ export default function VinylPlayer() {
           />
         ))}
       </div>
+
+      {/* 弹吉他猫 - 始终在唱片机右侧 */}
+      <img
+        src={cdnUrl("/cat-guitar.png")}
+        alt="弹吉他猫"
+        className="absolute -right-14 -top-4 w-14 h-auto pointer-events-none select-none"
+        draggable={false}
+      />
 
       {/* 隐藏的 audio 元素 */}
       <audio ref={audioRef} preload="metadata">

@@ -1,7 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: "export",
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
@@ -9,6 +11,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // GitHub Pages 部署：仓库名为 My-profolio-web
+  basePath: process.env.GITHUB_PAGES === "true" ? "/My-profolio-web" : "",
+  assetPrefix: process.env.GITHUB_PAGES === "true" ? "/My-profolio-web/" : "",
 };
 
 export default nextConfig;

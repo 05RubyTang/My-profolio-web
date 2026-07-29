@@ -1,26 +1,677 @@
 @import "tailwindcss";
 
+/* ===== 手写英文字体 Gochi Hand（仅用于 nav tabs 和 section 标题） ===== */
+@font-face {
+  font-family: "HandwrittenEnglish";
+  src: url("https://fonts.gstatic.com/s/gochihand/v25/hES06XlsOjtJsgCkx1Pkfon_-w.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ===== Geist Mono（正文英文字体） ===== */
+@font-face {
+  font-family: "GeistMono";
+  src: url("https://cloudbase-d8gz5d2q35d53ea73-1452795216.tcloudbaseapp.com/fonts/GeistMono.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ===== 复古纸张风格色彩系统 ===== */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --paper: #F3F3F3;
+  --paper-dark: #E8E8E8;
+  --paper-light: #FAFAFA;
+  --ink: #343434;
+  --ink-light: #5a5a5a;
+  --ink-muted: #8a8a8a;
+  --accent: #861F15;
+  --accent-light: #b85a50;
+  --accent-warm: #a0674e;
+  --stamp-blue: #3d5a80;
+  --stamp-green: #6b8f71;
+  --tape-yellow: #f0d68a;
+  --shadow: rgba(52, 52, 52, 0.08);
+  --shadow-strong: rgba(52, 52, 52, 0.15);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-paper: var(--paper);
+  --color-paper-dark: var(--paper-dark);
+  --color-paper-light: var(--paper-light);
+  --color-ink: var(--ink);
+  --color-ink-light: var(--ink-light);
+  --color-ink-muted: var(--ink-muted);
+  --color-accent: var(--accent);
+  --color-accent-light: var(--accent-light);
+  --color-accent-warm: var(--accent-warm);
+  --color-stamp-blue: var(--stamp-blue);
+  --color-stamp-green: var(--stamp-green);
+  --color-tape-yellow: var(--tape-yellow);
+  --font-sans: "GeistMono", "Noto Sans SC", "Inter", system-ui, sans-serif;
+  --font-serif: "GeistMono", "Noto Serif SC", "Georgia", serif;
+  --font-mono: "GeistMono", "JetBrains Mono", "Fira Code", monospace;
+  --font-handwriting: "HandwrittenEnglish", var(--font-caveat), "Caveat", cursive;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ===== 自定义鼠标光标（复古手写笔刷感，中间透明） ===== */
+
+/* 默认光标 - 手绘箭头，中间透明，边缘带毛躁笔刷感 */
+* {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='32' viewBox='0 0 28 32'%3E%3Cdefs%3E%3Cfilter id='rough'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.35' numOctaves='3' seed='2' result='noise'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='noise' scale='1.5' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3C/defs%3E%3Cg filter='url(%23rough)'%3E%3Cpath d='M6 1 L6 24 L11 18 L17 27 L20 25 L14 16 L22 15 Z' fill='none' stroke='%23343434' stroke-width='2.2' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/g%3E%3Cpath d='M7 5 L7 6' stroke='%23343434' stroke-width='0.8' stroke-linecap='round' opacity='0.4'/%3E%3Cpath d='M19 14 L20 13.5' stroke='%23343434' stroke-width='0.7' stroke-linecap='round' opacity='0.3'/%3E%3Cpath d='M16 26 L17 27.5' stroke='%23343434' stroke-width='0.6' stroke-linecap='round' opacity='0.35'/%3E%3C/svg%3E") 6 1, auto;
+}
+
+/* 可点击元素 - 手绘指针，中间透明，笔刷毛躁边缘 */
+a, button, [role="button"], input[type="submit"], input[type="button"],
+label[for], select, .cursor-pointer {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='34' viewBox='0 0 28 34'%3E%3Cdefs%3E%3Cfilter id='rough2'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.3' numOctaves='3' seed='5' result='noise'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='noise' scale='1.2' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3C/defs%3E%3Cg filter='url(%23rough2)'%3E%3C!-- 食指 --%3E%3Crect x='11' y='1' width='6' height='14' rx='3' fill='none' stroke='%23343434' stroke-width='2'/%3E%3C!-- 中指 --%3E%3Crect x='17' y='4' width='6' height='11' rx='3' fill='none' stroke='%23343434' stroke-width='1.8'/%3E%3C!-- 无名指 --%3E%3Crect x='5' y='5' width='6' height='10' rx='3' fill='none' stroke='%23343434' stroke-width='1.8'/%3E%3C!-- 手掌 --%3E%3Crect x='4' y='13' width='20' height='12' rx='5' fill='none' stroke='%23343434' stroke-width='2'/%3E%3C!-- 大拇指 --%3E%3Cellipse cx='4.5' cy='17' rx='3.5' ry='4' fill='none' stroke='%23343434' stroke-width='1.8'/%3E%3C/g%3E%3Cpath d='M12 3 L12.5 2.5' stroke='%23343434' stroke-width='0.6' opacity='0.3'/%3E%3Cpath d='M22 13 L23 12.5' stroke='%23343434' stroke-width='0.5' opacity='0.25'/%3E%3C/svg%3E") 14 1, pointer;
+}
+
+/* 文本选择 - 手绘 I 型光标，笔刷毛躁感 */
+input[type="text"], input[type="email"], input[type="password"],
+input[type="search"], input[type="url"], input[type="tel"],
+textarea, [contenteditable="true"] {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='26' viewBox='0 0 16 26'%3E%3Cdefs%3E%3Cfilter id='rough3'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.4' numOctaves='2' seed='8' result='noise'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='noise' scale='1' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3C/defs%3E%3Cg filter='url(%23rough3)'%3E%3Cpath d='M4 2 Q8 2 8 5.5 L8 20 Q8 23.5 4 24' fill='none' stroke='%23343434' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M12 2 Q8 2 8 5.5' fill='none' stroke='%23343434' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M12 24 Q8 24 8 20' fill='none' stroke='%23343434' stroke-width='2' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E") 8 13, text;
+}
+
+/* ===== 全局样式 ===== */
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+}
+
+/* 纸张纹理背景 */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ===== 自定义工具类 ===== */
+
+/* 纸张卡片效果 */
+.paper-card {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  transition: all 0.3s ease;
+}
+
+.paper-card:hover {
+  box-shadow: none;
+  transform: none;
+}
+
+/* 胶带装饰效果 */
+.tape {
+  position: relative;
+}
+
+.tape::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+  width: 80px;
+  height: 24px;
+  background: var(--tape-yellow);
+  opacity: 0.7;
+  z-index: 1;
+}
+
+/* 邮戳效果 */
+.stamp {
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  padding: 8px 16px;
+  transform: rotate(-12deg);
+  opacity: 0.8;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+}
+
+/* 和纸胶带标签效果 */
+.washi-tape {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 14px;
+  background-color: rgba(240, 214, 138, 0.55);
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent,
+    transparent 4px,
+    rgba(240, 214, 138, 0.35) 4px,
+    rgba(240, 214, 138, 0.35) 8px
+  );
+  /* 胶带两端不规则撕边 */
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 3%,
+    black 97%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 3%,
+    black 97%,
+    transparent 100%
+  );
+  transition: transform 0.2s ease;
+}
+
+/* 红色和纸胶带 */
+.washi-tape-red {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 14px;
+  background-color: rgba(134, 31, 21, 0.45);
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent,
+    transparent 4px,
+    rgba(134, 31, 21, 0.25) 4px,
+    rgba(134, 31, 21, 0.25) 8px
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 3%,
+    black 97%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 3%,
+    black 97%,
+    transparent 100%
+  );
+  transition: transform 0.2s ease;
+}
+
+.washi-tape:hover,
+.washi-tape-red:hover {
+  transform: scale(1.06);
+}
+
+/* MBTI 红色胶带 - 撕裂边缘效果 */
+.mbti-tape {
+  background-color: var(--accent);
+  position: relative;
+  /* 左右两端锯齿撕裂边缘 */
+  mask-image:
+    linear-gradient(to bottom,
+      transparent 0%, black 4%, black 8%, transparent 10%,
+      black 12%, black 20%, transparent 22%,
+      black 24%, black 35%, transparent 36%,
+      black 38%, black 50%, transparent 52%,
+      black 54%, black 62%, transparent 63%,
+      black 65%, black 75%, transparent 77%,
+      black 79%, black 88%, transparent 90%,
+      black 92%, black 96%, transparent 98%, black 100%
+    ),
+    linear-gradient(to right, black 0%, black 100%);
+  mask-size: 6px 100%, calc(100% - 12px) 100%;
+  mask-position: left center, center center;
+  mask-repeat: repeat-y, no-repeat;
+  -webkit-mask-image:
+    linear-gradient(to bottom,
+      transparent 0%, black 4%, black 8%, transparent 10%,
+      black 12%, black 20%, transparent 22%,
+      black 24%, black 35%, transparent 36%,
+      black 38%, black 50%, transparent 52%,
+      black 54%, black 62%, transparent 63%,
+      black 65%, black 75%, transparent 77%,
+      black 79%, black 88%, transparent 90%,
+      black 92%, black 96%, transparent 98%, black 100%
+    ),
+    linear-gradient(to right, black 0%, black 100%);
+  -webkit-mask-size: 6px 100%, calc(100% - 12px) 100%;
+  -webkit-mask-position: left center, center center;
+  -webkit-mask-repeat: repeat-y, no-repeat;
+  /* 右侧也加锯齿 */
+  mask-composite: add;
+  -webkit-mask-composite: source-over;
+}
+
+.mbti-tape::before,
+.mbti-tape::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background-color: var(--accent);
+  mask-image: linear-gradient(to bottom,
+    black 0%, black 6%, transparent 8%,
+    black 14%, black 22%, transparent 25%,
+    black 30%, black 42%, transparent 44%,
+    black 48%, black 58%, transparent 60%,
+    black 64%, black 72%, transparent 75%,
+    black 80%, black 90%, transparent 92%,
+    black 95%, black 100%
+  );
+  -webkit-mask-image: linear-gradient(to bottom,
+    black 0%, black 6%, transparent 8%,
+    black 14%, black 22%, transparent 25%,
+    black 30%, black 42%, transparent 44%,
+    black 48%, black 58%, transparent 60%,
+    black 64%, black 72%, transparent 75%,
+    black 80%, black 90%, transparent 92%,
+    black 95%, black 100%
+  );
+}
+
+.mbti-tape::before {
+  left: -3px;
+}
+
+.mbti-tape::after {
+  right: -3px;
+}
+
+/* 胶囊标签 - 默认态：透明底 + 边框 + 黑字 */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 14px;
+  border-radius: 9999px;
+  border: 1.5px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+/* 胶囊标签 - 选中/高亮态：红底白字 */
+.tag-active,
+.marker-highlight {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 14px;
+  border-radius: 9999px;
+  border: 1.5px solid var(--accent);
+  background-color: var(--accent);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* 打字机文字效果 */
+.typewriter {
+  font-family: "Courier New", monospace;
+  letter-spacing: 0.05em;
+}
+
+/* 手写风格下划线 */
+.hand-underline {
+  text-decoration: none;
+  background-image: linear-gradient(
+    to right,
+    var(--accent) 0%,
+    var(--accent-warm) 100%
+  );
+  background-size: 100% 2px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  padding-bottom: 2px;
+}
+
+/* 无限跑马灯动画 */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  animation: marquee 25s linear infinite;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* 淡入上移动画 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* 从上方淡入动画（向下弹出） */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown 0.2s ease-out forwards;
+}
+
+/* 淡入动画（遮罩用） */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+/* 书本打开动画 */
+@keyframes bookOpen {
+  from {
+    opacity: 0;
+    transform: scale(0.85) rotateY(-8deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotateY(0deg);
+  }
+}
+
+/* 浮动动画 */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* 缓慢旋转 */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+/* 唱片旋转动画 */
+@keyframes spin-vinyl {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-vinyl {
+  animation: spin-vinyl 3s linear infinite;
+}
+
+/* 侧边装饰纵向无限滚动 */
+@keyframes scroll-down {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+
+.side-deco-track {
+  animation: scroll-down 30s linear infinite;
+}
+
+/* 导航 tab hover 效果 - 画圈 + 小星星 */
+.nav-tab:hover .nav-circle-hover {
+  opacity: 1 !important;
+}
+
+.nav-tab:hover .nav-stars {
+  opacity: 1 !important;
+}
+
+/* 选中文字样式 - 白字 + 复古红底 */
+::selection {
+  background-color: var(--accent);
+  color: #fff;
+}
+
+::-moz-selection {
+  background-color: var(--accent);
+  color: #fff;
+}
+
+/* ===== 照片墙 - 晾衣绳 + 小夹子 + 拍立得 ===== */
+
+/* 晾衣绳容器 - 绳子在顶部，照片钉在下方 */
+.clothesline {
+  position: relative;
+  padding: 0 0 10px;
+  overflow: visible;
+}
+
+/* 手绘风格绳子线条 - 使用 SVG 图片 */
+.clothesline-rope-svg {
+  position: absolute;
+  top: 6px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 8px;
+  z-index: 4;
+  pointer-events: none;
+  user-select: none;
+  /* 两端淡出效果 */
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 5%,
+    black 95%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 5%,
+    black 95%,
+    transparent 100%
+  );
+}
+
+/* 拍立得照片卡片 */
+.polaroid {
+  background: #fff;
+  padding: 8px 8px 28px 8px;
+  box-shadow:
+    0 2px 8px rgba(52, 52, 52, 0.1),
+    0 1px 3px rgba(52, 52, 52, 0.06);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  /* 照片顶部留空给图钉 */
+  margin-top: 10px;
+}
+
+.polaroid:hover {
+  transform: scale(1.05) rotate(0deg) !important;
+  box-shadow:
+    0 8px 24px rgba(52, 52, 52, 0.15),
+    0 4px 8px rgba(52, 52, 52, 0.1);
+  z-index: 10;
+}
+
+/* 图钉 - 居中在绳子线上 */
+.pin {
+  position: absolute;
+  /* 图钉中心对齐绳子线 (绳子 top:10px, 图钉14px高, 所以 top = 10 - 7 = 3) */
+  top: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 7;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15));
+}
+
+/* 照片墙横向滚动 - 隐藏滚动条 */
+.photo-wall-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  /* 上下留足空间，避免旋转卡片被裁切 */
+  padding-top: 14px;
+  padding-bottom: 20px;
+  margin-top: -14px;
+  margin-bottom: -20px;
+  /* 隐藏滚动条 */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.photo-wall-scroll::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+/* 鼠标悬停滑动区域 */
+.photo-wall-hover-zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 80px;
+  z-index: 15;
+  pointer-events: auto;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.photo-wall-hover-zone:hover {
+  opacity: 1;
+}
+
+.photo-wall-hover-zone--left {
+  left: 0;
+  background: linear-gradient(to right, rgba(243,243,243,0.8) 0%, transparent 100%);
+}
+
+.photo-wall-hover-zone--right {
+  right: 0;
+  background: linear-gradient(to left, rgba(243,243,243,0.8) 0%, transparent 100%);
+}
+
+/* 悬停区域内的箭头指示 */
+.photo-wall-hover-zone svg {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.4;
+}
+
+.photo-wall-hover-zone--left svg {
+  left: 12px;
+}
+
+.photo-wall-hover-zone--right svg {
+  right: 12px;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--paper-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ink-muted);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-light);
+}
+
+/* 简历大书右页滚动条 */
+.resume-book-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,0,0,0.1) transparent;
+}
+
+.resume-book-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.resume-book-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.resume-book-scroll::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.1);
+  border-radius: 2px;
+}
+
+.resume-book-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(0,0,0,0.2);
+}
+
+/* ===== 简历大书 - react-pageflip 样式 ===== */
+
+/* 每一页容器 */
+.resume-page-container {
+  width: 100%;
+  height: 100%;
+  background: white;
+  overflow: hidden;
+  border-radius: 0 8px 8px 0;
+}
+
+/* 第一页左侧圆角 */
+.resume-page-container:first-child {
+  border-radius: 8px 0 0 8px;
+}
+
+/* PageFlip 翻页书容器 */
+.resume-flipbook {
+  border-radius: 8px;
+  overflow: visible;
+}
+
+/* 覆盖 stf 内部样式，确保圆角 */
+.resume-flipbook .stf__parent {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* 翻页时的页面层级 */
+.resume-flipbook .--left {
+  border-radius: 8px 0 0 8px;
+}
+
+.resume-flipbook .--right {
+  border-radius: 0 8px 8px 0;
 }

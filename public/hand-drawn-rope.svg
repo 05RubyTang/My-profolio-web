@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2576" height="14" viewBox="0 0 2576 14" fill="none">
+  <defs>
+    <filter id="handdrawn" x="-2%" y="-50%" width="104%" height="200%">
+      <feTurbulence type="turbulence" baseFrequency="0.015 0.08" numOctaves="3" seed="42" result="turbulence"/>
+      <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="3" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+  <path d="M0 7 Q40 5, 80 7.5 T160 6.5 T240 7.8 T320 6.2 T400 7.5 T480 6.8 T560 7.2 T640 6.5 T720 7.5 T800 6.8 T880 7.2 T960 6.5 T1040 7.8 T1120 6.2 T1200 7.5 T1280 6.8 T1360 7.2 T1440 6.5 T1520 7.5 T1600 6.8 T1680 7.2 T1760 6.5 T1840 7.8 T1920 6.2 T2000 7.5 T2080 6.8 T2160 7.2 T2240 6.5 T2320 7.5 T2400 6.8 T2480 7.2 T2576 7" 
+    stroke="#861F15" 
+    stroke-width="2" 
+    fill="none" 
+    stroke-linecap="round"
+    filter="url(#handdrawn)"
+    opacity="0.6"
+  />
+  <path d="M0 7.5 Q50 6, 100 7 T200 7.2 T300 6.8 T400 7.3 T500 6.5 T600 7.4 T700 6.7 T800 7.1 T900 6.9 T1000 7.3 T1100 6.6 T1200 7.2 T1300 6.8 T1400 7.4 T1500 6.5 T1600 7.3 T1700 6.7 T1800 7.1 T1900 6.9 T2000 7.3 T2100 6.6 T2200 7.2 T2300 6.8 T2400 7.4 T2500 6.5 T2576 7" 
+    stroke="#861F15" 
+    stroke-width="1.2" 
+    fill="none" 
+    stroke-linecap="round"
+    filter="url(#handdrawn)"
+    opacity="0.35"
+  />
+</svg>

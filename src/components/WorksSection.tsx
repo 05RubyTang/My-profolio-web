@@ -291,6 +291,21 @@ const tongjiProjects: IDProject[] = [
     ticketImage: "",
     galleryItems: [],
   },
+  {
+    id: 103,
+    name: "IdeaSalon",
+    nameCn: "IdeaSalon设计Skill",
+    subtitle: "腾讯云 × TT设计学院 skill 创新大赛二等奖",
+    subtitleEn: "Tencent Cloud × Tongji D&I Skill Innovation Contest",
+    tags: "课程作业 / 竞赛",
+    slogan: "",
+    sloganEn: "",
+    projectImage: cdnUrl("/picture/id-project/tongji-works/IdeaSalon-封面.png"),
+    ticketImage: "",
+    galleryItems: [],
+    // 点击直接打开外链，不进入二级页
+    videoUrl: "https://www.xiaohongshu.com/explore/6a4e65ec000000001503e8f5",
+  },
 ];
 
 /* ============================================================
@@ -813,7 +828,15 @@ function getTongjiDefaultPositions(count: number): TicketPosition[] {
       { id: 1, x: 55, y: 15, rotation: 4 },
     ];
   }
-  // 通用布局
+  // 3 个项目：品字形错落分布
+  if (count === 3) {
+    return [
+      { id: 0, x: 8, y: 8, rotation: -4 },
+      { id: 1, x: 60, y: 14, rotation: 3 },
+      { id: 2, x: 32, y: 46, rotation: -2 },
+    ];
+  }
+  // 通用布局（确定性 rotation，避免 SSR 不一致）
   const positions: TicketPosition[] = [];
   const cols = Math.min(count, 3);
   const spacing = (100 - TONGJI_CARD_WIDTH_PCT) / Math.max(cols, 1);
@@ -824,7 +847,7 @@ function getTongjiDefaultPositions(count: number): TicketPosition[] {
       id: i,
       x: spacing * 0.3 + col * spacing,
       y: 8 + row * 40,
-      rotation: (i % 2 === 0 ? -1 : 1) * (2 + Math.random() * 3),
+      rotation: (i % 2 === 0 ? -1 : 1) * (2 + (i % 3)),
     });
   }
   return positions;
@@ -926,7 +949,12 @@ function TongjiFreeCanvas({
       // 短按 → 点击打开项目
       const project = projects[idx];
       if (project && !hasMoved.current) {
-        onSelectProject(project);
+        // 若项目带有外链，直接在新标签打开，不进入二级页
+        if (project.videoUrl) {
+          window.open(project.videoUrl, "_blank", "noopener,noreferrer");
+        } else {
+          onSelectProject(project);
+        }
       }
     },
     [projects, onSelectProject]
@@ -1015,7 +1043,14 @@ function TongjiFreeCanvas({
           >
             <TongjiProjectCard
               project={project}
-              onClick={() => onSelectProject(project)}
+              onClick={() => {
+                // 有外链则直接打开，不进入二级页
+                if (project.videoUrl) {
+                  window.open(project.videoUrl, "_blank", "noopener,noreferrer");
+                } else {
+                  onSelectProject(project);
+                }
+              }}
             />
           </div>
         );

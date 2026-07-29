@@ -314,24 +314,24 @@ const tongjiProjects: IDProject[] = [
 
 const books: BookData[] = [
   {
+    name: "In Tongji Works",
+    subtitle: "Agent 设计项目",
+    coverColor: "#C8CC8A",
+    coverImage: cdnUrl("/picture/books/In Tongji Works.png"),
+    rotation: -4,
+    displayMode: "tongji-gallery",
+    pages: [],
+    projects: tongjiProjects,
+  },
+  {
     name: "My Industrial Design",
     subtitle: "设计保研作品集",
     coverColor: "#E8D5B7",
     coverImage: cdnUrl("/picture/books/My Industrial Design.png"),
-    rotation: -4,
+    rotation: 4,
     displayMode: "id-gallery",
     pages: [],
     projects: idProjects,
-  },
-  {
-    name: "In Tongji Works",
-    subtitle: "同济课程作业",
-    coverColor: "#C8CC8A",
-    coverImage: cdnUrl("/picture/books/In Tongji Works.png"),
-    rotation: 4,
-    displayMode: "tongji-gallery",
-    pages: [],
-    projects: tongjiProjects,
   },
 ];
 

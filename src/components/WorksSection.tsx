@@ -27,6 +27,7 @@ interface IDProject {
   sloganEn: string;
   projectImage: string;
   ticketImage: string;
+  themeColor?: string;
   galleryItems: { image: string; text: string }[];
   videoUrl?: string;
 }
@@ -59,6 +60,7 @@ const idProjects: IDProject[] = [
     sloganEn: "Pioneering the Next Generation of AR+AI Assisted Rehabilitation",
     projectImage: cdnUrl("/picture/id-project/project1.png"),
     ticketImage: cdnUrl("/picture/id-project/piaogen1.png"),
+    themeColor: "#2C5F8D",
     galleryItems: [
       { image: cdnUrl("/picture/id-project/projct1/project1-设计背景.png"), text: "" },
       { image: cdnUrl("/picture/id-project/projct1/project2-用户调研.png"), text: "" },
@@ -79,6 +81,7 @@ const idProjects: IDProject[] = [
     sloganEn: "Making warm savings",
     projectImage: cdnUrl("/picture/id-project/project2.png"),
     ticketImage: cdnUrl("/picture/id-project/piaogen2.png"),
+    themeColor: "#C97B4A",
     galleryItems: [
       { image: cdnUrl("/picture/id-project/project2/project2-设计背景.png"), text: "" },
       { image: cdnUrl("/picture/id-project/project2/project2-用户调研.png"), text: "" },
@@ -99,6 +102,7 @@ const idProjects: IDProject[] = [
     sloganEn: "Intelligent Rehabilitation Brightens Children's Future",
     projectImage: cdnUrl("/picture/id-project/project3.png"),
     ticketImage: cdnUrl("/picture/id-project/piaogen3.png"),
+    themeColor: "#4A8B6F",
     galleryItems: [
       { image: cdnUrl("/picture/id-project/project3/project3-设计背景.png"), text: "" },
       { image: cdnUrl("/picture/id-project/project3/project3-设计定义.png"), text: "" },
@@ -118,6 +122,7 @@ const idProjects: IDProject[] = [
     sloganEn: "Guard the smile, guard you",
     projectImage: cdnUrl("/picture/id-project/project4.png"),
     ticketImage: cdnUrl("/picture/id-project/piaogen4.png"),
+    themeColor: "#3D7A9E",
     galleryItems: [
       { image: cdnUrl("/picture/id-project/project4/project4-设计背景.png"), text: "" },
       { image: cdnUrl("/picture/id-project/project4/project4-用户研究.png"), text: "" },
@@ -137,6 +142,7 @@ const idProjects: IDProject[] = [
     sloganEn: "Multi-dimensional development of design capabilities",
     projectImage: cdnUrl("/picture/id-project/project5.png"),
     ticketImage: cdnUrl("/picture/id-project/piaogen5.png"),
+    themeColor: "#8B5A9F",
     galleryItems: [
       { image: cdnUrl("/picture/id-project/project5/project5.png"), text: "" },
     ],
@@ -677,28 +683,45 @@ function FreePositionCanvas({
   if (isMobile) {
     return (
       <div className="w-full space-y-4 pb-6">
-        {projects.map((project) => (
-          <button
-            key={project.id}
-            onClick={() => onTearComplete(project.id)}
-            className="w-full block rounded-lg overflow-hidden shadow-lg bg-white active:scale-[0.98] transition-transform"
-            style={{ minHeight: "48px" }}
-          >
-            <div className="relative w-full" style={{ aspectRatio: "375 / 200" }}>
-              <img
-                src={project.projectImage}
-                alt={project.name}
-                className="w-full h-full object-cover"
-                draggable={false}
-              />
-              {/* 底部标题条 */}
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent p-3">
-                <p className="text-white text-sm font-bold leading-tight">{project.name}</p>
-                <p className="text-white/80 text-[10px] mt-0.5 leading-tight">{project.tags}</p>
+        {projects.map((project) => {
+          // 手机端使用项目详情页第一张横版图；主题色兜底为墨色
+          const coverImage =
+            project.galleryItems[0]?.image || project.projectImage;
+          const themeColor = project.themeColor || "#2C2C2C";
+          return (
+            <button
+              key={project.id}
+              onClick={() => onTearComplete(project.id)}
+              className="w-full block rounded-lg overflow-hidden shadow-lg bg-white active:scale-[0.98] transition-transform"
+              style={{ minHeight: "48px" }}
+            >
+              {/* 横版底图区 */}
+              <div
+                className="relative w-full"
+                style={{ aspectRatio: "375 / 220" }}
+              >
+                <img
+                  src={coverImage}
+                  alt={project.name}
+                  className="w-full h-full object-cover"
+                  draggable={false}
+                />
               </div>
-            </div>
-          </button>
-        ))}
+              {/* 主题色块 + 白色标题（底部铺色） */}
+              <div
+                className="px-4 py-3 text-left"
+                style={{ backgroundColor: themeColor }}
+              >
+                <p className="text-white text-base font-bold leading-tight tracking-wide">
+                  {project.name}
+                </p>
+                <p className="text-white/85 text-[11px] mt-1 leading-snug">
+                  {project.tags}
+                </p>
+              </div>
+            </button>
+          );
+        })}
         <p className="text-[11px] text-ink-muted/40 tracking-wider text-center pt-2">
           点击卡片查看项目详情
         </p>

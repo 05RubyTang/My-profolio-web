@@ -60,7 +60,7 @@ const idProjects: IDProject[] = [
     sloganEn: "Pioneering the Next Generation of AR+AI Assisted Rehabilitation",
     projectImage: cdnUrl("/picture/id-project/project1.png"),
     ticketImage: cdnUrl("/picture/id-project/piaogen1.png"),
-    themeColor: "#2C5F8D",
+    themeColor: "#7B5AA8",
     galleryItems: [
       { image: cdnUrl("/picture/id-project/projct1/project1-设计背景.png"), text: "" },
       { image: cdnUrl("/picture/id-project/projct1/project2-用户调研.png"), text: "" },
@@ -81,7 +81,7 @@ const idProjects: IDProject[] = [
     sloganEn: "Making warm savings",
     projectImage: cdnUrl("/picture/id-project/project2.png"),
     ticketImage: cdnUrl("/picture/id-project/piaogen2.png"),
-    themeColor: "#C97B4A",
+    themeColor: "#4A8B6F",
     galleryItems: [
       { image: cdnUrl("/picture/id-project/project2/project2-设计背景.png"), text: "" },
       { image: cdnUrl("/picture/id-project/project2/project2-用户调研.png"), text: "" },
@@ -102,7 +102,7 @@ const idProjects: IDProject[] = [
     sloganEn: "Intelligent Rehabilitation Brightens Children's Future",
     projectImage: cdnUrl("/picture/id-project/project3.png"),
     ticketImage: cdnUrl("/picture/id-project/piaogen3.png"),
-    themeColor: "#4A8B6F",
+    themeColor: "#2C5F8D",
     galleryItems: [
       { image: cdnUrl("/picture/id-project/project3/project3-设计背景.png"), text: "" },
       { image: cdnUrl("/picture/id-project/project3/project3-设计定义.png"), text: "" },
@@ -122,7 +122,7 @@ const idProjects: IDProject[] = [
     sloganEn: "Guard the smile, guard you",
     projectImage: cdnUrl("/picture/id-project/project4.png"),
     ticketImage: cdnUrl("/picture/id-project/piaogen4.png"),
-    themeColor: "#3D7A9E",
+    themeColor: "#1F1F1F",
     galleryItems: [
       { image: cdnUrl("/picture/id-project/project4/project4-设计背景.png"), text: "" },
       { image: cdnUrl("/picture/id-project/project4/project4-用户研究.png"), text: "" },
@@ -142,7 +142,7 @@ const idProjects: IDProject[] = [
     sloganEn: "Multi-dimensional development of design capabilities",
     projectImage: cdnUrl("/picture/id-project/project5.png"),
     ticketImage: cdnUrl("/picture/id-project/piaogen5.png"),
-    themeColor: "#8B5A9F",
+    themeColor: "#3AA5A8",
     galleryItems: [
       { image: cdnUrl("/picture/id-project/project5/project5.png"), text: "" },
     ],

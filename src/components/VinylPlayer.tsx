@@ -48,12 +48,25 @@ export default function VinylPlayer() {
   const [currentTime, setCurrentTime] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   // 拖拽相关状态
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const dragStartRef = useRef({ x: 0, y: 0, posX: 0, posY: 0 });
   const hasDraggedRef = useRef(false);
+
+  // 检测移动端
+  useEffect(() => {
+    const check = () =>
+      setIsMobile(
+        window.matchMedia("(max-width: 767px)").matches ||
+          window.matchMedia("(hover: none)").matches
+      );
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   const currentSong = playlist[currentIndex];
 
@@ -84,9 +97,10 @@ export default function VinylPlayer() {
     setIsPlaying(true);
   }, []);
 
-  // ===== 拖拽逻辑 =====
+  // ===== 拖拽逻辑（移动端禁用） =====
   const handlePointerDown = useCallback(
     (e: React.PointerEvent) => {
+      if (isMobile) return; // 移动端不启用拖拽
       // 如果点击的是控制按钮，不启动拖拽
       if ((e.target as HTMLElement).closest("[data-control]")) return;
 
@@ -100,12 +114,12 @@ export default function VinylPlayer() {
       };
       (e.target as HTMLElement).setPointerCapture(e.pointerId);
     },
-    [position]
+    [position, isMobile]
   );
 
   const handlePointerMove = useCallback(
     (e: React.PointerEvent) => {
-      if (!isDragging) return;
+      if (isMobile || !isDragging) return;
       const dx = e.clientX - dragStartRef.current.x;
       const dy = e.clientY - dragStartRef.current.y;
 
@@ -128,7 +142,7 @@ export default function VinylPlayer() {
         y: Math.max(-16, Math.min(newY, maxY)),
       });
     },
-    [isDragging]
+    [isDragging, isMobile]
   );
 
   const handlePointerUp = useCallback(() => {
@@ -187,27 +201,40 @@ export default function VinylPlayer() {
     return `${m}:${s.toString().padStart(2, "0")}`;
   };
 
+  // 移动端点击唱片本身直接播放/暂停（无 hover 概念）
+  const handleContainerClick = useCallback(
+    (e: React.MouseEvent) => {
+      if (!isMobile) return;
+      // 控制按钮已通过 data-control 阻止冒泡，这里再兜底一次
+      if ((e.target as HTMLElement).closest("[data-control]")) return;
+      togglePlay();
+    },
+    [isMobile, togglePlay]
+  );
+
   return (
     <div
       ref={containerRef}
       className="fixed z-[999] select-none touch-none"
       style={{
-        right: `${24 + position.x}px`,
-        bottom: `${24 + position.y}px`,
-        cursor: isDragging ? "grabbing" : "grab",
+        right: isMobile ? `12px` : `${24 + position.x}px`,
+        bottom: isMobile ? `12px` : `${24 + position.y}px`,
+        cursor: isMobile ? "pointer" : isDragging ? "grabbing" : "grab",
       }}
-      onMouseEnter={() => setIsHovered(true)}
+      onMouseEnter={() => !isMobile && setIsHovered(true)}
       onMouseLeave={() => {
+        if (isMobile) return;
         setIsHovered(false);
         if (isDragging) setIsDragging(false);
       }}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
+      onClick={handleContainerClick}
     >
       {/* ===== 唱片主体 ===== */}
       <div
-        className="relative w-28 h-28 rounded-full"
+        className={`relative rounded-full ${isMobile ? "w-16 h-16" : "w-28 h-28"}`}
         style={{
           boxShadow:
             "0 6px 24px rgba(44, 36, 24, 0.25), 0 2px 8px rgba(44, 36, 24, 0.12), 3px 3px 0 rgba(44, 36, 24, 0.06)",
@@ -272,23 +299,40 @@ export default function VinylPlayer() {
           </div>
         </div>
 
-        {/* 唱针 */}
-        <div
-          className={`absolute -top-2 -right-1.5 origin-top-left transition-transform duration-500 z-10 ${
-            isPlaying ? "rotate-[28deg]" : "rotate-[5deg]"
-          }`}
-        >
-          <div className="w-3 h-3 rounded-full bg-ink-muted border-[1.5px] border-ink/30 shadow-sm" />
-          <div className="w-[1.5px] h-12 bg-gradient-to-b from-ink-muted to-ink-light ml-[5px] -mt-0.5 rounded-b-full" />
-          <div className="w-2 h-2.5 bg-ink ml-[3px] -mt-0.5 rounded-b-full" />
-        </div>
+        {/* 唱针（移动端隐藏，因为唱片太小） */}
+        {!isMobile && (
+          <div
+            className={`absolute -top-2 -right-1.5 origin-top-left transition-transform duration-500 z-10 ${
+              isPlaying ? "rotate-[28deg]" : "rotate-[5deg]"
+            }`}
+          >
+            <div className="w-3 h-3 rounded-full bg-ink-muted border-[1.5px] border-ink/30 shadow-sm" />
+            <div className="w-[1.5px] h-12 bg-gradient-to-b from-ink-muted to-ink-light ml-[5px] -mt-0.5 rounded-b-full" />
+            <div className="w-2 h-2.5 bg-ink ml-[3px] -mt-0.5 rounded-b-full" />
+          </div>
+        )}
 
-        {/* ===== Hover 遮罩 + 控制按钮 ===== */}
+        {/* ===== 移动端中央播放/暂停图标（无 hover 概念） ===== */}
+        {isMobile && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-[5]">
+            <div className="w-6 h-6 rounded-full bg-ink/50 backdrop-blur-sm flex items-center justify-center">
+              {isPlaying ? (
+                <Pause size={12} className="text-white" fill="white" />
+              ) : (
+                <Play size={12} className="text-white ml-0.5" fill="white" />
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* ===== Hover 遮罩 + 控制按钮（仅桌面端） ===== */}
         <div
           className={`absolute inset-0 rounded-full transition-all duration-300 flex flex-col items-center justify-center gap-1 ${
-            isHovered && !isDragging
-              ? "bg-ink/60 backdrop-blur-[2px]"
-              : "bg-transparent"
+            isMobile
+              ? "hidden"
+              : isHovered && !isDragging
+                ? "bg-ink/60 backdrop-blur-[2px]"
+                : "bg-transparent"
           }`}
         >
           {/* 歌曲信息 */}
@@ -390,8 +434,8 @@ export default function VinylPlayer() {
         </svg>
       </div>
 
-      {/* 播放状态 - 音波指示器（不 hover 时显示） */}
-      {isPlaying && !isHovered && (
+      {/* 播放状态 - 音波指示器（桌面端，不 hover 时显示） */}
+      {!isMobile && isPlaying && !isHovered && (
         <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 flex gap-[2px]">
           <div className="w-[3px] h-2 bg-accent rounded-full animate-bounce [animation-delay:0ms]" />
           <div className="w-[3px] h-3 bg-accent rounded-full animate-bounce [animation-delay:150ms]" />
@@ -399,38 +443,42 @@ export default function VinylPlayer() {
         </div>
       )}
 
-      {/* 歌单指示器圆点（唱片下方） */}
-      <div
-        className={`flex justify-center gap-1 mt-2 transition-all duration-300 ${
-          isHovered && !isDragging ? "opacity-100" : "opacity-0"
-        }`}
-      >
-        {playlist.map((song, i) => (
-          <button
-            key={i}
-            data-control
-            onClick={(e) => {
-              e.stopPropagation();
-              setCurrentIndex(i);
-              setIsPlaying(true);
-            }}
-            className={`h-1.5 rounded-full transition-all ${
-              i === currentIndex
-                ? "bg-accent w-3.5"
-                : "bg-ink/20 hover:bg-ink/40 w-1.5"
-            }`}
-            aria-label={`切换到 ${song.title}`}
-          />
-        ))}
-      </div>
+      {/* 歌单指示器圆点（唱片下方，仅桌面端） */}
+      {!isMobile && (
+        <div
+          className={`flex justify-center gap-1 mt-2 transition-all duration-300 ${
+            isHovered && !isDragging ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          {playlist.map((song, i) => (
+            <button
+              key={i}
+              data-control
+              onClick={(e) => {
+                e.stopPropagation();
+                setCurrentIndex(i);
+                setIsPlaying(true);
+              }}
+              className={`h-1.5 rounded-full transition-all ${
+                i === currentIndex
+                  ? "bg-accent w-3.5"
+                  : "bg-ink/20 hover:bg-ink/40 w-1.5"
+              }`}
+              aria-label={`切换到 ${song.title}`}
+            />
+          ))}
+        </div>
+      )}
 
-      {/* 弹吉他猫 - 始终在唱片机右侧 */}
-      <img
-        src={cdnUrl("/cat-guitar.png")}
-        alt="弹吉他猫"
-        className="absolute -right-14 -top-4 w-14 h-auto pointer-events-none select-none"
-        draggable={false}
-      />
+      {/* 弹吉他猫 - 仅桌面端 */}
+      {!isMobile && (
+        <img
+          src={cdnUrl("/cat-guitar.png")}
+          alt="弹吉他猫"
+          className="absolute -right-14 -top-4 w-14 h-auto pointer-events-none select-none"
+          draggable={false}
+        />
+      )}
 
       {/* 隐藏的 audio 元素 */}
       <audio ref={audioRef} preload="metadata">

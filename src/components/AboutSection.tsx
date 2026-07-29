@@ -256,44 +256,48 @@ function ClotheslineRow({ photos }: { photos: PhotoItem[] }) {
 
 export default function AboutSection() {
   return (
-    <section id="experience" className="py-24 px-6">
+    <section id="experience" className="py-16 md:py-24 px-4 md:px-6">
       <div className="max-w-5xl mx-auto">
         {/* Section 标题 - 居中 + 手绘小星星 */}
         <ScrollReveal>
-          <div className="flex flex-col items-center mb-14">
+          <div className="flex flex-col items-center mb-10 md:mb-14">
             <div className="relative inline-flex items-center">
-              {/* 小黑猫 - 滑板猫在标题左上方 */}
+              {/* 小黑猫 - 滑板猫在标题左上方（移动端缩小并靠近标题） */}
               <img
                 src={cdnUrl("/cat-skateboard.png")}
                 alt="小黑猫"
-                className="absolute -left-28 -top-16 w-24 h-auto pointer-events-none select-none"
+                className="absolute -left-16 -top-10 w-14 md:-left-28 md:-top-16 md:w-24 h-auto pointer-events-none select-none"
                 draggable={false}
               />
               {/* 左侧小星星 */}
-              <svg className="absolute -left-10 -top-2 w-6 h-6 pointer-events-none" viewBox="0 0 24 24" fill="none">
+              <svg className="absolute -left-7 -top-2 w-4 h-4 md:-left-10 md:w-6 md:h-6 pointer-events-none" viewBox="0 0 24 24" fill="none">
                 <path d="M12 2 C12 2, 13 8, 12 12 C12 12, 18 11, 22 12 C22 12, 18 13, 12 12 C12 12, 13 18, 12 22 C12 22, 11 18, 12 12 C12 12, 6 13, 2 12 C2 12, 6 11, 12 12 C12 12, 11 8, 12 2Z" stroke="var(--ink)" strokeWidth="1.2" fill="none" opacity="0.35" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               {/* 右上小星星 */}
-              <svg className="absolute -right-8 -top-4 w-4 h-4 pointer-events-none" viewBox="0 0 24 24" fill="none">
+              <svg className="absolute -right-6 -top-3 w-3 h-3 md:-right-8 md:-top-4 md:w-4 md:h-4 pointer-events-none" viewBox="0 0 24 24" fill="none">
                 <path d="M12 4 C12 4, 13 9, 12 12 C12 12, 17 11, 20 12 C20 12, 17 13, 12 12 C12 12, 13 17, 12 20 C12 20, 11 17, 12 12 C12 12, 7 13, 4 12 C4 12, 7 11, 12 12 C12 12, 11 9, 12 4Z" stroke="var(--accent)" strokeWidth="1.5" fill="none" opacity="0.5" strokeLinecap="round" />
               </svg>
               {/* 右下小圆点星 */}
-              <svg className="absolute -right-6 bottom-0 w-3 h-3 pointer-events-none" viewBox="0 0 12 12" fill="none">
+              <svg className="hidden md:block absolute -right-6 bottom-0 w-3 h-3 pointer-events-none" viewBox="0 0 12 12" fill="none">
                 <circle cx="6" cy="6" r="2" stroke="var(--ink)" strokeWidth="1.2" fill="none" opacity="0.25" />
                 <path d="M6 1 L6 3 M6 9 L6 11 M1 6 L3 6 M9 6 L11 6" stroke="var(--ink)" strokeWidth="1" strokeLinecap="round" opacity="0.2" />
               </svg>
 
-              <h2 className="text-3xl md:text-4xl font-handwriting font-bold text-ink">
+              <h2 className="text-2xl md:text-4xl font-handwriting font-bold text-ink">
                 Experience
               </h2>
             </div>
             <div className="w-12 h-[2px] bg-accent/30 mt-3 rounded-full" />
+            {/* 移动端提示可滑动 */}
+            <p className="md:hidden text-[10px] text-ink-muted/50 mt-2 tracking-wider">
+              ← 左右滑动查看 →
+            </p>
           </div>
         </ScrollReveal>
 
-        {/* 横排时间轴 */}
+        {/* 横排时间轴 - 桌面端 */}
         <ScrollReveal delay={100}>
-          <div className="relative">
+          <div className="relative hidden md:block">
             <div className="overflow-x-auto pb-4 -mx-2 px-2">
               <div className="relative min-w-max">
                 <div className="absolute top-[28px] left-4 right-4 h-[2px] bg-ink/10" />
@@ -358,9 +362,66 @@ export default function AboutSection() {
           </div>
         </ScrollReveal>
 
+        {/* 垂直时间轴 - 移动端 */}
+        <ScrollReveal delay={100}>
+          <div className="md:hidden relative px-2">
+            {/* 垂直连接线 */}
+            <div className="absolute left-[27px] top-2 bottom-2 w-[2px] bg-ink/10" />
+            <div className="flex flex-col gap-5">
+              {timeline.map((item, index) => (
+                <div key={index} className="relative flex items-start gap-4">
+                  {/* logo 圆圈 */}
+                  <div
+                    className={`w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 relative z-10 overflow-hidden ${
+                      item.current
+                        ? "ring-2 ring-accent ring-offset-2 ring-offset-paper shadow-lg"
+                        : ""
+                    } bg-white shadow-sm`}
+                  >
+                    <Image
+                      src={item.logo}
+                      alt={item.title}
+                      width={56}
+                      height={56}
+                      className="w-full h-full rounded-full"
+                    />
+                  </div>
+                  {/* 内容 */}
+                  <div className="flex-1 pt-1 pb-2">
+                    <span
+                      className={`text-[10px] font-mono tracking-wider block mb-0.5 ${
+                        item.current ? "text-accent font-semibold" : "text-ink-muted"
+                      }`}
+                    >
+                      {item.period}
+                    </span>
+                    <h4
+                      className={`text-sm font-medium leading-tight ${
+                        item.current ? "text-accent" : "text-ink"
+                      }`}
+                    >
+                      {item.title}
+                    </h4>
+                    {item.subtitle && (
+                      <p className="text-[11px] text-ink-muted leading-tight mt-0.5">
+                        {item.subtitle}
+                      </p>
+                    )}
+                    {item.current && (
+                      <span className="tag-active mt-1.5 inline-block !text-[10px] !px-2 !py-0.5">
+                        current
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </ScrollReveal>
+
         {/* ===== 照片墙 - 晾衣绳 + 图钉 + 拍立得 ===== */}
         <ScrollReveal delay={200}>
-          <div className="mt-16">
+          <div className="mt-10 md:mt-16">
             {photoWallLines.map((photos, lineIdx) => (
               <ClotheslineRow key={lineIdx} photos={photos} />
             ))}

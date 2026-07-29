@@ -88,6 +88,13 @@ export default function ClickSparkle() {
   }, []);
 
   useEffect(() => {
+    // 移动端（触摸设备）不启用点击特效，避免干扰滚动/点击体验
+    const isTouchDevice =
+      typeof window !== "undefined" &&
+      (window.matchMedia("(hover: none)").matches ||
+        window.matchMedia("(max-width: 767px)").matches);
+    if (isTouchDevice) return;
+
     document.addEventListener("click", handleClick, true);
     return () => document.removeEventListener("click", handleClick, true);
   }, [handleClick]);

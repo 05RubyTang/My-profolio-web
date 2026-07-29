@@ -123,13 +123,13 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-[60px] right-[60px] z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 md:left-[60px] md:right-[60px] z-50 transition-all duration-300 ${
         scrolled
           ? "bg-paper/90 backdrop-blur-md shadow-sm border-b border-ink/5"
           : "bg-transparent"
       }`}
     >
-      <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-center relative">
+      <div className="max-w-6xl mx-auto px-5 md:px-6 py-4 md:py-5 flex items-center justify-center relative">
         {/* 居中导航 */}
         <div className="hidden md:flex items-center gap-10">
           {navItems.map((item) => {
@@ -307,29 +307,100 @@ export default function Navbar() {
           })}
         </div>
 
+        {/* 移动端左上角签名 */}
+        <a
+          href="#about"
+          onClick={() => setIsOpen(false)}
+          className="md:hidden absolute left-5 font-handwriting text-xl text-ink"
+        >
+          Ruby
+        </a>
+
         {/* Mobile Toggle */}
         <button
-          className="md:hidden absolute right-6 text-ink"
+          className="md:hidden absolute right-5 w-11 h-11 flex items-center justify-center text-ink -mr-2"
           onClick={() => setIsOpen(!isOpen)}
+          aria-label={isOpen ? "关闭菜单" : "打开菜单"}
         >
-          {isOpen ? <X size={24} /> : <Menu size={24} />}
+          {isOpen ? <X size={26} /> : <Menu size={26} />}
         </button>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Full-Screen Dropdown */}
       {isOpen && (
-        <div className="md:hidden bg-paper-light border-t border-ink/5 px-6 py-4 space-y-3">
-          {navItems.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className="block font-handwriting text-xl text-ink-light hover:text-accent transition-colors py-2"
-              onClick={() => setIsOpen(false)}
-            >
-              {item.label}
-            </a>
-          ))}
-        </div>
+        <>
+          {/* 遮罩背景 */}
+          <div
+            className="md:hidden fixed inset-0 bg-black/30 backdrop-blur-sm z-[-1]"
+            style={{ animation: "fadeIn 0.2s ease-out" }}
+            onClick={() => setIsOpen(false)}
+          />
+          {/* 下拉菜单面板 */}
+          <div
+            className="md:hidden bg-paper-light border-t border-ink/8 shadow-xl"
+            style={{ animation: "fadeInDown 0.25s ease-out" }}
+          >
+            <div className="px-6 py-6 space-y-1">
+              {/* 导航项 */}
+              {navItems
+                .filter((n) => !n.hasPopup)
+                .map((item) => {
+                  const sectionId = item.href.slice(1);
+                  const isActive = activeSection === sectionId;
+                  return (
+                    <a
+                      key={item.href}
+                      href={item.href}
+                      className={`block font-handwriting text-2xl py-3 border-b border-ink/5 transition-colors ${
+                        isActive ? "text-accent" : "text-ink"
+                      }`}
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {item.label}
+                    </a>
+                  );
+                })}
+
+              {/* Connect 标题 + 联系方式列表 */}
+              <div className="pt-5">
+                <h4 className="font-handwriting text-2xl text-ink mb-3">
+                  Connect
+                </h4>
+                <div className="space-y-2">
+                  {contactItems.map((contact, index) => (
+                    <div
+                      key={contact.label}
+                      className="flex items-center gap-3 py-3 px-3 rounded-lg bg-ink/[0.03] active:bg-ink/[0.08] transition-colors"
+                    >
+                      <div className="w-9 h-9 rounded-full bg-accent/10 text-accent flex items-center justify-center flex-shrink-0">
+                        {contact.icon}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <span className="text-[11px] text-ink-muted block leading-none">
+                          {contact.label}
+                        </span>
+                        <span className="text-sm text-ink font-medium block mt-1 truncate">
+                          {contact.value}
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => handleCopy(contact.value, index)}
+                        className="flex-shrink-0 w-11 h-11 rounded-lg flex items-center justify-center active:bg-ink/10 transition-colors"
+                        aria-label={`复制${contact.label}`}
+                      >
+                        {copiedIndex === index ? (
+                          <Check size={18} className="text-stamp-green" />
+                        ) : (
+                          <Copy size={18} className="text-ink-muted" />
+                        )}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
       )}
     </nav>
   );

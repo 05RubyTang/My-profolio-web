@@ -230,30 +230,30 @@ export default function HeroSection() {
   return (
     <section
       id="about"
-      className="relative min-h-screen flex items-center justify-center px-6 pt-24 pb-12"
+      className="relative min-h-screen flex items-center justify-center px-4 md:px-6 pt-20 md:pt-24 pb-12"
     >
-      {/* 装饰性背景元素 */}
-      <div className="absolute top-20 right-10 w-32 h-32 border-2 border-ink/5 rounded-full animate-spin-slow" />
-      <div className="absolute bottom-20 left-10 w-20 h-20 border border-accent/20 rotate-45" />
-      <div className="absolute top-40 left-20 text-6xl opacity-[0.04] font-serif select-none">
+      {/* 装饰性背景元素（仅桌面端显示，避免移动端拥挤） */}
+      <div className="hidden md:block absolute top-20 right-10 w-32 h-32 border-2 border-ink/5 rounded-full animate-spin-slow" />
+      <div className="hidden md:block absolute bottom-20 left-10 w-20 h-20 border border-accent/20 rotate-45" />
+      <div className="hidden md:block absolute top-40 left-20 text-6xl opacity-[0.04] font-serif select-none">
         冰
       </div>
-      <div className="absolute bottom-40 right-20 text-8xl opacity-[0.04] font-serif select-none">
+      <div className="hidden md:block absolute bottom-40 right-20 text-8xl opacity-[0.04] font-serif select-none">
         R
       </div>
 
       <div className="max-w-5xl mx-auto w-full relative z-10">
         {/* ===== 主卡片：个人信息 ===== */}
-        <div className="paper-card rounded-2xl p-8 md:p-10 relative overflow-hidden">
-          {/* 胶带装饰 */}
-          <div className="absolute -top-1 left-10 w-20 h-6 bg-tape-yellow/60 -rotate-3 rounded-sm" />
-          <div className="absolute -top-1 right-14 w-16 h-6 bg-tape-yellow/40 rotate-2 rounded-sm" />
+        <div className="paper-card rounded-2xl p-4 md:p-10 relative overflow-hidden">
+          {/* 胶带装饰（移动端隐藏） */}
+          <div className="hidden md:block absolute -top-1 left-10 w-20 h-6 bg-tape-yellow/60 -rotate-3 rounded-sm" />
+          <div className="hidden md:block absolute -top-1 right-14 w-16 h-6 bg-tape-yellow/40 rotate-2 rounded-sm" />
 
-          <div className="grid md:grid-cols-[260px_1fr] gap-8 md:gap-10 pt-3">
+          <div className="grid md:grid-cols-[260px_1fr] gap-6 md:gap-10 pt-3">
             {/* 左侧：照片 + 贴纸标签 */}
             <div className="flex flex-col items-center md:items-start gap-4">
-              {/* 照片区域 */}
-              <div className="relative w-full">
+              {/* 照片区域 - 移动端限制宽度 */}
+              <div className="relative w-full max-w-[260px] md:max-w-none">
                 <div className="relative w-full">
                   <Image
                     src={cdnUrl("/avatar.png")}
@@ -266,10 +266,11 @@ export default function HeroSection() {
                 </div>
 
                 {/* MBTI 红色胶带标签 */}
-                <div className="absolute -top-4 -left-4 z-10 -rotate-6">
-                  <div className="mbti-tape relative px-4 py-1.5 flex items-center gap-1.5">
-                    <Image src={cdnUrl("/icons/pixel-cat.png")} alt="" width={18} height={18} className="relative z-10" style={{ imageRendering: "pixelated" }} />
-                    <span className="relative z-10 font-mono text-white text-sm font-bold tracking-wider drop-shadow-[0_1px_1px_rgba(0,0,0,0.15)]" style={{ fontWeight: 800 }}>
+                <div className="absolute -top-3 -left-2 md:-top-4 md:-left-4 z-10 -rotate-6">
+                  <div className="mbti-tape relative px-3 md:px-4 py-1 md:py-1.5 flex items-center gap-1 md:gap-1.5">
+                    <Image src={cdnUrl("/icons/pixel-cat.png")} alt="" width={16} height={16} className="relative z-10 md:hidden" style={{ imageRendering: "pixelated" }} />
+                    <Image src={cdnUrl("/icons/pixel-cat.png")} alt="" width={18} height={18} className="relative z-10 hidden md:block" style={{ imageRendering: "pixelated" }} />
+                    <span className="relative z-10 font-mono text-white text-xs md:text-sm font-bold tracking-wider drop-shadow-[0_1px_1px_rgba(0,0,0,0.15)]" style={{ fontWeight: 800 }}>
                       纯血T人
                     </span>
                   </div>
@@ -277,7 +278,7 @@ export default function HeroSection() {
               </div>
 
               {/* 星座标签 */}
-              <div className="flex flex-wrap gap-2 mt-1">
+              <div className="flex flex-wrap gap-2 mt-1 justify-center md:justify-start">
                 <span className="tag">
                   <Sun size={13} />
                   上升/太阳双金牛
@@ -291,12 +292,12 @@ export default function HeroSection() {
               {/* MY RESUME 按钮 —— 撑满照片宽度，无边框无背景 */}
               <button
                 onClick={() => setShowResume(true)}
-                className="mt-3 w-full group flex items-center gap-3 transition-all duration-300 hover:opacity-70 active:scale-[0.97]"
+                className="mt-2 md:mt-3 w-full max-w-[260px] md:max-w-none group flex items-center justify-center md:justify-start gap-2 md:gap-3 transition-all duration-300 hover:opacity-70 active:scale-[0.97] min-h-[48px]"
               >
-                <span className="text-ink font-black text-[36px] leading-none tracking-wide uppercase whitespace-nowrap" style={{ fontWeight: 900 }}>
+                <span className="text-ink font-black text-[28px] md:text-[36px] leading-none tracking-wide uppercase whitespace-nowrap" style={{ fontWeight: 900 }}>
                   MY RESUME
                 </span>
-                <svg viewBox="0 0 1024 1024" className="w-9 h-9 transition-transform group-hover:translate-x-1 flex-shrink-0" fill="var(--accent)">
+                <svg viewBox="0 0 1024 1024" className="w-7 h-7 md:w-9 md:h-9 transition-transform group-hover:translate-x-1 flex-shrink-0" fill="var(--accent)">
                   <path d="M512 960c-247.039484 0-448-200.960516-448-448S264.960516 64 512 64 960 264.960516 960 512 759.039484 960 512 960zM512 128c-211.744443 0-384 172.255557-384 384s172.255557 384 384 384 384-172.255557 384-384S723.744443 128 512 128z" />
                   <path d="M732.959548 501.152426c-0.032684-0.127295-0.192662-0.25631-0.25631-0.383604-1.536138-3.615858-3.648542-7.071738-6.591802-10.047682-0.032684-0.032684-0.063647-0.032684-0.096331-0.063647-0.032684-0.032684-0.032684-0.063647-0.063647-0.096331l-158.911974-159.359226c-12.480043-12.480043-32.704421-12.576374-45.248112-0.063647-12.512727 12.480043-12.54369 32.735385-0.063647 45.248112l103.328907 103.616181L320 480.00258c-17.664722 0-31.99914 14.336138-31.99914 32.00086s14.336138 32.00086 31.99914 32.00086l306.752748 0-106.112189 104.959656c-12.576374 12.447359-12.672705 32.671738-0.25631 45.248112 6.239161 6.335493 14.496116 9.504099 22.751351 9.504099 8.12794 0 16.25588-3.103239 22.496761-9.247789l160.25545-158.495686C735.328262 526.592447 737.72794 512.767209 732.959548 501.152426z" />
                 </svg>
@@ -304,30 +305,30 @@ export default function HeroSection() {
             </div>
 
             {/* 右侧：文字介绍 */}
-            <div className="space-y-5">
+            <div className="space-y-4 md:space-y-5">
               {/* 名字 + 标题（立即显示，不参与打字机） */}
               <div>
-                <h1 className="text-4xl md:text-5xl font-serif font-black text-ink leading-tight mb-2" style={{ fontWeight: 900 }}>
+                <h1 className="text-3xl md:text-5xl font-serif font-black text-ink leading-tight mb-2" style={{ fontWeight: 900 }}>
                   Hi，I'm
                   <span className="text-accent ml-1">
                     Ruby Tang
                   </span>
                 </h1>
-                <p className="text-base md:text-lg text-ink-light tracking-wide flex items-center gap-2">
-                  <span className="inline-flex items-center gap-1 text-accent text-sm">
-                    <MapPin size={14} />
+                <p className="text-sm md:text-lg text-ink-light tracking-wide flex flex-wrap items-center gap-x-2 gap-y-1">
+                  <span className="inline-flex items-center gap-1 text-accent text-xs md:text-sm">
+                    <MapPin size={13} />
                     上海
                   </span>
                   <span className="text-ink/20">·</span>
-                  03 年 · AI 产品经理 · <span className="font-bold text-ink">人机交互</span>
+                  <span>03 年 · AI 产品经理 · <span className="font-bold text-ink">人机交互</span></span>
                 </p>
-                <p className="text-xs text-ink-muted mt-1 typewriter">
+                <p className="text-[11px] md:text-xs text-ink-muted mt-1 typewriter leading-relaxed">
                   同济28届 | 理科生学设计 | 抖音生服设计/小红书用研/抖音电商产品/阿里AI产品/小红书AI产品
                 </p>
               </div>
 
               {/* 打字机输出区域 */}
-              <div className="space-y-2.5 min-h-[140px]">
+              <div className="space-y-2 md:space-y-2.5 min-h-[180px] md:min-h-[140px]">
                 {typeLines.map((line, i) => {
                   const typed = typedLines[i];
                   // 还没轮到这一行
@@ -358,15 +359,16 @@ export default function HeroSection() {
               {/* 双击跳过提示 */}
               {!isTypingDone && (
                 <p className="text-[10px] text-ink-muted/40 animate-pulse">
-                  双击屏幕跳过打字效果
+                  <span className="hidden md:inline">双击屏幕跳过打字效果</span>
+                  <span className="md:hidden">双击屏幕跳过</span>
                 </p>
               )}
             </div>
           </div>
         </div>
 
-        {/* 向下滚动提示 */}
-        <div className="mt-10 animate-bounce flex flex-col items-center">
+        {/* 向下滚动提示（移动端隐藏，因为用户天然会滚） */}
+        <div className="hidden md:flex mt-10 animate-bounce flex-col items-center">
           <div className="w-6 h-10 border-2 border-ink/20 rounded-full flex justify-center pt-2">
             <div className="w-1 h-2 bg-ink/30 rounded-full" />
           </div>

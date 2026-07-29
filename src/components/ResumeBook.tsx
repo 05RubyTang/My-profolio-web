@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { X, FileText, ArrowLeft } from "lucide-react";
 import VariableProximity from "./VariableProximity";
 import { cdnUrl } from "@/lib/cdn";
+import { useIsMobile } from "@/lib/useIsMobile";
 
 /* ============================================================
    简历数据
@@ -468,6 +469,9 @@ function StampGallery({
   onClose: () => void;
 }) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const isMobile = useIsMobile();
+  const swiperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -484,7 +488,33 @@ function StampGallery({
     };
   }, []);
 
+  // 移动端：监听滚动位置，追踪当前居中卡片
+  useEffect(() => {
+    if (!isMobile) return;
+    const el = swiperRef.current;
+    if (!el) return;
+    const handleScroll = () => {
+      const center = el.scrollLeft + el.clientWidth / 2;
+      const children = Array.from(el.children) as HTMLElement[];
+      let closest = 0;
+      let minDist = Infinity;
+      children.forEach((child, i) => {
+        const childCenter = child.offsetLeft + child.offsetWidth / 2;
+        const dist = Math.abs(center - childCenter);
+        if (dist < minDist) {
+          minDist = dist;
+          closest = i;
+        }
+      });
+      setActiveIndex(closest);
+    };
+    el.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, [isMobile]);
+
   const hoveredStamp = hoveredIndex !== null ? stamps[hoveredIndex] : null;
+  const activeStamp = stamps[activeIndex];
 
   return (
     <div className="fixed inset-0 z-[1000] flex flex-col">
@@ -495,18 +525,18 @@ function StampGallery({
 
       {/* 顶部栏 */}
       <div
-        className="relative z-10 flex items-center justify-between px-8 py-5"
+        className="relative z-10 flex items-center justify-between px-4 md:px-8 py-4 md:py-5"
         style={{ animation: "fadeInDown 0.4s ease-out" }}
       >
-        <div className="flex items-center gap-3">
-          <FileText size={18} className="text-white/70" />
-          <h3 className="text-xl font-bold text-white">My Resume</h3>
-          <span className="text-xs text-white/40">·</span>
-          <span className="text-sm text-white/50">Ruby 的实习经历</span>
+        <div className="flex items-center gap-2 md:gap-3 min-w-0">
+          <FileText size={18} className="text-white/70 flex-shrink-0" />
+          <h3 className="text-base md:text-xl font-bold text-white">My Resume</h3>
+          <span className="hidden md:inline text-xs text-white/40">·</span>
+          <span className="hidden md:inline text-sm text-white/50">Ruby 的实习经历</span>
         </div>
         <button
           onClick={onClose}
-          className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/80 hover:text-white transition-colors"
+          className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/80 hover:text-white transition-colors flex-shrink-0"
         >
           <X size={18} />
         </button>
@@ -514,42 +544,100 @@ function StampGallery({
 
       {/* 邮票 + 职责说明 */}
       <div
-        className="relative z-10 flex-1 flex flex-col items-center justify-center px-8"
+        className="relative z-10 flex-1 flex flex-col items-center justify-center px-2 md:px-8 overflow-hidden"
         style={{ animation: "fadeIn 0.5s ease-out 0.1s both" }}
       >
-        <div className="h-[72px] flex items-end justify-center mb-40 max-w-[700px] w-full">
-          {hoveredStamp ? (
+        {isMobile ? (
+          <>
+            {/* 移动端 swiper */}
             <div
-              key={hoveredStamp.id}
-              className="text-center"
-              style={{ animation: "fadeIn 0.25s ease-out" }}
+              ref={swiperRef}
+              className="w-full flex overflow-x-auto snap-x snap-mandatory no-scrollbar gap-3 px-[15vw] py-4"
+              style={{ scrollBehavior: "smooth" }}
             >
-              <p className="text-[13px] text-white/60 leading-relaxed tracking-wide">
-                {hoveredStamp.description}
+              {stamps.map((stamp, index) => (
+                <div
+                  key={stamp.id}
+                  className="snap-center flex-shrink-0"
+                  style={{ width: "70vw" }}
+                >
+                  <StampCard
+                    stamp={stamp}
+                    index={index}
+                    size="large"
+                    disableArc
+                    onClick={() => onSelectStamp(index)}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* 指示器 */}
+            <div className="flex items-center justify-center gap-1.5 mt-4">
+              {stamps.map((_, i) => (
+                <div
+                  key={i}
+                  className="h-1.5 rounded-full transition-all"
+                  style={{
+                    width: i === activeIndex ? "20px" : "6px",
+                    backgroundColor:
+                      i === activeIndex ? activeStamp.color : "rgba(255,255,255,0.25)",
+                  }}
+                />
+              ))}
+            </div>
+
+            {/* 当前卡片描述 */}
+            <div className="mt-4 px-6 pb-6 min-h-[80px] max-w-[600px] text-center">
+              <p
+                key={activeStamp.id}
+                className="text-[13px] text-white/70 leading-relaxed tracking-wide"
+                style={{ animation: "fadeIn 0.25s ease-out" }}
+              >
+                {activeStamp.description}
+              </p>
+              <p className="text-[10px] text-white/30 tracking-wider mt-3">
+                左右滑动切换 · 点击卡片查看详情
               </p>
             </div>
-          ) : (
-            <span className="text-xs text-white/30 tracking-wider">
-              点击邮票查看详细经历 · ESC 关闭
-            </span>
-          )}
-        </div>
-
-        <div className="flex items-end justify-center gap-5">
-          {stamps.map((stamp, index) => (
-            <div
-              key={stamp.id}
-              onMouseEnter={() => setHoveredIndex(index)}
-              onMouseLeave={() => setHoveredIndex(null)}
-            >
-              <StampCard
-                stamp={stamp}
-                index={index}
-                onClick={() => onSelectStamp(index)}
-              />
+          </>
+        ) : (
+          <>
+            <div className="h-[72px] flex items-end justify-center mb-40 max-w-[700px] w-full">
+              {hoveredStamp ? (
+                <div
+                  key={hoveredStamp.id}
+                  className="text-center"
+                  style={{ animation: "fadeIn 0.25s ease-out" }}
+                >
+                  <p className="text-[13px] text-white/60 leading-relaxed tracking-wide">
+                    {hoveredStamp.description}
+                  </p>
+                </div>
+              ) : (
+                <span className="text-xs text-white/30 tracking-wider">
+                  点击邮票查看详细经历 · ESC 关闭
+                </span>
+              )}
             </div>
-          ))}
-        </div>
+
+            <div className="flex items-end justify-center gap-5">
+              {stamps.map((stamp, index) => (
+                <div
+                  key={stamp.id}
+                  onMouseEnter={() => setHoveredIndex(index)}
+                  onMouseLeave={() => setHoveredIndex(null)}
+                >
+                  <StampCard
+                    stamp={stamp}
+                    index={index}
+                    onClick={() => onSelectStamp(index)}
+                  />
+                </div>
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
@@ -603,7 +691,7 @@ function ResumeDetailView({
 
   return (
   <div
-    className="fixed inset-0 z-[1000] resume-detail-selection"
+    className="fixed inset-0 z-[1000] resume-detail-selection overflow-y-auto md:overflow-hidden"
     style={{
       animation: "fadeIn 0.3s ease-out",
       "--selection-color": selectedStamp.color,
@@ -611,45 +699,56 @@ function ResumeDetailView({
   >
     {/* 背景图 */}
     <div
-      className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+      className="fixed inset-0 bg-cover bg-center bg-no-repeat pointer-events-none"
       style={{ backgroundImage: `url(${selectedStamp.detailBg})` }}
     />
     {/* 黑色半透明蒙层 */}
-    <div className="absolute inset-0 bg-black/80" />
+    <div className="fixed inset-0 bg-black/80 pointer-events-none" />
 
-    {/* 内容区域 —— 带内边距 */}
-    <div className="relative z-10 w-full h-full flex p-8 lg:p-12">
+    {/* 内容区域 —— 移动端垂直堆叠，桌面横向 */}
+    <div className="relative z-10 w-full md:h-full flex flex-col md:flex-row p-4 md:p-8 lg:p-12">
 
-    {/* ====== 左侧 —— 邮票区域（百分比宽度，overflow-hidden 防止溢出） ====== */}
+    {/* ====== 左侧 —— 邮票区域 ====== */}
     <div
-      className="relative z-10 w-[30%] min-w-[260px] max-w-[380px] flex-shrink-0 flex flex-col py-2 pl-16 pr-8 overflow-hidden"
+      className="relative z-10 w-full md:w-[30%] md:min-w-[260px] md:max-w-[380px] flex-shrink-0 flex flex-col py-2 md:pl-16 md:pr-8 md:overflow-hidden"
       style={{ animation: "fadeIn 0.4s ease-out" }}
     >
-        {/* 返回按钮 */}
-        <button
-          onClick={onBack}
-          className="flex items-center gap-2 text-white/60 hover:text-white/90 transition-colors mb-6 self-start"
-        >
-          <ArrowLeft size={16} />
-          <span className="text-xs tracking-wider">返回</span>
-        </button>
-
-        {/* 选中的邮票 —— 大尺寸 */}
-        <div
-          className="mb-auto"
-          style={{ animation: "fadeIn 0.5s ease-out 0.1s both" }}
-        >
-          <StampCard
-            stamp={selectedStamp}
-            index={stampIndex}
-            size="large"
-            disableArc
-          />
+        {/* 移动端顶部操作栏：返回 + 关闭同行 */}
+        <div className="flex items-center justify-between mb-4 md:mb-6">
+          <button
+            onClick={onBack}
+            className="flex items-center gap-2 text-white/60 hover:text-white/90 transition-colors"
+          >
+            <ArrowLeft size={16} />
+            <span className="text-xs tracking-wider">返回</span>
+          </button>
+          {/* 移动端在这里显示关闭按钮（桌面在右侧栏） */}
+          <button
+            onClick={onClose}
+            className="md:hidden w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/80 hover:text-white transition-colors"
+          >
+            <X size={18} />
+          </button>
         </div>
 
-        {/* 其他邮票 —— 缩小排列在底部 */}
+        {/* 选中的邮票 —— 移动端居中缩小 */}
         <div
-          className="flex items-center gap-2 mt-4"
+          className="mb-4 md:mb-auto flex justify-center md:block"
+          style={{ animation: "fadeIn 0.5s ease-out 0.1s both" }}
+        >
+          <div className="w-[70vw] max-w-[280px] md:w-full md:max-w-none">
+            <StampCard
+              stamp={selectedStamp}
+              index={stampIndex}
+              size="large"
+              disableArc
+            />
+          </div>
+        </div>
+
+        {/* 其他邮票 —— 横向滚动 */}
+        <div
+          className="flex items-center gap-2 md:mt-4 overflow-x-auto no-scrollbar justify-center md:justify-start"
           style={{ animation: "fadeIn 0.5s ease-out 0.2s both" }}
         >
           {otherStamps.map((stamp) => {
@@ -662,23 +761,23 @@ function ResumeDetailView({
                 size="small"
                 disableArc
                 onClick={() => onSwitchStamp(originalIndex)}
-                className="cursor-pointer hover:!opacity-100 opacity-60 transition-opacity"
+                className="cursor-pointer hover:!opacity-100 opacity-60 transition-opacity flex-shrink-0"
               />
             );
           })}
         </div>
       </div>
 
-      {/* ====== 右侧 —— 文字内容（flex 纵向布局：固定标题 + 可滚动项目列表） ====== */}
+      {/* ====== 右侧 —— 文字内容 ====== */}
       <div
         ref={contentRef}
-        className="relative z-10 flex-1 min-w-0 flex flex-col overflow-hidden pr-16"
+        className="relative z-10 flex-1 min-w-0 flex flex-col md:overflow-hidden md:pr-16 mt-6 md:mt-0"
         style={{ animation: "fadeIn 0.5s ease-out 0.15s both" }}
       >
         {/* ---- 固定区域：关闭按钮 + 标题信息 + 职责描述 ---- */}
         <div className="flex-shrink-0">
-          {/* 关闭按钮 */}
-          <div className="flex justify-end pb-2">
+          {/* 桌面端关闭按钮（移动端在顶部返回栏） */}
+          <div className="hidden md:flex justify-end pb-2">
             <button
               onClick={onClose}
               className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/80 hover:text-white transition-colors"
@@ -687,36 +786,36 @@ function ResumeDetailView({
             </button>
           </div>
 
-          <div className="pl-8 pr-4">
-            {/* 英文部门名 —— 更亮、更细、放大 */}
-            <div className="flex items-baseline gap-3 mb-3">
+          <div className="md:pl-8 md:pr-4">
+            {/* 英文部门名 */}
+            <div className="flex items-baseline gap-3 mb-2 md:mb-3">
               <span
-                className="text-sm font-light tracking-[0.2em] uppercase"
+                className="text-xs md:text-sm font-light tracking-[0.2em] uppercase"
                 style={{ color: selectedStamp.color }}
               >
                 {selectedStamp.departmentEn}
               </span>
             </div>
 
-            <h2 className="text-4xl font-black text-white leading-tight mb-2">
+            <h2 className="text-2xl md:text-4xl font-black text-white leading-tight mb-2">
               {mainEntry.company}
-              <span className="text-white/30 mx-3">·</span>
-              <span className="text-2xl font-bold text-white/70">{mainEntry.department}</span>
+              <span className="text-white/30 mx-2 md:mx-3">·</span>
+              <span className="text-base md:text-2xl font-bold text-white/70">{mainEntry.department}</span>
             </h2>
 
-            {/* Role 标签 —— 主题色实色背景 + 白色文字 + 无圆角 */}
-            <div className="flex items-center gap-4 mt-3">
+            {/* Role 标签 */}
+            <div className="flex items-center flex-wrap gap-2 md:gap-4 mt-3">
               <span
-                className="text-sm font-bold px-4 py-1.5 text-white"
+                className="text-xs md:text-sm font-bold px-3 md:px-4 py-1 md:py-1.5 text-white"
                 style={{ backgroundColor: selectedStamp.color }}
               >
                 {mainEntry.role}
               </span>
-              <span className="text-xs text-white/50 tracking-wider">
+              <span className="text-[11px] md:text-xs text-white/50 tracking-wider">
                 {selectedStamp.period}
               </span>
               {mainEntry.location && (
-                <span className="text-xs text-white/40 inline-flex items-center gap-1">
+                <span className="text-[11px] md:text-xs text-white/40 inline-flex items-center gap-1">
                   <svg viewBox="0 0 1024 1024" fill="currentColor" className="w-3 h-3 flex-shrink-0">
                     <path d="M511.983627 1022.005576c-177.413666 0-356.430852-48.131207-356.430852-155.653059 0-83.935668 122.605386-135.997394 236.549507-148.835793l6.237051-0.718361L240.863766 464.627063c-5.077645-9.096169-9.868765-18.74697-14.093996-28.512381l-4.1536-8.400321-0.652869-3.360538c-13.843286-35.848463-20.852934-73.371054-20.852934-111.49842 0-171.404812 139.484821-310.86098 310.917262-310.86098 171.427324 0 310.887586 139.456169 310.887586 310.86098 0 38.164205-7.024997 75.670423-20.906146 111.49842l-2.082428 5.38873 0.194428 0-1.603521 3.300162c-4.535293 10.694573-9.552563 20.965497-15.000646 30.699186L511.853667 914.597311l-64.345494-105.092523-2.430352 0.211824c-104.22783 8.933463-170.69873 37.702694-188.130751 53.720505l-3.148713 2.898003 3.148713 2.914376c22.738887 21.12411 110.175285 54.535057 248.78825 55.520501l12.375865 0.020466-0.016373-0.020466c138.357138-0.969071 225.969545-34.304294 248.898767-55.385425l3.229554-2.967588-3.284813-2.898003c-12.722766-11.271718-59.075467-33.511231-130.370233-46.566572l54.754045-87.675852c114.248044 25.745361 177.125093 74.360592 177.125093 137.074935 0 107.527992-179.017186 155.653059-356.453365 155.653059L511.983627 1022.004553zM511.977487 145.159054c-73.081459 0-132.527362 59.488883-132.527362 132.598994 0 73.05076 59.440787 132.48029 132.527362 132.48029 73.132624 0 132.62253-59.429531 132.62253-132.48029C644.600017 204.647937 585.110111 145.159054 511.977487 145.159054L511.977487 145.159054zM511.977487 145.159054" />
                   </svg>
@@ -725,9 +824,9 @@ function ResumeDetailView({
               )}
             </div>
 
-            {/* 职责概述 —— 更白更亮 */}
+            {/* 职责概述 */}
             {mainEntry.responsibility && (
-              <div className="mt-6">
+              <div className="mt-5 md:mt-6">
                 <VariableProximity
                   label={mainEntry.responsibility}
                   containerRef={contentRef}
@@ -739,13 +838,13 @@ function ResumeDetailView({
                   toColor="#ffffff"
                   radius={120}
                   falloff="gaussian"
-                  className="text-[15px] leading-[2] tracking-wide"
+                  className="text-[13px] md:text-[15px] leading-[1.9] md:leading-[2] tracking-wide"
                 />
               </div>
             )}
 
             {/* 分隔线 */}
-            <div className="flex items-center gap-3 mt-8 mb-0">
+            <div className="flex items-center gap-3 mt-6 md:mt-8 mb-0">
               <div
                 className="w-8 h-[2px] rounded-full"
                 style={{ backgroundColor: selectedStamp.color, opacity: 0.4 }}
@@ -758,24 +857,24 @@ function ResumeDetailView({
           </div>
         </div>
 
-        {/* ---- 可滚动区域：项目列表（内容不超出容器） ---- */}
-        <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden resume-book-scroll">
-          <div className="pl-8 pr-4 pt-6 pb-16">
-            <div className="space-y-10">
+        {/* ---- 项目列表 —— 桌面独立滚动，移动端跟随外层滚动 ---- */}
+        <div className="md:flex-1 md:min-h-0 md:overflow-y-auto md:overflow-x-hidden resume-book-scroll">
+          <div className="md:pl-8 md:pr-4 pt-5 md:pt-6 pb-10 md:pb-16">
+            <div className="space-y-8 md:space-y-10">
               {allProjects.map(({ project }, pi) => (
                 <div key={pi} className="group">
                   {/* 项目名 */}
-                  <div className="flex items-baseline gap-3 mb-4">
+                  <div className="flex items-baseline gap-3 mb-3 md:mb-4">
                     <span
                       className="w-2 h-2 rounded-full flex-shrink-0 mt-1"
                       style={{ backgroundColor: selectedStamp.color }}
                     />
-                    <h3 className="text-lg font-bold text-white/90 leading-tight">
+                    <h3 className="text-base md:text-lg font-bold text-white/90 leading-tight">
                       {project.name}
                     </h3>
                   </div>
 
-                  {/* 项目详情 —— VariableProximity 效果 */}
+                  {/* 项目详情 */}
                   <div className="pl-5 space-y-3">
                     {project.details.map((detail, di) => (
                       <div key={di}>
@@ -790,7 +889,7 @@ function ResumeDetailView({
                           toColor="#f0f0f0"
                           radius={100}
                           falloff="gaussian"
-                          className="text-[14px] leading-[2] tracking-wide"
+                          className="text-[13px] md:text-[14px] leading-[1.9] md:leading-[2] tracking-wide"
                         />
                       </div>
                     ))}
@@ -798,7 +897,7 @@ function ResumeDetailView({
 
                   {/* 项目间分隔 */}
                   {pi < allProjects.length - 1 && (
-                    <div className="mt-8 flex items-center gap-2 pl-5">
+                    <div className="mt-6 md:mt-8 flex items-center gap-2 pl-5">
                       <div className="w-1 h-1 rounded-full bg-white/10" />
                       <div className="flex-1 border-t border-dashed border-white/8" />
                       <div className="w-1 h-1 rounded-full bg-white/10" />

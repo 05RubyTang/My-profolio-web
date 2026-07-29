@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { cdnUrl } from "@/lib/cdn";
+import { useIsMobile } from "@/lib/useIsMobile";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
 
@@ -321,11 +322,18 @@ function BookCover({
   variant?: "normal" | "selected" | "unselected";
   isActive?: boolean;
 }) {
-  const styles: Record<string, { width: string; opacity: number }> = {
-    normal: { width: "200px", opacity: 1 },
-    selected: { width: "200px", opacity: 1 },
-    unselected: { width: "100px", opacity: 0.7 },
-  };
+  const isMobile = useIsMobile();
+  const styles: Record<string, { width: string; opacity: number }> = isMobile
+    ? {
+        normal: { width: "140px", opacity: 1 },
+        selected: { width: "120px", opacity: 1 },
+        unselected: { width: "70px", opacity: 0.7 },
+      }
+    : {
+        normal: { width: "200px", opacity: 1 },
+        selected: { width: "200px", opacity: 1 },
+        unselected: { width: "100px", opacity: 0.7 },
+      };
   const s = styles[variant];
 
   return (
@@ -577,6 +585,7 @@ function FreePositionCanvas({
   projects: IDProject[];
   onTearComplete: (id: number) => void;
 }) {
+  const isMobile = useIsMobile();
   const canvasRef = useRef<HTMLDivElement>(null);
   const [positions, setPositions] = useState<TicketPosition[]>(() =>
     getDefaultPositions(projects.length)
@@ -663,6 +672,39 @@ function FreePositionCanvas({
       window.removeEventListener("pointercancel", handleGlobalUp);
     };
   }, []);
+
+  // ============ 移动端垂直列表模式 ============
+  if (isMobile) {
+    return (
+      <div className="w-full space-y-4 pb-6">
+        {projects.map((project) => (
+          <button
+            key={project.id}
+            onClick={() => onTearComplete(project.id)}
+            className="w-full block rounded-lg overflow-hidden shadow-lg bg-white active:scale-[0.98] transition-transform"
+            style={{ minHeight: "48px" }}
+          >
+            <div className="relative w-full" style={{ aspectRatio: "375 / 200" }}>
+              <img
+                src={project.projectImage}
+                alt={project.name}
+                className="w-full h-full object-cover"
+                draggable={false}
+              />
+              {/* 底部标题条 */}
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent p-3">
+                <p className="text-white text-sm font-bold leading-tight">{project.name}</p>
+                <p className="text-white/80 text-[10px] mt-0.5 leading-tight">{project.tags}</p>
+              </div>
+            </div>
+          </button>
+        ))}
+        <p className="text-[11px] text-ink-muted/40 tracking-wider text-center pt-2">
+          点击卡片查看项目详情
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -832,6 +874,7 @@ function TongjiFreeCanvas({
   projects: IDProject[];
   onSelectProject: (project: IDProject) => void;
 }) {
+  const isMobile = useIsMobile();
   const canvasRef = useRef<HTMLDivElement>(null);
   const [positions, setPositions] = useState<TicketPosition[]>(() =>
     getTongjiDefaultPositions(projects.length)
@@ -951,6 +994,31 @@ function TongjiFreeCanvas({
       window.removeEventListener("pointercancel", handleGlobalUp);
     };
   }, []);
+
+  // ============ 移动端垂直列表模式 ============
+  if (isMobile) {
+    return (
+      <div className="w-full space-y-4 pb-6">
+        {projects.map((project) => (
+          <div key={project.id} className="w-full">
+            <TongjiProjectCard
+              project={project}
+              onClick={() => {
+                if (project.videoUrl) {
+                  window.open(project.videoUrl, "_blank", "noopener,noreferrer");
+                } else {
+                  onSelectProject(project);
+                }
+              }}
+            />
+          </div>
+        ))}
+        <p className="text-[11px] text-ink-muted/40 tracking-wider text-center pt-2">
+          点击卡片查看项目详情
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -1096,6 +1164,7 @@ function TongjiModuleDetail({
   project: IDProject;
   onBack: () => void;
 }) {
+  const isMobile = useIsMobile();
   const modules = tongjiModulesMap[project.id] || [];
   const [activeModuleIdx, setActiveModuleIdx] = useState(0);
   const activeModule = modules[activeModuleIdx];
@@ -1206,27 +1275,25 @@ function TongjiModuleDetail({
         </div>
       </div>
 
-      {/* 四大模块 Tab */}
-      <div className="flex items-end gap-6 mb-5">
+      {/* 四大模块 Tab - 移动端支持横向滚动 */}
+      <div className="flex items-end gap-5 md:gap-6 mb-5 overflow-x-auto no-scrollbar -mx-1 px-1">
         {modules.map((mod, idx) => {
           const isActive = idx === activeModuleIdx;
           return (
             <button
               key={mod.key}
               onClick={() => setActiveModuleIdx(idx)}
-              className="relative pb-2 transition-all duration-300 focus:outline-none group tracking-wide"
+              className="relative pb-2 transition-all duration-300 focus:outline-none group tracking-wide flex-shrink-0"
               style={{
-                fontSize: isActive ? "16px" : "14px",
+                fontSize: isActive ? (isMobile ? "14px" : "16px") : (isMobile ? "12px" : "14px"),
                 fontWeight: isActive ? 800 : 500,
                 color: isActive ? "var(--ink)" : "rgba(52,52,52,0.55)",
               }}
             >
-              {/* 文字：始终显示英文，选中时全大写，未选中时 Title Case */}
               <span className="relative z-10 transition-all duration-300">
                 {isActive ? mod.labelEn.toUpperCase() : mod.labelEn}
               </span>
 
-              {/* 选中态底部椭圆横杠 */}
               {isActive && (
                 <span
                   className="absolute left-1/2 -translate-x-1/2 bottom-0 pointer-events-none"
@@ -1241,7 +1308,6 @@ function TongjiModuleDetail({
                 />
               )}
 
-              {/* 未选中 hover 效果 */}
               {!isActive && (
                 <span className="absolute left-1/2 -translate-x-1/2 bottom-0 w-0 group-hover:w-[80%] h-[2px] rounded-full bg-ink/15 transition-all duration-300 pointer-events-none" />
               )}
@@ -1250,57 +1316,77 @@ function TongjiModuleDetail({
         })}
       </div>
 
-      {/* 图片自由拖拽画布 */}
-      <div
-        ref={canvasRef}
-        className="relative w-full select-none rounded-lg"
-        style={{
-          height: "clamp(380px, 58vh, 640px)",
-          cursor: draggingId !== null ? "grabbing" : "default",
-          background: "rgba(0,0,0,0.02)",
-        }}
-        onPointerMove={handlePointerMove}
-        onPointerUp={() => setDraggingId(null)}
-        onPointerCancel={() => setDraggingId(null)}
-      >
-        {/* 网格装饰 */}
-        <div
-          className="absolute inset-0 pointer-events-none opacity-[0.03] rounded-lg"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(0,0,0,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.3) 1px, transparent 1px)",
-            backgroundSize: "32px 32px",
-          }}
-        />
-
-        {positions.map((pos) => {
-          const imgItem = images[pos.id];
-          if (!imgItem) return null;
-
-          const isDragging = draggingId === pos.id;
-          const isTopZ = activeZId === pos.id;
-
-          return (
-            <DraggableImageCard
-              key={`${activeModuleIdx}-${pos.id}`}
-              pos={pos}
-              imgItem={imgItem}
-              isDragging={isDragging}
-              isTopZ={isTopZ}
-              widthPct={TONGJI_IMG_WIDTH_PCT}
-              onPointerDown={(e) => handlePointerDown(e, pos.id)}
-              onPointerUp={(didMove) => handlePointerUp(pos.id, didMove)}
-            />
-          );
-        })}
-
-        {/* 提示文字 */}
-        <div className="absolute bottom-2.5 left-0 right-0 text-center pointer-events-none">
-          <span className="text-[10px] text-ink-muted/35 tracking-wider">
-            拖拽移动图片位置 · 点击图片查看大图
-          </span>
+      {/* 图片展示区域 - 移动端垂直列表，桌面端自由拖拽画布 */}
+      {isMobile ? (
+        <div className="w-full space-y-3">
+          {images.map((imgItem, idx) => (
+            <div
+              key={`${activeModuleIdx}-${idx}`}
+              className="w-full rounded-lg overflow-hidden shadow-md cursor-zoom-in"
+              onClick={() => setLightboxIndex(idx)}
+            >
+              <img
+                src={imgItem.image}
+                alt={imgItem.text || `${project.name} - ${idx + 1}`}
+                className="w-full h-auto block"
+                draggable={false}
+              />
+            </div>
+          ))}
+          <p className="text-[10px] text-ink-muted/40 tracking-wider text-center pt-2">
+            点击图片查看大图
+          </p>
         </div>
-      </div>
+      ) : (
+        <div
+          ref={canvasRef}
+          className="relative w-full select-none rounded-lg"
+          style={{
+            height: "clamp(380px, 58vh, 640px)",
+            cursor: draggingId !== null ? "grabbing" : "default",
+            background: "rgba(0,0,0,0.02)",
+          }}
+          onPointerMove={handlePointerMove}
+          onPointerUp={() => setDraggingId(null)}
+          onPointerCancel={() => setDraggingId(null)}
+        >
+          <div
+            className="absolute inset-0 pointer-events-none opacity-[0.03] rounded-lg"
+            style={{
+              backgroundImage:
+                "linear-gradient(rgba(0,0,0,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.3) 1px, transparent 1px)",
+              backgroundSize: "32px 32px",
+            }}
+          />
+
+          {positions.map((pos) => {
+            const imgItem = images[pos.id];
+            if (!imgItem) return null;
+
+            const isDragging = draggingId === pos.id;
+            const isTopZ = activeZId === pos.id;
+
+            return (
+              <DraggableImageCard
+                key={`${activeModuleIdx}-${pos.id}`}
+                pos={pos}
+                imgItem={imgItem}
+                isDragging={isDragging}
+                isTopZ={isTopZ}
+                widthPct={TONGJI_IMG_WIDTH_PCT}
+                onPointerDown={(e) => handlePointerDown(e, pos.id)}
+                onPointerUp={(didMove) => handlePointerUp(pos.id, didMove)}
+              />
+            );
+          })}
+
+          <div className="absolute bottom-2.5 left-0 right-0 text-center pointer-events-none">
+            <span className="text-[10px] text-ink-muted/35 tracking-wider">
+              拖拽移动图片位置 · 点击图片查看大图
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* 图片灯箱 */}
       {lightboxIndex !== null && (
@@ -1637,10 +1723,12 @@ function InlineBookContent({
         </div>
       </div>
 
-      {/* 书本内容 */}
-      <div className="flex rounded-lg shadow-2xl overflow-hidden" style={{ aspectRatio: "16 / 10" }}>
-        {/* 左页 - 图片 */}
-        <div className="w-1/2 relative" style={{ backgroundColor: book.coverColor }}>
+      {/* 书本内容 - 桌面端左右两页；移动端上下堆叠 */}
+      <div
+        className="flex flex-col md:flex-row rounded-lg shadow-2xl overflow-hidden md:aspect-[16/10]"
+      >
+        {/* 左页/顶部 - 图片 */}
+        <div className="w-full md:w-1/2 aspect-[4/3] md:aspect-auto relative" style={{ backgroundColor: book.coverColor }}>
           <div
             className="absolute right-0 top-0 bottom-0 w-6"
             style={{ background: "linear-gradient(to left, rgba(0,0,0,0.08), transparent)" }}
@@ -1667,8 +1755,8 @@ function InlineBookContent({
           )}
         </div>
 
-        {/* 右页 - 文字 */}
-        <div className="w-1/2 bg-[#FEFCF8] relative p-8 flex flex-col">
+        {/* 右页/下方 - 文字 */}
+        <div className="w-full md:w-1/2 bg-[#FEFCF8] relative p-5 md:p-8 flex flex-col">
           <div
             className="absolute inset-0 opacity-[0.03] pointer-events-none"
             style={{
@@ -1680,7 +1768,7 @@ function InlineBookContent({
             style={{ background: "linear-gradient(to right, rgba(0,0,0,0.06), transparent)" }}
           />
 
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-4 md:mb-6">
             <span className="text-[10px] text-ink-muted uppercase tracking-widest" style={{ fontFamily: "var(--font-mono)" }}>
               {book.name}
             </span>
@@ -1690,12 +1778,12 @@ function InlineBookContent({
           </div>
 
           <div className="flex-1 flex flex-col justify-center relative z-10">
-            <h3 className="text-2xl font-bold text-ink mb-4 leading-tight">{page.title}</h3>
+            <h3 className="text-xl md:text-2xl font-bold text-ink mb-3 md:mb-4 leading-tight">{page.title}</h3>
             <div className="w-10 h-[2px] bg-accent/30 mb-5 rounded-full" />
             <p className="text-ink-light leading-relaxed whitespace-pre-line text-sm">{page.desc}</p>
           </div>
 
-          <div className="flex items-center justify-between mt-6 relative z-10">
+          <div className="flex items-center justify-between mt-5 md:mt-6 relative z-10">
             <button
               onClick={goPrev}
               disabled={currentPage === 0}
@@ -1829,32 +1917,32 @@ export default function WorksSection() {
   const openedBook = isExpanded ? books[openBookIndex] : null;
 
   return (
-    <section id="works" className="pt-24 px-6">
+    <section id="works" className="pt-16 md:pt-24 px-3 md:px-6">
       <div className="max-w-5xl mx-auto">
         <ScrollReveal>
-          <div className="flex flex-col items-center mb-8">
+          <div className="flex flex-col items-center mb-6 md:mb-8">
             <div className="relative inline-flex items-center">
-              <svg className="absolute -left-9 -top-3 w-5 h-5 pointer-events-none" viewBox="0 0 24 24" fill="none">
+              <svg className="hidden md:block absolute -left-9 -top-3 w-5 h-5 pointer-events-none" viewBox="0 0 24 24" fill="none">
                 <path d="M12 4 C12 4, 13 9, 12 12 C12 12, 17 11, 20 12 C20 12, 17 13, 12 12 C12 12, 13 17, 12 20 C12 20, 11 17, 12 12 C12 12, 7 13, 4 12 C4 12, 7 11, 12 12 C12 12, 11 9, 12 4Z" stroke="var(--accent)" strokeWidth="1.5" fill="none" opacity="0.45" strokeLinecap="round" />
               </svg>
-              <svg className="absolute -right-10 -top-2 w-6 h-6 pointer-events-none" viewBox="0 0 24 24" fill="none">
+              <svg className="hidden md:block absolute -right-10 -top-2 w-6 h-6 pointer-events-none" viewBox="0 0 24 24" fill="none">
                 <path d="M12 2 C12 2, 13 8, 12 12 C12 12, 18 11, 22 12 C22 12, 18 13, 12 12 C12 12, 13 18, 12 22 C12 22, 11 18, 12 12 C12 12, 6 13, 2 12 C2 12, 6 11, 12 12 C12 12, 11 8, 12 2Z" stroke="var(--ink)" strokeWidth="1.2" fill="none" opacity="0.3" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-              <svg className="absolute -left-5 bottom-0 w-3 h-3 pointer-events-none" viewBox="0 0 12 12" fill="none">
+              <svg className="hidden md:block absolute -left-5 bottom-0 w-3 h-3 pointer-events-none" viewBox="0 0 12 12" fill="none">
                 <circle cx="6" cy="6" r="2" stroke="var(--ink)" strokeWidth="1.2" fill="none" opacity="0.25" />
                 <path d="M6 1 L6 3 M6 9 L6 11 M1 6 L3 6 M9 6 L11 6" stroke="var(--ink)" strokeWidth="1" strokeLinecap="round" opacity="0.2" />
               </svg>
-              <h2 className="text-3xl md:text-4xl font-handwriting font-bold text-ink">Works</h2>
-              {/* 小黑猫 - 跳舞猫在标题右侧 */}
+              <h2 className="text-2xl md:text-4xl font-handwriting font-bold text-ink">Works</h2>
+              {/* 小黑猫 - 跳舞猫在标题右侧（移动端缩小并靠近） */}
               <img
                 src={cdnUrl("/cat-dance.png")}
                 alt="小黑猫"
-                className="absolute -right-28 -top-10 w-20 h-auto pointer-events-none select-none"
+                className="absolute -right-16 -top-6 w-12 md:-right-28 md:-top-10 md:w-20 h-auto pointer-events-none select-none"
                 draggable={false}
               />
             </div>
             <div className="w-12 h-[2px] bg-accent/30 mt-3 rounded-full" />
-            <p className="text-sm text-ink-muted mt-3">
+            <p className="text-xs md:text-sm text-ink-muted mt-3 px-4 text-center">
               {isExpanded ? "点击另一本书切换，或再次点击当前书本收起" : "点击任意一本书，翻开看看"}
             </p>
           </div>
@@ -1864,26 +1952,25 @@ export default function WorksSection() {
       {/* 笔记本线圈装饰 + 暖色背景区域 */}
       <div className="relative">
         <div
-          className="w-full h-[50px] bg-repeat-x bg-center bg-contain relative z-10"
+          className="w-full h-[36px] md:h-[50px] bg-repeat-x bg-center bg-contain relative z-10"
           style={{
             backgroundImage: `url(${cdnUrl("/notebook-rings.png")})`,
-            backgroundSize: "auto 50px",
+            backgroundSize: "auto 100%",
           }}
         />
         <div
-          className="px-6 transition-all duration-700 ease-out"
+          className="px-3 md:px-6 transition-all duration-700 ease-out"
           style={{
             backgroundColor: "rgb(242, 227, 207)",
-            paddingBottom: isExpanded ? "3rem" : "6rem",
-            /* 展开时画板最小高度更大 */
+            paddingBottom: isExpanded ? "2rem" : "4rem",
             minHeight: isExpanded ? "80vh" : "auto",
           }}
         >
-          <div className="max-w-7xl mx-auto pt-10 pb-4">
+          <div className="max-w-7xl mx-auto pt-6 md:pt-10 pb-4">
             {/* 未展开：书本居中 */}
             {!isExpanded && (
               <ScrollReveal delay={100}>
-                <div className="flex items-end justify-center gap-8 md:gap-14">
+                <div className="flex flex-col md:flex-row items-center md:items-end justify-center gap-6 md:gap-14">
                   {books.map((book, index) => (
                     <BookCover
                       key={book.name}
@@ -1896,11 +1983,11 @@ export default function WorksSection() {
               </ScrollReveal>
             )}
 
-            {/* 展开：左侧书本 + 右侧内容 */}
+            {/* 展开：桌面端 左侧书本 + 右侧内容；移动端 顶部横向书本 tab + 下方内容 */}
             {isExpanded && openedBook && (
-              <div className="flex flex-row items-start gap-6">
-                {/* 左侧书本栏 */}
-                <div className="flex flex-col items-center gap-4 flex-shrink-0 pt-2">
+              <div className="flex flex-col md:flex-row items-start gap-4 md:gap-6">
+                {/* 书本栏 - 移动端顶部横向，桌面端左侧纵向 */}
+                <div className="flex flex-row md:flex-col items-center md:items-center gap-3 md:gap-4 flex-shrink-0 pt-2 w-full md:w-auto justify-center overflow-x-auto">
                   {books.map((book, index) => {
                     const variant = index === openBookIndex ? "selected" : "unselected";
                     return (
@@ -1915,7 +2002,7 @@ export default function WorksSection() {
                   })}
                 </div>
 
-                {/* 分隔线 */}
+                {/* 分隔线 - 仅桌面 */}
                 <div
                   className="w-[1px] self-stretch bg-ink/10 flex-shrink-0 hidden md:block"
                   style={{ animation: "fadeIn 0.5s ease-out 0.2s both" }}
@@ -1924,7 +2011,7 @@ export default function WorksSection() {
                 {/* 内容区域 */}
                 <div
                   ref={contentRef}
-                  className="flex-1 min-w-0 overflow-hidden"
+                  className="flex-1 min-w-0 w-full overflow-hidden"
                   style={{ animation: "fadeIn 0.5s ease-out 0.15s both" }}
                 >
                   <ExpandedBookContent

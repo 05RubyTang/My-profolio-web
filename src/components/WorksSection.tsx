@@ -154,23 +154,16 @@ interface TongjiModule {
   images: { image: string; text: string }[];
 }
 
-/** 修图助手的四大模块 */
+/** 修图助手的两大模块（Research+PainPoints 合并、Concept+Output 合并） */
 const xiutuModules: TongjiModule[] = [
   {
-    key: "research",
-    label: "前期调研",
-    labelEn: "Research",
+    key: "research-insights",
+    label: "调研与洞察",
+    labelEn: "Research & Insights",
     images: [
       { image: cdnUrl("/picture/id-project/tongji-works/修图助手/1.jpg"), text: "" },
       { image: cdnUrl("/picture/id-project/tongji-works/修图助手/2.jpg"), text: "" },
       { image: cdnUrl("/picture/id-project/tongji-works/修图助手/3.jpg"), text: "" },
-    ],
-  },
-  {
-    key: "pain-points",
-    label: "用户痛点研究",
-    labelEn: "Pain Points",
-    images: [
       { image: cdnUrl("/picture/id-project/tongji-works/修图助手/4.jpg"), text: "" },
       { image: cdnUrl("/picture/id-project/tongji-works/修图助手/5.jpg"), text: "" },
       { image: cdnUrl("/picture/id-project/tongji-works/修图助手/6.jpg"), text: "" },
@@ -179,22 +172,15 @@ const xiutuModules: TongjiModule[] = [
     ],
   },
   {
-    key: "concept",
-    label: "概念设计",
-    labelEn: "Concept",
+    key: "concept-output",
+    label: "概念与产出",
+    labelEn: "Design",
     images: [
       { image: cdnUrl("/picture/id-project/tongji-works/修图助手/9.jpg"), text: "" },
       { image: cdnUrl("/picture/id-project/tongji-works/修图助手/10.jpg"), text: "" },
       { image: cdnUrl("/picture/id-project/tongji-works/修图助手/11.jpg"), text: "" },
       { image: cdnUrl("/picture/id-project/tongji-works/修图助手/12.jpg"), text: "" },
       { image: cdnUrl("/picture/id-project/tongji-works/修图助手/13.jpg"), text: "" },
-    ],
-  },
-  {
-    key: "output",
-    label: "设计产出",
-    labelEn: "Output",
-    images: [
       { image: cdnUrl("/picture/id-project/tongji-works/修图助手/14.jpg"), text: "" },
       { image: cdnUrl("/picture/id-project/tongji-works/修图助手/15.jpg"), text: "" },
       { image: cdnUrl("/picture/id-project/tongji-works/修图助手/16.jpg"), text: "" },
@@ -204,24 +190,17 @@ const xiutuModules: TongjiModule[] = [
   },
 ];
 
-/** 艺起搭的四大模块 */
+/** 艺起搭的两大模块（Research+PainPoints 合并、Concept+Output 合并） */
 const yiqidaModules: TongjiModule[] = [
   {
-    key: "research",
-    label: "前期调研",
-    labelEn: "Research",
+    key: "research-insights",
+    label: "调研与洞察",
+    labelEn: "Research & Insights",
     images: [
       { image: cdnUrl("/picture/id-project/tongji-works/艺起搭/1 86.jpg"), text: "" },
       { image: cdnUrl("/picture/id-project/tongji-works/艺起搭/2 26.jpg"), text: "" },
       { image: cdnUrl("/picture/id-project/tongji-works/艺起搭/3 1.jpg"), text: "" },
       { image: cdnUrl("/picture/id-project/tongji-works/艺起搭/4 1.jpg"), text: "" },
-    ],
-  },
-  {
-    key: "pain-points",
-    label: "用户痛点研究",
-    labelEn: "Pain Points",
-    images: [
       { image: cdnUrl("/picture/id-project/tongji-works/艺起搭/5 1.jpg"), text: "" },
       { image: cdnUrl("/picture/id-project/tongji-works/艺起搭/6 1.jpg"), text: "" },
       { image: cdnUrl("/picture/id-project/tongji-works/艺起搭/7 1.jpg"), text: "" },
@@ -229,21 +208,14 @@ const yiqidaModules: TongjiModule[] = [
     ],
   },
   {
-    key: "concept",
-    label: "概念设计",
-    labelEn: "Concept",
+    key: "concept-output",
+    label: "概念与产出",
+    labelEn: "Design",
     images: [
       { image: cdnUrl("/picture/id-project/tongji-works/艺起搭/9 1.jpg"), text: "" },
       { image: cdnUrl("/picture/id-project/tongji-works/艺起搭/10 1.jpg"), text: "" },
       { image: cdnUrl("/picture/id-project/tongji-works/艺起搭/11 1.jpg"), text: "" },
       { image: cdnUrl("/picture/id-project/tongji-works/艺起搭/12 1.jpg"), text: "" },
-    ],
-  },
-  {
-    key: "output",
-    label: "设计产出",
-    labelEn: "Output",
-    images: [
       { image: cdnUrl("/picture/id-project/tongji-works/艺起搭/14 1.jpg"), text: "" },
       { image: cdnUrl("/picture/id-project/tongji-works/艺起搭/15 1.jpg"), text: "" },
       { image: cdnUrl("/picture/id-project/tongji-works/艺起搭/16 1.jpg"), text: "" },

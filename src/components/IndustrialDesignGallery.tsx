@@ -48,11 +48,11 @@ const projects: IDProject[] = [
     projectImage: cdnUrl("/picture/id-project/project1.png"),
     ticketImage: cdnUrl("/picture/id-project/piaogen1.png"),
     galleryItems: [
-      { image: "/picture/id-project/projct1/project1-设计背景.png", text: "" },
-      { image: "/picture/id-project/projct1/project2-用户调研.png", text: "" },
-      { image: "/picture/id-project/projct1/project3-设计定义.png", text: "" },
-      { image: "/picture/id-project/projct1/project4-设计产出.png", text: "" },
-      { image: "/picture/id-project/projct1/project5-设计验证.png", text: "" },
+      { image: cdnUrl("/picture/id-project/projct1/project1-设计背景.png"), text: "" },
+      { image: cdnUrl("/picture/id-project/projct1/project2-用户调研.png"), text: "" },
+      { image: cdnUrl("/picture/id-project/projct1/project3-设计定义.png"), text: "" },
+      { image: cdnUrl("/picture/id-project/projct1/project4-设计产出.png"), text: "" },
+      { image: cdnUrl("/picture/id-project/projct1/project5-设计验证.png"), text: "" },
     ],
   },
   {
@@ -68,11 +68,11 @@ const projects: IDProject[] = [
     projectImage: cdnUrl("/picture/id-project/project2.png"),
     ticketImage: cdnUrl("/picture/id-project/piaogen2.png"),
     galleryItems: [
-      { image: "/picture/id-project/project2/project2-设计背景.png", text: "" },
-      { image: "/picture/id-project/project2/project2-用户调研.png", text: "" },
-      { image: "/picture/id-project/project2/project2-设计定义.png", text: "" },
-      { image: "/picture/id-project/project2/project2-服务设计.png", text: "" },
-      { image: "/picture/id-project/project2/project2-设计产出.png", text: "" },
+      { image: cdnUrl("/picture/id-project/project2/project2-设计背景.png"), text: "" },
+      { image: cdnUrl("/picture/id-project/project2/project2-用户调研.png"), text: "" },
+      { image: cdnUrl("/picture/id-project/project2/project2-设计定义.png"), text: "" },
+      { image: cdnUrl("/picture/id-project/project2/project2-服务设计.png"), text: "" },
+      { image: cdnUrl("/picture/id-project/project2/project2-设计产出.png"), text: "" },
     ],
   },
   {
@@ -88,10 +88,10 @@ const projects: IDProject[] = [
     projectImage: cdnUrl("/picture/id-project/project3.png"),
     ticketImage: cdnUrl("/picture/id-project/piaogen3.png"),
     galleryItems: [
-      { image: "/picture/id-project/project3/project3-设计背景.png", text: "" },
-      { image: "/picture/id-project/project3/project3-设计定义.png", text: "" },
-      { image: "/picture/id-project/project3/project3-设计推导.png", text: "" },
-      { image: "/picture/id-project/project3/project3-渲染图.png", text: "" },
+      { image: cdnUrl("/picture/id-project/project3/project3-设计背景.png"), text: "" },
+      { image: cdnUrl("/picture/id-project/project3/project3-设计定义.png"), text: "" },
+      { image: cdnUrl("/picture/id-project/project3/project3-设计推导.png"), text: "" },
+      { image: cdnUrl("/picture/id-project/project3/project3-渲染图.png"), text: "" },
     ],
   },
   {
@@ -107,10 +107,10 @@ const projects: IDProject[] = [
     projectImage: cdnUrl("/picture/id-project/project4.png"),
     ticketImage: cdnUrl("/picture/id-project/piaogen4.png"),
     galleryItems: [
-      { image: "/picture/id-project/project4/project4-设计背景.png", text: "" },
-      { image: "/picture/id-project/project4/project4-用户研究.png", text: "" },
-      { image: "/picture/id-project/project4/project4-技术研究.png", text: "" },
-      { image: "/picture/id-project/project4/project4-渲染图.png", text: "" },
+      { image: cdnUrl("/picture/id-project/project4/project4-设计背景.png"), text: "" },
+      { image: cdnUrl("/picture/id-project/project4/project4-用户研究.png"), text: "" },
+      { image: cdnUrl("/picture/id-project/project4/project4-技术研究.png"), text: "" },
+      { image: cdnUrl("/picture/id-project/project4/project4-渲染图.png"), text: "" },
     ],
   },
   {
@@ -126,7 +126,7 @@ const projects: IDProject[] = [
     projectImage: cdnUrl("/picture/id-project/project5.png"),
     ticketImage: cdnUrl("/picture/id-project/piaogen5.png"),
     galleryItems: [
-      { image: "/picture/id-project/project5/project5.png", text: "" },
+      { image: cdnUrl("/picture/id-project/project5/project5.png"), text: "" },
     ],
     videoUrl: "https://www.xiaohongshu.com/explore/68c59e9e000000001b035c92",
   },

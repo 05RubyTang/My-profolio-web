@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { X, FileText, ArrowLeft } from "lucide-react";
 import VariableProximity from "./VariableProximity";
+import { cdnUrl } from "@/lib/cdn";
 
 /* ============================================================
    简历数据
@@ -209,8 +210,8 @@ const stamps: StampData[] = [
     roleEn: "AI Product Manager Intern",
     period: "2026.03 - 2026.06",
     color: "#c04a3f",
-    bgImage: "/picture/id-project/myresume/rednote-card.png",
-    detailBg: "/picture/id-project/myresume/rednote-bg.png",
+    bgImage: cdnUrl("/picture/id-project/myresume/rednote-card.png"),
+    detailBg: cdnUrl("/picture/id-project/myresume/rednote-bg.png"),
     resumeIndices: [0],
     description: `负责点点独立端的端内外主框架产品设计与用户增长、评测体系搭建与AI能力持续提升，实现从"模型能跑"到"用户好用"的体验闭环`,
   },
@@ -224,8 +225,8 @@ const stamps: StampData[] = [
     roleEn: "AI Product Manager Intern",
     period: "2026.01 - 2026.03",
     color: "#f57c00",
-    bgImage: "/picture/id-project/myresume/taobao-card.png",
-    detailBg: "/picture/id-project/myresume/taobao-bg.png",
+    bgImage: cdnUrl("/picture/id-project/myresume/taobao-card.png"),
+    detailBg: cdnUrl("/picture/id-project/myresume/taobao-bg.png"),
     resumeIndices: [1],
     description:
       "通过多渠道形式的增长玩法设计，强化秒杀频道「低价好货」的认知，达成「心智DAU」的北极星指标提升，同时负责AI提效工具的搭建",
@@ -240,8 +241,8 @@ const stamps: StampData[] = [
     roleEn: "Merchant Product Manager Intern",
     period: "2025.08 - 2026.01",
     color: "#5F83D8",
-    bgImage: "/picture/id-project/myresume/bytedance-card.png",
-    detailBg: "/picture/id-project/myresume/bytedance-bg.png",
+    bgImage: cdnUrl("/picture/id-project/myresume/bytedance-card.png"),
+    detailBg: cdnUrl("/picture/id-project/myresume/bytedance-bg.png"),
     resumeIndices: [2],
     description:
       "聚焦抖店商家入驻与资质管理模块，通过产品化手段降低因规则模糊、流程受阻产生的CPO，实现商家入驻的减负提效；针对特殊白名单商家搭建产品化入驻功能，提高商家入驻效率与成功率",
@@ -256,8 +257,8 @@ const stamps: StampData[] = [
     roleEn: "User Research Intern",
     period: "2025.02 - 2025.07",
     color: "#c04a3f",
-    bgImage: "/picture/id-project/myresume/rednote-card.png",
-    detailBg: "/picture/id-project/myresume/rednote-bg.png",
+    bgImage: cdnUrl("/picture/id-project/myresume/rednote-card.png"),
+    detailBg: cdnUrl("/picture/id-project/myresume/rednote-bg.png"),
     resumeIndices: [4],
     description:
       "针对小红书社区发布侧相关业务设计调研方案，通过多种调研手段摸清体验侧业务现状、洞察用户痛点与需求，支撑产品开发决策",
@@ -272,8 +273,8 @@ const stamps: StampData[] = [
     roleEn: "UX Product Design Intern",
     period: "2024.08 - 2025.02",
     color: "#5F83D8",
-    bgImage: "/picture/id-project/myresume/bytedance-card.png",
-    detailBg: "/picture/id-project/myresume/bytedance-bg.png",
+    bgImage: cdnUrl("/picture/id-project/myresume/bytedance-card.png"),
+    detailBg: cdnUrl("/picture/id-project/myresume/bytedance-bg.png"),
     resumeIndices: [3],
     description:
       "聚焦抖音来客（本地商家一站式经营平台）的商家服务与体验优化，以用户体验为核心优化商家服务体验流程，助力商家经营体验提效",

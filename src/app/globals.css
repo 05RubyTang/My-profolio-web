@@ -675,3 +675,45 @@ body::before {
 .resume-flipbook .--right {
   border-radius: 0 8px 8px 0;
 }
+
+/* ===== CircularGallery 弧形画廊 ===== */
+.circular-gallery {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  cursor: grab;
+}
+
+.circular-gallery:active {
+  cursor: grabbing;
+}
+
+.circular-gallery:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
+}
+
+/* ============================================================
+   工业设计画廊 — 项目卡片横向滚动条
+   ============================================================ */
+.id-projects-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
+.id-projects-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.id-projects-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.id-projects-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+
+.id-projects-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}

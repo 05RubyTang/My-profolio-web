@@ -34,6 +34,13 @@ jobs:
         run: npm run build
         env:
           GITHUB_PAGES: "true"
+          # 当仓库变量 CUSTOM_DOMAIN 有值时，构建按自定义域名（根路径）方式产出
+          CUSTOM_DOMAIN: ${{ vars.CUSTOM_DOMAIN != '' && 'true' || 'false' }}
+
+      # 使用自定义域名时，需要在发布产物根目录写入 CNAME 文件
+      - name: Write CNAME for custom domain
+        if: ${{ vars.CUSTOM_DOMAIN != '' }}
+        run: echo "${{ vars.CUSTOM_DOMAIN }}" > ./out/CNAME
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

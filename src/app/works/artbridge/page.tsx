@@ -6,7 +6,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Cpu, Users, LineChart, Palette } from "lucide-react";
 import WorkLayout from "../_components/WorkLayout";
-import ProcessDrawer, { ProcessItem, ProcessImageBlock } from "../_components/ProcessDrawer";
+import ProcessDrawer, { ProcessItem, ProcessImageGroup } from "../_components/ProcessDrawer";
 import FeatureEntries, { FeatureKey } from "../_components/artbridge/FeatureEntries";
 import FeatureShowcase from "../_components/artbridge/FeatureShowcase";
 import { cdnUrl } from "@/lib/cdn";
@@ -53,9 +53,10 @@ const processItems: ProcessItem[] = [
           在启动设计前，我们扫描了国内外主要的 AI 穿搭 / 时尚推荐产品，
           梳理出「工具型」与「陪伴型」两类核心竞品，找到差异化机会。
         </p>
-        {yiqidaCdnImages.slice(0, 3).map((src, i) => (
-          <ProcessImageBlock key={i} src={src} alt={`市场调研 ${i + 1}`} />
-        ))}
+        <ProcessImageGroup
+          srcs={yiqidaCdnImages.slice(0, 3)}
+          altPrefix="市场调研"
+        />
       </div>
     ),
   },
@@ -72,9 +73,10 @@ const processItems: ProcessItem[] = [
           「风格实验型」、「懒人穿搭型」、「场合焦虑型」，
           并归纳出各自最关心的场景与痛点。
         </p>
-        {yiqidaCdnImages.slice(3, 6).map((src, i) => (
-          <ProcessImageBlock key={i} src={src} alt={`用户调研 ${i + 1}`} />
-        ))}
+        <ProcessImageGroup
+          srcs={yiqidaCdnImages.slice(3, 6)}
+          altPrefix="用户调研"
+        />
       </div>
     ),
   },
@@ -90,9 +92,10 @@ const processItems: ProcessItem[] = [
           艺起搭底层由「多模态感知 → 意图路由 → 场景 Agent → 长期记忆」四层组成。
           每次穿搭对话都会写入用户风格向量，越用越懂你。
         </p>
-        {yiqidaCdnImages.slice(8, 12).map((src, i) => (
-          <ProcessImageBlock key={i} src={src} alt={`技术架构 ${i + 1}`} />
-        ))}
+        <ProcessImageGroup
+          srcs={yiqidaCdnImages.slice(8, 12)}
+          altPrefix="技术架构"
+        />
       </div>
     ),
   },
@@ -109,13 +112,14 @@ const processItems: ProcessItem[] = [
           交互流程与场景可视化层面的完整设计产出。
         </p>
         {/* 汇总：原「用户调研」尾 2 张 + 原「技术架构」尾 2 张 + 原「完整视频」组 */}
-        {[
-          ...yiqidaCdnImages.slice(6, 8),
-          ...yiqidaCdnImages.slice(12, 14),
-          ...yiqidaCdnImages.slice(14),
-        ].map((src, i) => (
-          <ProcessImageBlock key={i} src={src} alt={`设计产出 ${i + 1}`} />
-        ))}
+        <ProcessImageGroup
+          srcs={[
+            ...yiqidaCdnImages.slice(6, 8),
+            ...yiqidaCdnImages.slice(12, 14),
+            ...yiqidaCdnImages.slice(14),
+          ]}
+          altPrefix="设计产出"
+        />
       </div>
     ),
   },

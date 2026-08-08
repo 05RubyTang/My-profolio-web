@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { cdnUrl } from "@/lib/cdn";
 import { useIsMobile } from "@/lib/useIsMobile";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
@@ -30,6 +31,8 @@ interface IDProject {
   themeColor?: string;
   galleryItems: { image: string; text: string }[];
   videoUrl?: string;
+  /** 独立落地页路由，若填写则点击直接跳到该路由（优先级高于内联详情） */
+  detailHref?: string;
 }
 
 interface BookData {
@@ -256,6 +259,7 @@ const tongjiProjects: IDProject[] = [
     projectImage: cdnUrl("/picture/id-project/tongji-works/修图助手-封面.png"),
     ticketImage: "",
     galleryItems: [],
+    detailHref: "/works/photo-editor",
   },
   {
     id: 102,
@@ -269,6 +273,7 @@ const tongjiProjects: IDProject[] = [
     projectImage: cdnUrl("/picture/id-project/tongji-works/艺起搭-封面.png"),
     ticketImage: "",
     galleryItems: [],
+    detailHref: "/works/artbridge",
   },
   {
     id: 103,
@@ -898,6 +903,7 @@ function TongjiFreeCanvas({
   onSelectProject: (project: IDProject) => void;
 }) {
   const isMobile = useIsMobile();
+  const router = useRouter();
   const canvasRef = useRef<HTMLDivElement>(null);
   const [positions, setPositions] = useState<TicketPosition[]>(() =>
     getTongjiDefaultPositions(projects.length)
@@ -987,15 +993,21 @@ function TongjiFreeCanvas({
       // 短按 → 点击打开项目
       const project = projects[idx];
       if (project && !hasMoved.current) {
-        // 若项目带有外链，直接在新标签打开，不进入二级页
+        // 优先级 1：有独立落地页 → 路由跳转
+        if (project.detailHref) {
+          router.push(project.detailHref);
+          return;
+        }
+        // 优先级 2：有外链 → 新标签打开
         if (project.videoUrl) {
           window.open(project.videoUrl, "_blank", "noopener,noreferrer");
         } else {
+          // 优先级 3：内联详情
           onSelectProject(project);
         }
       }
     },
-    [projects, onSelectProject]
+    [projects, onSelectProject, router]
   );
 
   // 全局 pointer up 兜底
@@ -1027,7 +1039,9 @@ function TongjiFreeCanvas({
             <TongjiProjectCard
               project={project}
               onClick={() => {
-                if (project.videoUrl) {
+                if (project.detailHref) {
+                  router.push(project.detailHref);
+                } else if (project.videoUrl) {
                   window.open(project.videoUrl, "_blank", "noopener,noreferrer");
                 } else {
                   onSelectProject(project);
@@ -1107,7 +1121,12 @@ function TongjiFreeCanvas({
             <TongjiProjectCard
               project={project}
               onClick={() => {
-                // 有外链则直接打开，不进入二级页
+                // 优先级 1：独立落地页 → 路由跳转
+                if (project.detailHref) {
+                  router.push(project.detailHref);
+                  return;
+                }
+                // 优先级 2：外链 → 新标签打开
                 if (project.videoUrl) {
                   window.open(project.videoUrl, "_blank", "noopener,noreferrer");
                 } else {
@@ -1935,6 +1954,31 @@ export default function WorksSection() {
       }, 100);
     }
   }, [openBookIndex]);
+
+  // 从项目落地页返回时，自动滚动到 Works 板块
+  // 触发条件：sessionStorage.returnTo === "works" 或 URL hash === "#works"
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    let shouldScroll = false;
+    try {
+      if (sessionStorage.getItem("returnTo") === "works") {
+        shouldScroll = true;
+        sessionStorage.removeItem("returnTo");
+      }
+    } catch {
+      // ignore
+    }
+    if (!shouldScroll && window.location.hash === "#works") {
+      shouldScroll = true;
+    }
+    if (shouldScroll) {
+      // 稍微延迟等 layout 稳定
+      setTimeout(() => {
+        const el = document.getElementById("works");
+        el?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 120);
+    }
+  }, []);
 
   const isExpanded = openBookIndex !== null;
   const openedBook = isExpanded ? books[openBookIndex] : null;

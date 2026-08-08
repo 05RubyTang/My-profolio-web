@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
-import { Noto_Sans_SC, Noto_Serif_SC, Inter, Caveat } from "next/font/google";
+import {
+  Noto_Sans_SC,
+  Noto_Serif_SC,
+  Inter,
+  Caveat,
+  ZCOOL_KuaiLe,
+} from "next/font/google";
 import "./globals.css";
 
 const notoSans = Noto_Sans_SC({
@@ -25,6 +31,14 @@ const caveat = Caveat({
   weight: ["400", "500", "600", "700"],
 });
 
+// 「艺起搭 · 风格实验台」标题特殊字体
+// 用 Google 的 ZCOOL KuaiLe 作为 Figma 稿件里 YouSheBiaoTiHei（优设标题黑）的替身
+const zcoolKuaile = ZCOOL_KuaiLe({
+  variable: "--font-zcool-kuaile",
+  subsets: ["latin"],
+  weight: ["400"],
+});
+
 export const metadata: Metadata = {
   title: "Ruby Tang | AI Product Designer",
   description:
@@ -40,7 +54,7 @@ export default function RootLayout({
   return (
     <html
       lang="zh-CN"
-      className={`${notoSans.variable} ${notoSerif.variable} ${inter.variable} ${caveat.variable} antialiased`}
+      className={`${notoSans.variable} ${notoSerif.variable} ${inter.variable} ${caveat.variable} ${zcoolKuaile.variable} antialiased`}
     >
       <body className="min-h-screen">{children}</body>
     </html>

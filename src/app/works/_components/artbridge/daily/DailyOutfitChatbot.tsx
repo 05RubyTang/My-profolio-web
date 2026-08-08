@@ -637,7 +637,7 @@ export default function DailyOutfitChatbot() {
             >
               <LockScreenPhone variant="today" width={300} />
               <div className="max-w-[300px] text-center space-y-2">
-                <div className="text-[11px] tracking-widest uppercase text-[#FF88D9]">
+                <div className="text-[11px] tracking-widest uppercase text-[#FFB0DE]">
                   Digital Companion · 小艺数字人智能衣橱
                 </div>
                 <p className="text-white/70 text-[13px] leading-relaxed">
@@ -663,13 +663,13 @@ export default function DailyOutfitChatbot() {
               className="space-y-6"
             >
               <div>
-                <div className="text-[11px] tracking-widest uppercase text-[#FF88D9] mb-2">
+                <div className="text-[11px] tracking-widest uppercase text-[#FFB0DE] mb-2">
                   Feature Demo · 每日穿搭法则
                 </div>
                 <h3 className="text-3xl md:text-4xl font-semibold leading-tight text-white">
                   早安，一张卡开始，
                   <br />
-                  <span className="text-[#FF88D9]">一衣多穿</span>
+                  <span className="text-[#FFB0DE]">一衣多穿</span>
                   + 一键补货
                 </h3>
               </div>
@@ -679,7 +679,7 @@ export default function DailyOutfitChatbot() {
                 AI 结合衣橱、天气、体征生成两套对比方案，你若说「没有绿色卫衣」，
                 「优选购物助手」立刻从回头客、销量、评价、性价比 4 个维度筛好衣，
                 代下单后自动收录进穿搭手帐。
-                <span className="text-[#FF88D9]">
+                <span className="text-[#FFB0DE]">
                   {" "}选完套装的瞬间，右侧样机的锁屏会同步亮起「小艺数字人智能衣橱」——
                   3 张玻璃卡挂上今日方案，一整天都陪着你。
                 </span>
@@ -776,7 +776,7 @@ function PhaseTag({
       className={[
         "rounded-xl border p-3 transition-all",
         active
-          ? "bg-white/[0.08] border-[#FF88D9]/60 shadow-[0_6px_20px_-6px_rgba(255,136,217,0.35)]"
+          ? "bg-white/[0.08] border-[#FFB0DE]/60 shadow-[0_6px_20px_-6px_rgba(255,176,222,0.35)]"
           : "bg-white/[0.03] border-white/10",
       ].join(" ")}
     >

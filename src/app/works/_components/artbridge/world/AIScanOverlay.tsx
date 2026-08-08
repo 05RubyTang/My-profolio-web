@@ -38,7 +38,7 @@ export default function AIScanOverlay({
           WebkitBackdropFilter: "blur(8px)",
         }}
       >
-        <Sparkles size={11} className="text-[#FF88D9]" />
+        <Sparkles size={11} className="text-[#FFB0DE]" />
         <span className="text-[11px] font-medium text-white/95 tracking-wide">
           {WORLD_SCAN_CHIP}
         </span>
@@ -60,7 +60,7 @@ export default function AIScanOverlay({
           className="absolute inset-0 rounded-lg"
           style={{
             background:
-              "linear-gradient(180deg, rgba(255,136,217,0.08) 0%, rgba(255,136,217,0.02) 100%)",
+              "linear-gradient(180deg, rgba(255,176,222,0.08) 0%, rgba(255,176,222,0.02) 100%)",
             border: "1px solid rgba(255,255,255,0.15)",
           }}
         />
@@ -70,8 +70,8 @@ export default function AIScanOverlay({
           className="absolute left-2 right-2 h-[2px] rounded-full"
           style={{
             background:
-              "linear-gradient(90deg, rgba(255,136,217,0) 0%, rgba(255,136,217,0.9) 50%, rgba(255,136,217,0) 100%)",
-            boxShadow: "0 0 12px 2px rgba(255,136,217,0.6)",
+              "linear-gradient(90deg, rgba(255,176,222,0) 0%, rgba(255,176,222,0.9) 50%, rgba(255,176,222,0) 100%)",
+            boxShadow: "0 0 12px 2px rgba(255,176,222,0.6)",
           }}
           initial={{ top: "8%" }}
           animate={{ top: ["8%", "88%", "8%"] }}
@@ -109,7 +109,7 @@ export default function AIScanOverlay({
               className="text-[10px] font-medium tracking-wide text-white px-2 py-1 rounded-full"
               style={{
                 background:
-                  "linear-gradient(135deg, rgba(255,136,217,0.35) 0%, rgba(247,128,199,0.35) 100%)",
+                  "linear-gradient(135deg, rgba(255,176,222,0.35) 0%, rgba(247,128,199,0.35) 100%)",
                 border: "1px solid rgba(255,255,255,0.25)",
                 backdropFilter: "blur(6px)",
                 WebkitBackdropFilter: "blur(6px)",

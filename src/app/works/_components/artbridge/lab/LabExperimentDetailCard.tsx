@@ -62,7 +62,7 @@ export default function LabExperimentDetailCard({
             style={{ color: "rgb(69,71,75)" }}
           >
             {detail.equipmentItems.map((item, i) => (
-              <li key={i} className="marker:text-[rgb(255,136,217)]">
+              <li key={i} className="marker:text-[rgb(255,176,222)]">
                 {item}
               </li>
             ))}

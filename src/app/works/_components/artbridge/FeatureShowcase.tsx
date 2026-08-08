@@ -57,12 +57,12 @@ function ComingSoonPanel({
   return (
     <div className="flex flex-col items-center justify-center text-center py-32 px-6">
       <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-6">
-        <Sparkles size={26} className="text-[#FF88D9]" />
+        <Sparkles size={26} className="text-[#FFB0DE]" />
       </div>
       <h3 className="text-2xl md:text-3xl font-semibold text-white mb-3">{title}</h3>
       <p className="max-w-md text-white/55 text-sm md:text-base leading-relaxed">{description}</p>
       <div className="mt-8 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-white/60 text-xs tracking-widest">
-        <span className="w-1.5 h-1.5 rounded-full bg-[#FF88D9] animate-pulse" />
+        <span className="w-1.5 h-1.5 rounded-full bg-[#FFB0DE] animate-pulse" />
         FIGMA 稿件就绪后开发中
       </div>
     </div>

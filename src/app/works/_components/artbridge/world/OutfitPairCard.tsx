@@ -43,10 +43,10 @@ export default function OutfitPairCard({
               backdropFilter: "blur(9px)",
               WebkitBackdropFilter: "blur(9px)",
               border: isPicked
-                ? "1.5px solid rgba(255,136,217,0.85)"
+                ? "1.5px solid rgba(255,176,222,0.85)"
                 : "1px solid rgba(255,255,255,0.25)",
               boxShadow: isPicked
-                ? "0 10px 24px -6px rgba(255,136,217,0.5)"
+                ? "0 10px 24px -6px rgba(255,176,222,0.5)"
                 : "0 6px 16px -6px rgba(0,0,0,0.3)",
             }}
           >

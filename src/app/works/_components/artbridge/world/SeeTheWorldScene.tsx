@@ -122,7 +122,7 @@ export default function SeeTheWorldScene() {
           </motion.div>
         </AnimatePresence>
         <div className="max-w-[340px] text-center space-y-1.5">
-          <div className="text-[11px] tracking-widest uppercase text-[#C89BFF]">
+          <div className="text-[11px] tracking-widest uppercase text-[#FF88D9]">
             Digital Companion · 小艺数字人智能衣橱
           </div>
           <p className="text-white/70 text-[12px] leading-relaxed">
@@ -135,14 +135,14 @@ export default function SeeTheWorldScene() {
       {/* 右：文案说明 */}
       <div className="max-w-xs text-left text-white/85 space-y-6">
         <div>
-          <div className="text-[11px] tracking-widest uppercase text-[#C89BFF] mb-2 flex items-center gap-2">
+          <div className="text-[11px] tracking-widest uppercase text-[#FF88D9] mb-2 flex items-center gap-2">
             <Video size={12} />
             Feature Demo · 小艺看世界
           </div>
           <h3 className="text-3xl md:text-4xl font-semibold leading-tight text-white">
             打开摄像头
             <br />
-            <span className="text-[#C89BFF]">让 AI</span>
+            <span className="text-[#FF88D9]">让 AI</span>
             识别你身上的衣服
           </h3>
         </div>
@@ -201,7 +201,7 @@ function PhaseTag({
       className={[
         "rounded-xl border p-3 transition-all",
         active
-          ? "bg-white/[0.08] border-[#C89BFF]/60 shadow-[0_6px_20px_-6px_rgba(200,155,255,0.35)]"
+          ? "bg-white/[0.08] border-[#FF88D9]/60 shadow-[0_6px_20px_-6px_rgba(255,136,217,0.35)]"
           : "bg-white/[0.03] border-white/10",
       ].join(" ")}
     >

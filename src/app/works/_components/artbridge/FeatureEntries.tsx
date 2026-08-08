@@ -73,7 +73,7 @@ export default function FeatureEntries({
             className={[
               "group relative text-left rounded-2xl p-5 md:p-6 border transition-all overflow-hidden",
               isActive
-                ? "bg-white/[0.08] border-[#C89BFF]/60 shadow-[0_10px_40px_-10px_rgba(200,155,255,0.35)]"
+                ? "bg-white/[0.08] border-[#FF88D9]/60 shadow-[0_10px_40px_-10px_rgba(255,136,217,0.35)]"
                 : "bg-white/[0.03] border-white/10 hover:bg-white/[0.06] hover:border-white/20",
             ].join(" ")}
           >
@@ -81,7 +81,7 @@ export default function FeatureEntries({
             <div className="flex items-center gap-2 mb-3">
               <span
                 className={
-                  isActive ? "text-[#C89BFF]" : "text-white/60 group-hover:text-[#C89BFF] transition-colors"
+                  isActive ? "text-[#FF88D9]" : "text-white/60 group-hover:text-[#FF88D9] transition-colors"
                 }
               >
                 {entry.icon}
@@ -99,7 +99,7 @@ export default function FeatureEntries({
             >
               {entry.title}
               {entry.ready ? (
-                <span className="ml-2 inline-flex items-center align-middle text-[10px] tracking-widest text-[#C89BFF]/90 border border-[#C89BFF]/40 rounded-full px-1.5 py-[1px]">
+                <span className="ml-2 inline-flex items-center align-middle text-[10px] tracking-widest text-[#FF88D9]/90 border border-[#FF88D9]/40 rounded-full px-1.5 py-[1px]">
                   DEMO
                 </span>
               ) : (
@@ -119,7 +119,7 @@ export default function FeatureEntries({
               initial={false}
               animate={{
                 background: isActive
-                  ? "linear-gradient(90deg, transparent, #C89BFF, transparent)"
+                  ? "linear-gradient(90deg, transparent, #FF88D9, transparent)"
                   : "transparent",
                 opacity: isActive ? 1 : 0,
               }}

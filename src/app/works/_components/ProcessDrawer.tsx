@@ -69,11 +69,11 @@ export default function ProcessDrawer({
           >
             <header className="flex items-start justify-between px-6 md:px-8 pt-6 md:pt-8 pb-4 border-b border-black/6">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#4A1E5C] to-[#2A0F3A] text-white flex items-center justify-center text-lg">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#571A4A] to-[#340F2C] text-white flex items-center justify-center text-lg">
                   {item.icon}
                 </div>
                 <div>
-                  <h3 className="text-xl md:text-2xl font-semibold text-[#2A0F3A] leading-tight">
+                  <h3 className="text-xl md:text-2xl font-semibold text-[#340F2C] leading-tight">
                     {item.title}
                   </h3>
                   {item.subtitle && (

@@ -117,13 +117,13 @@ export default function StyleLabScene() {
       {/* 右：文案说明 */}
       <div className="max-w-md text-left text-white/85 space-y-6">
         <div>
-          <div className="text-[11px] tracking-widest uppercase text-[#C89BFF] mb-2">
+          <div className="text-[11px] tracking-widest uppercase text-[#FF88D9] mb-2">
             Feature Demo · 风格实验台
           </div>
           <h3 className="text-3xl md:text-4xl font-semibold leading-tight text-white">
             像做实验一样
             <br />
-            <span className="text-[#C89BFF]">挑战</span>
+            <span className="text-[#FF88D9]">挑战</span>
             穿搭的固有认知
           </h3>
         </div>
@@ -157,7 +157,7 @@ export default function StyleLabScene() {
 
         {/* 当前进度提示 */}
         <div className="flex items-center gap-2 text-xs text-white/50">
-          <Sparkles size={12} className="text-[#C89BFF]" />
+          <Sparkles size={12} className="text-[#FF88D9]" />
           <span>
             当前穿搭力{" "}
             <span className="text-white/80 tabular-nums">
@@ -166,7 +166,7 @@ export default function StyleLabScene() {
             {paradoxTask && (
               <>
                 {" · 完成「"}
-                <span className="text-[#C89BFF]">{paradoxTask.title}</span>
+                <span className="text-[#FF88D9]">{paradoxTask.title}</span>
                 {"」+"}
                 {paradoxTask.points}
               </>
@@ -201,7 +201,7 @@ function PhaseTag({
       className={[
         "rounded-xl border p-3 transition-all",
         active
-          ? "bg-white/[0.08] border-[#C89BFF]/60 shadow-[0_6px_20px_-6px_rgba(200,155,255,0.35)]"
+          ? "bg-white/[0.08] border-[#FF88D9]/60 shadow-[0_6px_20px_-6px_rgba(255,136,217,0.35)]"
           : "bg-white/[0.03] border-white/10",
       ].join(" ")}
     >

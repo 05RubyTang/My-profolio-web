@@ -139,7 +139,7 @@ export default function ArtBridgePage() {
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse at top, #6B2C8A 0%, #4A1E5C 35%, #2A0F3A 70%, #1A0725 100%)",
+              "radial-gradient(ellipse at top, #7A2E6C 0%, #571A4A 35%, #340F2C 70%, #20081C 100%)",
           }}
         />
         {/* 主背景图：紫粉球体 + 涂鸦弧线（作为主视觉出现） */}
@@ -156,12 +156,12 @@ export default function ArtBridgePage() {
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(to right, rgba(26,7,37,0.55) 0%, rgba(26,7,37,0.25) 45%, rgba(26,7,37,0.10) 100%)",
+              "linear-gradient(to right, rgba(32,8,28,0.55) 0%, rgba(32,8,28,0.25) 45%, rgba(32,8,28,0.10) 100%)",
           }}
         />
         {/* 光斑装饰 */}
-        <div className="absolute top-1/4 -left-20 w-96 h-96 rounded-full bg-[#C89BFF]/20 blur-3xl" />
-        <div className="absolute bottom-10 right-10 w-80 h-80 rounded-full bg-[#FF9BD6]/15 blur-3xl" />
+        <div className="absolute top-1/4 -left-20 w-96 h-96 rounded-full bg-[#FF88D9]/20 blur-3xl" />
+        <div className="absolute bottom-10 right-10 w-80 h-80 rounded-full bg-[#FFB0DE]/15 blur-3xl" />
 
         <div className="relative max-w-[1440px] mx-auto px-6 md:px-12 pt-28 md:pt-32 pb-20 flex flex-col md:flex-row items-center gap-10">
           {/* 左：标题文案 */}
@@ -189,7 +189,7 @@ export default function ArtBridgePage() {
 
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold leading-[1.05] tracking-tight">
               艺
-              <span className="text-[#C89BFF]">起</span>
+              <span className="text-[#FF88D9]">起</span>
               搭
             </h1>
             <p className="mt-4 text-xl md:text-3xl text-white/90 font-light tracking-wide">
@@ -209,7 +209,7 @@ export default function ArtBridgePage() {
                   onClick={() => setOpenId(item.id)}
                   className="group flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-white/90 hover:text-white text-sm backdrop-blur-sm transition-all"
                 >
-                  <span className="text-[#C89BFF] group-hover:scale-110 transition-transform">
+                  <span className="text-[#FF88D9] group-hover:scale-110 transition-transform">
                     {item.icon}
                   </span>
                   <span>{item.label}</span>
@@ -257,7 +257,7 @@ export default function ArtBridgePage() {
                   alt="艺起搭 · 锁屏样机"
                   fill
                   sizes="(min-width: 768px) 380px, 260px"
-                  className="object-contain drop-shadow-[0_25px_50px_rgba(200,155,255,0.4)]"
+                  className="object-contain drop-shadow-[0_25px_50px_rgba(255,136,217,0.4)]"
                   priority
                   unoptimized
                 />
@@ -274,7 +274,7 @@ export default function ArtBridgePage() {
                   alt="艺起搭 · 风格实验台"
                   fill
                   sizes="(min-width: 768px) 500px, 340px"
-                  className="object-contain drop-shadow-[0_30px_60px_rgba(200,155,255,0.5)]"
+                  className="object-contain drop-shadow-[0_30px_60px_rgba(255,136,217,0.5)]"
                   priority
                   unoptimized
                 />
@@ -290,9 +290,9 @@ export default function ArtBridgePage() {
       </section>
 
       {/* ============ Section 2 · 4 大功能入口 Tab ============ */}
-      <section className="relative w-full bg-gradient-to-b from-[#1A0725] via-[#2A0F3A] to-[#1A0725] pt-24 md:pt-32 px-6 md:px-12 overflow-hidden">
-        <div className="absolute top-1/2 -left-40 w-96 h-96 rounded-full bg-[#C89BFF]/10 blur-3xl" />
-        <div className="absolute bottom-1/4 -right-40 w-96 h-96 rounded-full bg-[#FF9BD6]/8 blur-3xl" />
+      <section className="relative w-full bg-gradient-to-b from-[#20081C] via-[#340F2C] to-[#20081C] pt-24 md:pt-32 px-6 md:px-12 overflow-hidden">
+        <div className="absolute top-1/2 -left-40 w-96 h-96 rounded-full bg-[#FF88D9]/10 blur-3xl" />
+        <div className="absolute bottom-1/4 -right-40 w-96 h-96 rounded-full bg-[#FFB0DE]/8 blur-3xl" />
 
         <div className="relative max-w-[1200px] mx-auto">
           <motion.div
@@ -304,7 +304,7 @@ export default function ArtBridgePage() {
           >
             <h2 className="text-3xl md:text-5xl font-bold text-white leading-tight">
               4 个核心场景，
-              <span className="text-[#C89BFF]">「风格实验」</span>
+              <span className="text-[#FF88D9]">「风格实验」</span>
               搭子
             </h2>
             <p className="mt-4 text-white/60 text-base md:text-lg">
@@ -317,14 +317,14 @@ export default function ArtBridgePage() {
       </section>
 
       {/* ============ Section 3 · Feature Showcase 动态切换区 ============ */}
-      <section className="relative w-full bg-gradient-to-b from-[#1A0725] to-[#2A0F3A] pt-16 pb-24 md:pb-32 px-4 md:px-12 overflow-hidden">
+      <section className="relative w-full bg-gradient-to-b from-[#20081C] to-[#340F2C] pt-16 pb-24 md:pb-32 px-4 md:px-12 overflow-hidden">
         <div className="relative max-w-[1200px] mx-auto">
           <FeatureShowcase active={activeFeature} />
         </div>
       </section>
 
       {/* ============ 底部 CTA / 返回 ============ */}
-      <section className="relative w-full bg-[#1A0725] py-16 px-6 text-center">
+      <section className="relative w-full bg-[#20081C] py-16 px-6 text-center">
         <p className="text-white/50 text-sm mb-4">这是艺起搭故事的一小部分</p>
         <Link
           href="/#works"

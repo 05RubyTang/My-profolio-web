@@ -151,11 +151,11 @@ export default function VideoCallShell({
                     className="absolute -top-14 left-1/2 -translate-x-1/2 flex items-center justify-center px-2.5 py-1.5 rounded-full"
                     style={{
                       background: "rgba(0,0,0,0.5)",
-                      border: "1px solid rgba(200,155,255,0.4)",
+                      border: "1px solid rgba(255,136,217,0.4)",
                       backdropFilter: "blur(8px)",
                       WebkitBackdropFilter: "blur(8px)",
                       boxShadow:
-                        "0 6px 16px -4px rgba(200,155,255,0.35)",
+                        "0 6px 16px -4px rgba(255,136,217,0.35)",
                     }}
                   >
                     <VoiceWaveIndicator

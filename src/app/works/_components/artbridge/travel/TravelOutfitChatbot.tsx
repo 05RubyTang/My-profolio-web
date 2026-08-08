@@ -410,13 +410,13 @@ export default function TravelOutfitChatbot() {
       {/* 右：文案 · 说明当前展示的是什么 */}
       <div className="max-w-md text-left text-white/85 space-y-6">
         <div>
-          <div className="text-[11px] tracking-widest uppercase text-[#C89BFF] mb-2">
+          <div className="text-[11px] tracking-widest uppercase text-[#FF88D9] mb-2">
             Feature Demo · 旅游穿搭规划
           </div>
           <h3 className="text-3xl md:text-4xl font-semibold leading-tight text-white">
             一句诉求，
             <br />
-            <span className="text-[#C89BFF]">4 个 Agent</span> 帮你搞定
+            <span className="text-[#FF88D9]">4 个 Agent</span> 帮你搞定
             <br />6 天旅程的穿搭
           </h3>
         </div>
@@ -468,7 +468,7 @@ function PhaseTag({
       className={[
         "rounded-xl border p-3 transition-all",
         active
-          ? "bg-white/[0.08] border-[#C89BFF]/60 shadow-[0_6px_20px_-6px_rgba(200,155,255,0.35)]"
+          ? "bg-white/[0.08] border-[#FF88D9]/60 shadow-[0_6px_20px_-6px_rgba(255,136,217,0.35)]"
           : "bg-white/[0.03] border-white/10",
       ].join(" ")}
     >

@@ -134,7 +134,7 @@ export default function ArtBridgePage() {
     <WorkLayout navTheme="dark" navTitle="ArtBridge" navSubtitle="小艺私人穿搭搭子">
       {/* ============ Hero ============ */}
       <section className="relative min-h-screen w-full overflow-hidden">
-        {/* 背景：紫色深邃渐变 */}
+        {/* 背景底色：紫色深邃渐变（兜底 & 图片加载前） */}
         <div
           className="absolute inset-0"
           style={{
@@ -142,13 +142,21 @@ export default function ArtBridgePage() {
               "radial-gradient(ellipse at top, #6B2C8A 0%, #4A1E5C 35%, #2A0F3A 70%, #1A0725 100%)",
           }}
         />
-        {/* 背景纹理（如果 hero-bg.png 存在会叠一层） */}
+        {/* 主背景图：紫粉球体 + 涂鸦弧线（作为主视觉出现） */}
         <div
-          className="absolute inset-0 opacity-30 mix-blend-screen"
+          className="absolute inset-0"
           style={{
             backgroundImage: `url(${local("hero-bg.png")})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
+          }}
+        />
+        {/* 背景压暗层：确保前景白字与样机的可读性 */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(to right, rgba(26,7,37,0.55) 0%, rgba(26,7,37,0.25) 45%, rgba(26,7,37,0.10) 100%)",
           }}
         />
         {/* 光斑装饰 */}

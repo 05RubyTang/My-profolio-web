@@ -248,20 +248,6 @@ const tongjiModulesMap: Record<number, TongjiModule[]> = {
 
 const tongjiProjects: IDProject[] = [
   {
-    id: 101,
-    name: "Photo Editor",
-    nameCn: "修图助手",
-    subtitle: "同济课程作业",
-    subtitleEn: "Tongji Course Project",
-    tags: "课程作业",
-    slogan: "",
-    sloganEn: "",
-    projectImage: cdnUrl("/picture/id-project/tongji-works/修图助手-封面.png"),
-    ticketImage: "",
-    galleryItems: [],
-    detailHref: "/works/photo-editor",
-  },
-  {
     id: 102,
     name: "ArtBridge",
     nameCn: "艺起搭",
@@ -274,6 +260,20 @@ const tongjiProjects: IDProject[] = [
     ticketImage: "",
     galleryItems: [],
     detailHref: "/works/artbridge",
+  },
+  {
+    id: 101,
+    name: "Photo Editor",
+    nameCn: "修图助手",
+    subtitle: "同济课程作业",
+    subtitleEn: "Tongji Course Project",
+    tags: "课程作业",
+    slogan: "",
+    sloganEn: "",
+    projectImage: cdnUrl("/picture/id-project/tongji-works/修图助手-封面.png"),
+    ticketImage: "",
+    galleryItems: [],
+    detailHref: "/works/photo-editor",
   },
   {
     id: 103,
@@ -860,7 +860,11 @@ function TongjiProjectCard({
    同济项目自由画布 — 封面卡片可自由拖拽
    ============================================================ */
 
-const TONGJI_CARD_WIDTH_PCT = 28; // 封面卡片宽度占画布百分比
+const TONGJI_CARD_WIDTH_PCT = 28; // 封面卡片宽度占画布百分比（普通卡片）
+/** 主推卡片（艺起搭）宽度倍率：PC 端首位卡片放大 1.5× */
+const TONGJI_EMPHASIZE_MULTIPLIER = 1.5;
+const TONGJI_CARD_WIDTH_EMPHASIZE_PCT =
+  TONGJI_CARD_WIDTH_PCT * TONGJI_EMPHASIZE_MULTIPLIER; // 42
 
 function getTongjiDefaultPositions(count: number): TicketPosition[] {
   // 2 个项目：左右分布，略微错开
@@ -870,12 +874,12 @@ function getTongjiDefaultPositions(count: number): TicketPosition[] {
       { id: 1, x: 55, y: 15, rotation: 4 },
     ];
   }
-  // 3 个项目：品字形错落分布
+  // 3 个项目：主推卡（艺起搭）大幅居左，两张副卡右侧上下错落
   if (count === 3) {
     return [
-      { id: 0, x: 8, y: 8, rotation: -4 },
-      { id: 1, x: 60, y: 14, rotation: 3 },
-      { id: 2, x: 32, y: 46, rotation: -2 },
+      { id: 0, x: 4, y: 8, rotation: -3 },   // 艺起搭 · 大卡 · 左侧 42% 宽
+      { id: 1, x: 62, y: 4, rotation: 3 },   // 修图助手 · 小卡 · 右上
+      { id: 2, x: 65, y: 46, rotation: -2 }, // IdeaSalon · 小卡 · 右下
     ];
   }
   // 通用布局（确定性 rotation，避免 SSR 不一致）
@@ -956,21 +960,22 @@ function TongjiFreeCanvas({
       const dyPct = (dy / rect.height) * 100;
 
       setPositions((prev) =>
-        prev.map((p) =>
-          p.id === draggingId
-            ? {
-                ...p,
-                x: Math.max(
-                  0,
-                  Math.min(
-                    100 - TONGJI_CARD_WIDTH_PCT,
-                    dragStartPos.current.x + dxPct
-                  )
-                ),
-                y: Math.max(0, Math.min(75, dragStartPos.current.y + dyPct)),
-              }
-            : p
-        )
+        prev.map((p) => {
+          if (p.id !== draggingId) return p;
+          // 主推卡（id=0 艺起搭）宽度更大，右边界要相应收窄
+          const draggedWidthPct =
+            p.id === 0
+              ? TONGJI_CARD_WIDTH_EMPHASIZE_PCT
+              : TONGJI_CARD_WIDTH_PCT;
+          return {
+            ...p,
+            x: Math.max(
+              0,
+              Math.min(100 - draggedWidthPct, dragStartPos.current.x + dxPct)
+            ),
+            y: Math.max(0, Math.min(75, dragStartPos.current.y + dyPct)),
+          };
+        })
       );
 
       e.preventDefault();
@@ -1062,7 +1067,8 @@ function TongjiFreeCanvas({
       ref={canvasRef}
       className="relative w-full select-none"
       style={{
-        height: "clamp(420px, 65vh, 700px)",
+        /* 主推卡放大 1.5× 后纵向占位更大，画布高度适度加高 */
+        height: "clamp(480px, 72vh, 780px)",
         cursor: draggingId !== null ? "grabbing" : "default",
       }}
       onPointerMove={handlePointerMove}
@@ -1097,6 +1103,11 @@ function TongjiFreeCanvas({
 
         const isDragging = draggingId === pos.id;
         const isTopZ = activeZId === pos.id;
+        // 首位卡片（艺起搭）主推：PC 端封面放大 1.5×
+        const isEmphasize = idx === 0;
+        const widthPct = isEmphasize
+          ? TONGJI_CARD_WIDTH_EMPHASIZE_PCT
+          : TONGJI_CARD_WIDTH_PCT;
 
         return (
           <div
@@ -1105,7 +1116,7 @@ function TongjiFreeCanvas({
             style={{
               left: `${pos.x}%`,
               top: `${pos.y}%`,
-              width: `${TONGJI_CARD_WIDTH_PCT}%`,
+              width: `${widthPct}%`,
               transform: `rotate(${pos.rotation}deg) ${isDragging ? "scale(1.05)" : ""}`,
               transition: isDragging
                 ? "transform 0.1s ease, box-shadow 0.2s ease"
@@ -1141,7 +1152,7 @@ function TongjiFreeCanvas({
       {/* 提示文字 */}
       <div className="absolute bottom-3 left-0 right-0 text-center pointer-events-none">
         <span className="text-[11px] text-ink-muted/40 tracking-wider">
-          长按封面可自由拖拽摆放 · 点击封面查看项目详情
+          长按封面可自由拖拽摆放 · 点击封面查看项目详情 · 首推「艺起搭」放大展示
         </span>
       </div>
     </div>

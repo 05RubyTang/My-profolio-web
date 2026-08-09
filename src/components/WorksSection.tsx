@@ -1942,24 +1942,30 @@ function ExpandedBookContent({
    Works Section 主组件
    ============================================================ */
 export default function WorksSection() {
-  const [openBookIndex, setOpenBookIndex] = useState<number | null>(null);
+  // 默认打开 In Tongji Works（index 0），不再有「合起来」状态
+  const [openBookIndex, setOpenBookIndex] = useState<number>(0);
   const contentRef = useRef<HTMLDivElement>(null);
 
   const handleBookClick = useCallback((index: number) => {
-    if (openBookIndex === index) {
-      setOpenBookIndex(null);
-    } else {
+    // 点其他书本切换；点当前书本不做任何操作（不再支持合起）
+    if (index !== openBookIndex) {
       setOpenBookIndex(index);
     }
   }, [openBookIndex]);
 
   const handleClose = useCallback(() => {
-    setOpenBookIndex(null);
+    // 保留 API 以兼容旧逻辑，但默认不再收起
+    setOpenBookIndex(0);
   }, []);
 
-  // 展开时滚动到内容区域
+  // 切换书本时滚动到内容区域（跳过首次挂载，避免加载就把页面强行滚到 Works）
+  const isFirstMount = useRef(true);
   useEffect(() => {
-    if (openBookIndex !== null && contentRef.current) {
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
+    if (contentRef.current) {
       setTimeout(() => {
         contentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 100);
@@ -1991,8 +1997,9 @@ export default function WorksSection() {
     }
   }, []);
 
-  const isExpanded = openBookIndex !== null;
-  const openedBook = isExpanded ? books[openBookIndex] : null;
+  // 现在默认就是展开态，openBookIndex 一定是有效索引
+  const openedBook = books[openBookIndex];
+  const isExpanded = true;
 
   return (
     <section id="works" className="pt-16 md:pt-24 px-3 md:px-6">
@@ -2021,7 +2028,7 @@ export default function WorksSection() {
             </div>
             <div className="w-12 h-[2px] bg-accent/30 mt-3 rounded-full" />
             <p className="text-xs md:text-sm text-ink-muted mt-3 px-4 text-center">
-              {isExpanded ? "点击另一本书切换，或再次点击当前书本收起" : "点击任意一本书，翻开看看"}
+              点击左侧另一本书切换查看
             </p>
           </div>
         </ScrollReveal>
@@ -2045,24 +2052,8 @@ export default function WorksSection() {
           }}
         >
           <div className="max-w-7xl mx-auto pt-6 md:pt-10 pb-4">
-            {/* 未展开：书本居中 */}
-            {!isExpanded && (
-              <ScrollReveal delay={100}>
-                <div className="flex flex-col md:flex-row items-center md:items-end justify-center gap-6 md:gap-14">
-                  {books.map((book, index) => (
-                    <BookCover
-                      key={book.name}
-                      book={book}
-                      onClick={() => handleBookClick(index)}
-                      variant="normal"
-                    />
-                  ))}
-                </div>
-              </ScrollReveal>
-            )}
-
-            {/* 展开：桌面端 左侧书本 + 右侧内容；移动端 顶部横向书本 tab + 下方内容 */}
-            {isExpanded && openedBook && (
+            {/* 默认展开：桌面端 左侧书本 + 右侧内容；移动端 顶部横向书本 tab + 下方内容 */}
+            {openedBook && (
               <div className="flex flex-col md:flex-row items-start gap-4 md:gap-6">
                 {/* 书本栏 - 移动端顶部横向，桌面端左侧纵向 */}
                 <div className="flex flex-row md:flex-col items-center md:items-center gap-3 md:gap-4 flex-shrink-0 pt-2 w-full md:w-auto justify-center overflow-x-auto">

@@ -2,20 +2,19 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Compass,
   Search,
   Lightbulb,
   CheckCircle2,
   Sparkles,
-  Users,
-  GraduationCap,
   Play,
   ArrowRight,
   Layers,
-  Workflow,
   Award,
+  X,
 } from "lucide-react";
 import WorkLayout from "../_components/WorkLayout";
 import { cdnUrl } from "@/lib/cdn";
@@ -24,7 +23,9 @@ import { cdnUrl } from "@/lib/cdn";
    Idea Salon —— TT 设计学院 · AI 共创 Skill 落地页（浅色主题）
    ============================================================ */
 
-const VIDEO_URL = "https://www.xiaohongshu.com/explore/6a4e65ec000000001503e8f5";
+// Bilibili 项目视频（点击按钮 → 弹窗打开）
+const VIDEO_IFRAME_SRC =
+  "//player.bilibili.com/player.html?isOutside=true&aid=117071044154443&bvid=BV1KduR6dE4q&cid=40782661079&p=1&high_quality=1&danmaku=0";
 const ROUNDTABLE_IMG = cdnUrl("/picture/id-project/tongji-works/idea-salon-圆桌.png");
 
 /* 全站统一背景：linear-gradient(90deg, #F1F6FF 0%, #F9FEFF 100%) */
@@ -90,36 +91,6 @@ const skills = [
   { num: "5", cn: "设计评审员", phase: "DELIVER", desc: "按设计法则量化评估，给出具体改法", icon: Award },
 ];
 
-/* ============ 数据 · Section 6 3 个价值对象 ============ */
-const values = [
-  {
-    tag: "FOR STUDENTS",
-    tagCn: "对学生",
-    title: "学会「怎么想」，不只是「做出来」",
-    sub: "把方法论真正用起来",
-    bullets: ["每一步都有专属 AI 老师陪练与追问", "留下自己的判断，而非 AI 代劳"],
-    icon: GraduationCap,
-    color: C.blue,
-  },
-  {
-    tag: "FOR TEACHERS",
-    tagCn: "对老师",
-    title: "Skill 是引擎，专家是界面·老师控全局",
-    sub: "只需要在关键环节介入",
-    bullets: ["Skill 按流程自动到位", "老师专注引导，把控现场节奏"],
-    icon: Users,
-    color: C.cyan,
-  },
-  {
-    tag: "FOR TEAMS",
-    tagCn: "对团队",
-    title: "让讨论真的收敛，而不是各说各话",
-    sub: "分歧变共识，节奏不卡壳",
-    bullets: ["先独立成型、再共享墙碰撞", "主持 AI 汇总共识、标出下一步"],
-    icon: Workflow,
-    color: C.orange,
-  },
-];
 
 /* ============ 小节标题组件（浅色版） ============ */
 function SectionEyebrow({ code, en, cn }: { code: string; en: string; cn: string }) {
@@ -140,6 +111,23 @@ function SectionEyebrow({ code, en, cn }: { code: string; en: string; cn: string
    页面
    ============================================================ */
 export default function IdeaSalonPage() {
+  const [videoOpen, setVideoOpen] = useState(false);
+
+  // ESC 关闭 & 滚动锁定
+  useEffect(() => {
+    if (!videoOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setVideoOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [videoOpen]);
+
   return (
     <WorkLayout navTheme="light" navTitle="Idea Salon" navSubtitle="AI 共创 Skill">
       {/* ============ Hero · 01 OPENING ============ */}
@@ -177,17 +165,16 @@ export default function IdeaSalonPage() {
 
             {/* 主 CTA */}
             <div className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-3">
-              <a
-                href={VIDEO_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="group inline-flex items-center gap-2.5 px-6 py-3 rounded-full font-semibold text-sm transition-all shadow-lg"
+              <button
+                type="button"
+                onClick={() => setVideoOpen(true)}
+                className="group inline-flex items-center gap-2.5 px-6 py-3 rounded-full font-semibold text-sm transition-all shadow-lg cursor-pointer"
                 style={{ background: "#FFB0DE", color: "#20112C", boxShadow: "0 10px 24px rgba(255, 176, 222, 0.35)" }}
               >
                 <Play size={16} className="fill-current" />
-                观看小红书演示视频
+                项目视频
                 <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
-              </a>
+              </button>
               <a
                 href="#painpoints"
                 className="inline-flex items-center gap-2 px-5 py-3 rounded-full text-sm transition-all"
@@ -794,115 +781,24 @@ export default function IdeaSalonPage() {
             </h2>
           </ScrollFadeIn>
 
-          <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-5">
-            {values.map((v, i) => (
-              <motion.div
-                key={v.tag}
-                className="rounded-2xl p-6 md:p-7 flex flex-col"
-                style={{ background: C.cardBg, border: `1px solid ${C.border}`, boxShadow: "0 4px 14px rgba(40,60,120,0.05)" }}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <div
-                    className="w-10 h-10 rounded-xl flex items-center justify-center"
-                    style={{ background: `${v.color}22`, color: v.color }}
-                  >
-                    <v.icon size={20} />
-                  </div>
-                  <div>
-                    <div
-                      className="text-[10px] tracking-widest font-bold"
-                      style={{ color: v.color }}
-                    >
-                      {v.tag}
-                    </div>
-                    <div className="text-sm font-semibold" style={{ color: C.text }}>
-                      {v.tagCn}
-                    </div>
-                  </div>
-                </div>
-                <div className="text-xl md:text-2xl font-bold leading-snug mb-3" style={{ color: C.text }}>
-                  {v.title}
-                </div>
-                <div className="text-sm mb-4" style={{ color: C.textSub }}>{v.sub}</div>
-                <ul className="mt-auto space-y-2 pt-4" style={{ borderTop: `1px solid ${C.border}` }}>
-                  {v.bullets.map((b) => (
-                    <li
-                      key={b}
-                      className="flex items-start gap-2 text-xs leading-relaxed"
-                      style={{ color: C.textSub }}
-                    >
-                      <span
-                        className="mt-1.5 w-1 h-1 rounded-full flex-shrink-0"
-                        style={{ background: v.color }}
-                      />
-                      {b}
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* 3 步启动 */}
-          <div className="mt-16">
-            <div className="text-center mb-8">
-              <div className="inline-block px-4 py-1.5 rounded-full text-xs font-semibold tracking-widest" style={{ border: `1px solid ${C.orange}44`, color: C.orange }}>
-                使用流程
-              </div>
-              <h3 className="mt-4 text-2xl md:text-3xl font-bold" style={{ color: C.text }}>
-                三步启动 Idea Salon
-              </h3>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              {[
-                {
-                  s: "STEP 01",
-                  t: "启动圆桌",
-                  d: "输入项目定义句 · 明确用户/场景/痛点",
-                  d2: "生成项目 Brief 与待确认问题 · 召集主持席与专家席位",
-                  c: C.indigo,
-                },
-                {
-                  s: "STEP 02",
-                  t: "分阶段共创",
-                  d: "发现 · 定义 · 发展 · 交付 · 每步调用专属子 Skill",
-                  d2: "AI 给候选，团队做判断 · Sug 卡提示下一步，不强制分工",
-                  c: C.orange,
-                },
-                {
-                  s: "STEP 03",
-                  t: "上墙确认",
-                  d: "选择图表形式，同步到 Ardot · 补充、认领、确认后再推进",
-                  d2: "调研版 + 设计产出版双板沉淀 · 支持团队投票、决策、讨论",
-                  c: C.cyan,
-                },
-              ].map((s) => (
-                <div
-                  key={s.s}
-                  className="rounded-2xl p-6"
-                  style={{ background: C.cardBg, border: `1px solid ${C.border}`, boxShadow: "0 4px 14px rgba(40,60,120,0.05)" }}
-                >
-                  <div
-                    className="text-[10px] tracking-[0.25em] font-bold mb-2"
-                    style={{ color: s.c }}
-                  >
-                    {s.s}
-                  </div>
-                  <div className="text-xl font-bold mb-3" style={{ color: C.text }}>{s.t}</div>
-                  <div className="text-sm mb-2 leading-relaxed" style={{ color: C.textSub }}>
-                    {s.d}
-                  </div>
-                  <div className="text-xs leading-relaxed" style={{ color: C.textMuted }}>
-                    {s.d2}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          {/* WHY IT MATTERS · 三对象价值 + 三步启动 · 直接贴图 */}
+          <motion.div
+            className="mt-14 relative w-full mx-auto"
+            style={{ aspectRatio: "3478 / 1382", maxWidth: "1400px" }}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.6 }}
+          >
+            <Image
+              src={cdnUrl("/picture/id-project/tongji-works/idea-salon-figma/why-it-matters.webp")}
+              alt="Idea Salon 三对象价值 · 三步启动"
+              fill
+              sizes="(min-width: 1024px) 1200px, 100vw"
+              className="object-contain"
+              unoptimized
+            />
+          </motion.div>
         </div>
       </section>
 
@@ -919,20 +815,19 @@ export default function IdeaSalonPage() {
           <p className="text-sm md:text-base mb-8" style={{ color: C.textSub }}>
             我们把完整的工作坊流程录成了一支视频 · 3 分钟看懂 Idea Salon
           </p>
-          <a
-            href={VIDEO_URL}
-            target="_blank"
-            rel="noreferrer"
-            className="group inline-flex items-center gap-3 px-7 py-3.5 rounded-full font-semibold text-sm md:text-base transition-all shadow-xl"
+          <button
+            type="button"
+            onClick={() => setVideoOpen(true)}
+            className="group inline-flex items-center gap-3 px-7 py-3.5 rounded-full font-semibold text-sm md:text-base transition-all shadow-xl cursor-pointer"
             style={{ background: "#FFB0DE", color: "#20112C", boxShadow: "0 12px 28px rgba(255, 176, 222, 0.35)" }}
           >
             <Play size={18} className="fill-current" />
-            观看小红书演示视频
+            项目视频
             <ArrowRight
               size={18}
               className="group-hover:translate-x-0.5 transition-transform"
             />
-          </a>
+          </button>
 
           <div className="mt-12">
             <Link
@@ -952,6 +847,50 @@ export default function IdeaSalonPage() {
           </div>
         </div>
       </section>
+      {/* ============ 视频弹窗 · Bilibili iframe ============ */}
+      <AnimatePresence>
+        {videoOpen && (
+          <motion.div
+            className="fixed inset-0 z-[100] flex items-center justify-center px-4 py-8"
+            style={{ background: "rgba(15,20,45,0.72)", backdropFilter: "blur(6px)" }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => setVideoOpen(false)}
+          >
+            <motion.div
+              className="relative w-full max-w-5xl rounded-2xl overflow-hidden shadow-2xl"
+              style={{ background: "#000" }}
+              initial={{ opacity: 0, scale: 0.94, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96, y: 10 }}
+              transition={{ duration: 0.25 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                type="button"
+                onClick={() => setVideoOpen(false)}
+                aria-label="关闭视频"
+                className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer"
+                style={{ background: "rgba(0,0,0,0.55)", color: "#FFF", border: "1px solid rgba(255,255,255,0.2)" }}
+              >
+                <X size={18} />
+              </button>
+              <div className="relative w-full" style={{ aspectRatio: "16 / 9" }}>
+                <iframe
+                  src={VIDEO_IFRAME_SRC}
+                  title="Idea Salon 项目视频"
+                  allowFullScreen
+                  scrolling="no"
+                  frameBorder="0"
+                  className="absolute inset-0 w-full h-full"
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </WorkLayout>
   );
 }

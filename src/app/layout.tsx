@@ -8,6 +8,7 @@ import {
   Ma_Shan_Zheng,
 } from "next/font/google";
 import "./globals.css";
+import ImagePreloader from "@/components/ImagePreloader";
 
 const notoSans = Noto_Sans_SC({
   variable: "--font-noto-sans",
@@ -64,7 +65,11 @@ export default function RootLayout({
       lang="zh-CN"
       className={`${notoSans.variable} ${notoSerif.variable} ${inter.variable} ${caveat.variable} ${zcoolKuaile.variable} ${maShanZheng.variable} antialiased`}
     >
-      <body className="min-h-screen">{children}</body>
+      <body className="min-h-screen">
+        {children}
+        {/* 全站图片后台预加载 · 首屏渲染后延迟触发，不阻塞 LCP */}
+        <ImagePreloader />
+      </body>
     </html>
   );
 }

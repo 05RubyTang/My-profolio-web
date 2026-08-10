@@ -46,42 +46,6 @@ const C = {
   cardBg: "#FFFFFF",     // 卡片底
 };
 
-/* ============ 数据 · Section 2 4 大痛点断点 ============ */
-const painPhases = [
-  {
-    step: "DISCOVER",
-    stepCn: "发现期",
-    pains: ["方法论会背，不会用", "访谈只剩用户原话"],
-    aiRole: "方法论顾问 + 资深研究员",
-    aiValue: "把工具用在当下问题，追问深层归因",
-    tone: C.blue,
-  },
-  {
-    step: "DEFINE",
-    stepCn: "定义期",
-    pains: ["问题定义模糊", "调研与方案逻辑断层"],
-    aiRole: "逻辑检查员",
-    aiValue: "用 HMW 收敛，接上调研到方案的逻辑",
-    tone: C.orange,
-  },
-  {
-    step: "DEVELOP",
-    stepCn: "发展期",
-    pains: ["头脑风暴冷场", "创意同质化、互相附和"],
-    aiRole: "创意陪练",
-    aiValue: "9 框架发散 + Moodboard，打破同质",
-    tone: C.cyan,
-  },
-  {
-    step: "DELIVER",
-    stepCn: "交付期",
-    pains: ["不知道作品好不好", "「感觉不对」无法行动"],
-    aiRole: "设计评审员",
-    aiValue: "六维量化评估 + 具体改法",
-    tone: C.indigo,
-  },
-];
-
 /* ============ 数据 · Section 4 5 个 Skill 分工 ============ */
 const skills = [
   { num: "1", cn: "方法论顾问", phase: "DISCOVER", desc: "诊断调研阶段，推荐并陪你用完分析工具", icon: Compass },
@@ -221,7 +185,7 @@ export default function IdeaSalonPage() {
         </div>
       </section>
 
-      {/* ============ Section 2 · 4 大痛点断点（1:1 复刻 Figma 301:316） ============ */}
+      {/* ============ Section 2 · SCENE INSIGHT · 4 大痛点断点（直接贴图） ============ */}
       <section
         id="painpoints"
         className="relative w-full py-16 md:py-24 px-4 md:px-8 overflow-hidden"
@@ -229,15 +193,9 @@ export default function IdeaSalonPage() {
       >
         <div className="absolute -top-24 -right-24 w-[400px] h-[400px] rounded-full blur-3xl" style={{ background: `${C.orange}14` }} />
 
-        {/* ---------- Desktop: 1920x1080 精确复刻 ---------- */}
-        <div className="hidden md:block relative w-full max-w-[1440px] mx-auto">
-          {/* 顶部导航行：SCENE INSIGHT 徽章 + logo 位 */}
-          <div className="flex items-center justify-between mb-6">
-            <SectionEyebrow code="02" en="SCENE INSIGHT" cn="FOUR BREAKPOINTS" />
-          </div>
-
-          {/* 标题 + 副标题 */}
+        <div className="relative w-full max-w-[1440px] mx-auto">
           <ScrollFadeIn>
+            <SectionEyebrow code="02" en="SCENE INSIGHT" cn="FOUR BREAKPOINTS" />
             <h2 className="text-3xl md:text-5xl font-bold leading-tight tracking-tight" style={{ color: C.text }}>
               学生卡住的地方，
               <span style={{ color: C.orange }}>分布在整个设计流程里</span>
@@ -248,346 +206,30 @@ export default function IdeaSalonPage() {
             </p>
           </ScrollFadeIn>
 
-          {/* 双钻流程 bar */}
-          <div className="mt-8 grid grid-cols-4 gap-3">
-            {["DISCOVER · 发现期", "DEFINE · 定义期", "DEVELOP · 发展期", "DELIVER · 交付期"].map((s, i) => (
-              <div
-                key={s}
-                className="rounded-full px-4 py-2 text-center text-xs md:text-sm font-bold tracking-wider"
-                style={{
-                  background: [C.blue, C.orange, C.cyan, C.indigo][i] + "18",
-                  color: [C.blue, C.orange, C.cyan, C.indigo][i],
-                  border: `1px solid ${[C.blue, C.orange, C.cyan, C.indigo][i]}44`,
-                }}
-              >
-                {s}
-              </div>
-            ))}
-          </div>
-
-          {/*
-             主展示区 · Figma 301:316 复刻
-             层级顺序（z-index）：
-               插画     z-10   底层
-               PAIN 标签 z-20   贴在角色胸口
-               气泡     z-20   角色两侧
-               大卡片    z-30   浮到最上层，从底部往上盖住角色下半身（关键改动）
-          */}
-          <div
-            className="relative mt-10 w-full mx-auto"
-            style={{ aspectRatio: "1920 / 900", maxWidth: "1400px" }}
+          {/* 4 大痛点 · DISCOVER / DEFINE / DEVELOP / DELIVER · 直接贴图 */}
+          <motion.div
+            className="mt-12 relative w-full mx-auto"
+            style={{ aspectRatio: "3578 / 970", maxWidth: "1400px" }}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.6 }}
           >
-            {(() => {
-              const items = [
-                {
-                  key: "pain1",
-                  img: cdnUrl("/picture/id-project/tongji-works/idea-salon-figma/pain1-yun.png"),
-                  imgL: 3, imgT: 6, imgW: 22, imgH: 62,
-                  tag: "PAIN ONE",
-                  tagText: "各种调研方法生搬硬套，流于形式",
-                  tagL: 2, tagT: 46, tagW: 24,
-                  bubble: "老师说要用SWOT先分析市场…这个产品的优势是便宜，劣势是不够智能化…",
-                  bubbleL: 1, bubbleT: 15, bubbleW: 17,
-                  bubbleRotate: -1.5,
-                  phase: painPhases[0],
-                },
-                {
-                  key: "pain2",
-                  img: cdnUrl("/picture/id-project/tongji-works/idea-salon-figma/pain2-fangtan.png"),
-                  imgL: 28, imgT: 6, imgW: 22, imgH: 62,
-                  tag: "PAIN TWO",
-                  tagText: "不懂如何设计访谈提纲，问不出深层需求",
-                  tagL: 27, tagT: 12, tagW: 22,
-                  bubble: "王奶奶说腿脚不便、李爷爷说灯太暗了、刘阿姨说希望有一个显眼的按钮……到底怎么问有意义的问题？",
-                  bubbleL: 27, bubbleT: 25, bubbleW: 18,
-                  bubbleRotate: 1.2,
-                  phase: painPhases[1],
-                },
-                {
-                  key: "pain3",
-                  img: cdnUrl("/picture/id-project/tongji-works/idea-salon-figma/pain3-huatu.png"),
-                  imgL: 53, imgT: 6, imgW: 22, imgH: 62,
-                  tag: "PAIN THREE",
-                  tagText: "急于画图，忽略需求，产出同质化",
-                  tagL: 52, tagT: 46, tagW: 22,
-                  bubble: "做一个炫酷的机械臂很帅，不如设计一个老年人适用的下肢外骨骼装置吧…怎么他也做机械臂！",
-                  bubbleL: 52, bubbleT: 8, bubbleW: 18,
-                  bubbleRotate: -1.2,
-                  phase: painPhases[2],
-                },
-                {
-                  key: "pain4",
-                  img: cdnUrl("/picture/id-project/tongji-works/idea-salon-figma/pain4-review.png"),
-                  imgL: 78, imgT: 6, imgW: 22, imgH: 62,
-                  tag: "PAIN FOUR",
-                  tagText: "眼高手低，无法自我评估",
-                  tagL: 77, tagT: 12, tagW: 21,
-                  bubble: "老师说排版太乱……确实感觉怪怪的，但是我改不动了…",
-                  bubbleL: 77, bubbleT: 28, bubbleW: 18,
-                  bubbleRotate: 1.5,
-                  phase: painPhases[3],
-                },
-              ];
+            <Image
+              src={cdnUrl("/picture/id-project/tongji-works/idea-salon-figma/scene-insight.webp")}
+              alt="SCENE INSIGHT · 学生在设计流程 4 个阶段的痛点"
+              fill
+              sizes="(min-width: 1024px) 1200px, 100vw"
+              className="object-contain"
+              unoptimized
+            />
+          </motion.div>
 
-              const iconMap = [Search, CheckCircle2, Lightbulb, Award];
-
-              return (
-                <>
-                  {/* Layer 1: 插画（最底层） */}
-                  {items.map((p, i) => (
-                    <motion.div
-                      key={`img-${p.key}`}
-                      className="absolute z-10"
-                      style={{
-                        left: `${p.imgL}%`,
-                        top: `${p.imgT}%`,
-                        width: `${p.imgW}%`,
-                        height: `${p.imgH}%`,
-                      }}
-                      initial={{ opacity: 0, y: 30 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true, margin: "-100px" }}
-                      transition={{ duration: 0.6, delay: i * 0.1 }}
-                    >
-                      <Image
-                        src={p.img}
-                        alt={p.tagText}
-                        fill
-                        sizes="(min-width: 768px) 22vw, 40vw"
-                        className="object-contain"
-                        unoptimized
-                      />
-                    </motion.div>
-                  ))}
-
-                  {/* Layer 2: PAIN 蓝色实心标签（贴角色胸口） */}
-                  {items.map((p, i) => (
-                    <motion.div
-                      key={`tag-${p.key}`}
-                      className="absolute z-20 rounded-md px-3 py-2 shadow-md"
-                      style={{
-                        left: `${p.tagL}%`,
-                        top: `${p.tagT}%`,
-                        width: `${p.tagW}%`,
-                        background: C.indigo,
-                      }}
-                      initial={{ opacity: 0, y: 10 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true, margin: "-100px" }}
-                      transition={{ duration: 0.5, delay: i * 0.1 + 0.15 }}
-                    >
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-[9px] tracking-[0.22em] font-bold text-white/90 flex-shrink-0">
-                          {p.tag}
-                        </span>
-                        <span className="text-[11px] font-semibold text-white leading-snug">
-                          {p.tagText}
-                        </span>
-                      </div>
-                    </motion.div>
-                  ))}
-
-                  {/* Layer 3: 学生吐槽气泡（白底浅灰字，手写体） */}
-                  {items.map((p, i) => (
-                    <motion.div
-                      key={`bubble-${p.key}`}
-                      className="absolute z-20 rounded-xl px-3 py-2"
-                      style={{
-                        left: `${p.bubbleL}%`,
-                        top: `${p.bubbleT}%`,
-                        width: `${p.bubbleW}%`,
-                        background: "#FFFFFF",
-                        color: "#7B8299",
-                        fontFamily: "var(--font-ma-shan-zheng), 'Kaiti', cursive",
-                        fontSize: "10px",
-                        lineHeight: "1.55",
-                        boxShadow: "0 2px 8px rgba(40,60,120,0.08)",
-                        border: `1px solid ${C.border}`,
-                        transform: `rotate(${p.bubbleRotate}deg)`,
-                      }}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true, margin: "-100px" }}
-                      transition={{ duration: 0.5, delay: i * 0.1 + 0.25 }}
-                    >
-                      {p.bubble}
-                    </motion.div>
-                  ))}
-
-                  {/* Layer 4: 底部大卡片（最上层，从 70% 位置开始，盖住角色下半身） */}
-                  <div className="absolute z-30 left-0 right-0 grid grid-cols-4 gap-4" style={{ top: "68%" }}>
-                    {items.map((p, i) => {
-                      const Icon = iconMap[i];
-                      const ph = p.phase;
-                      return (
-                        <motion.div
-                          key={`card-${p.key}`}
-                          className="rounded-2xl p-4 md:p-5"
-                          style={{
-                            background: "rgba(255,255,255,0.96)",
-                            border: `1px solid ${C.border}`,
-                            boxShadow: "0 8px 24px rgba(40,60,120,0.08)",
-                            backdropFilter: "blur(10px)",
-                          }}
-                          initial={{ opacity: 0, y: 30 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true, margin: "-100px" }}
-                          transition={{ duration: 0.55, delay: i * 0.1 + 0.35 }}
-                        >
-                          {/* 头部：icon + DISCOVER + 中文期名 */}
-                          <div className="flex items-center gap-2.5 mb-3">
-                            <div
-                              className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                              style={{ background: `${ph.tone}18` }}
-                            >
-                              <Icon size={15} style={{ color: ph.tone }} />
-                            </div>
-                            <div className="min-w-0">
-                              <div
-                                className="text-[9px] tracking-[0.22em] font-bold"
-                                style={{ color: ph.tone }}
-                              >
-                                {ph.step}
-                              </div>
-                              <div className="text-sm font-bold" style={{ color: C.text }}>
-                                {ph.stepCn}
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* 2 条痛点 bullet */}
-                          <ul className="space-y-1.5 mb-3">
-                            {ph.pains.map((pain) => (
-                              <li key={pain} className="flex items-start gap-1.5 text-[12px] leading-snug" style={{ color: C.text }}>
-                                <span
-                                  className="mt-1.5 w-1 h-1 rounded-full flex-shrink-0"
-                                  style={{ background: ph.tone }}
-                                />
-                                {pain}
-                              </li>
-                            ))}
-                          </ul>
-
-                          {/* AI 如何介入 */}
-                          <div className="pt-2.5 border-t" style={{ borderColor: C.border }}>
-                            <div
-                              className="text-[9px] tracking-[0.22em] font-bold mb-1"
-                              style={{ color: C.textMuted }}
-                            >
-                              AI 如何介入
-                            </div>
-                            <div className="text-[12px] font-bold mb-0.5" style={{ color: ph.tone }}>
-                              {ph.aiRole}
-                            </div>
-                            <div className="text-[10px] leading-snug" style={{ color: C.textSub }}>
-                              {ph.aiValue}
-                            </div>
-                          </div>
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-                </>
-              );
-            })()}
-          </div>
-
-          {/* 底部结论 */}
           <p className="mt-12 text-center text-base md:text-xl font-semibold leading-relaxed max-w-4xl mx-auto" style={{ color: C.text }}>
             从「方法论会背不会用」到「不知道作品好不好」，
             <br />
             Idea Salon 都可以为你一站式解决 —— 我们覆盖了
             <span style={{ color: C.cyan }}> 设计工作坊全流程</span>
-          </p>
-        </div>
-
-        {/* ---------- Mobile: 4 张卡片纵向堆叠 ---------- */}
-        <div className="md:hidden relative max-w-[520px] mx-auto">
-          <SectionEyebrow code="02" en="SCENE INSIGHT" cn="FOUR BREAKPOINTS" />
-          <h2 className="text-3xl font-bold leading-tight" style={{ color: C.text }}>
-            学生卡住的地方，
-            <br />
-            <span style={{ color: C.orange }}>分布在整个设计流程里</span>
-          </h2>
-          <p className="mt-3 text-sm leading-relaxed" style={{ color: C.textSub }}>
-            普通设计院校教育与顶尖院校存在巨大资源差距 —— 只看软件使用，忽略设计推导的元能力。
-          </p>
-
-          <div className="mt-8 space-y-6">
-            {[
-              {
-                img: cdnUrl("/picture/id-project/tongji-works/idea-salon-figma/pain1-yun.png"),
-                tag: "PAIN ONE · DISCOVER",
-                cn: "各种调研方法生搬硬套，流于形式",
-                bubble: "老师说要用SWOT先分析市场…这个产品的优势是便宜，劣势是不够智能化…",
-                tone: C.blue,
-              },
-              {
-                img: cdnUrl("/picture/id-project/tongji-works/idea-salon-figma/pain2-fangtan.png"),
-                tag: "PAIN TWO · DEFINE",
-                cn: "不懂如何设计访谈提纲，问不出深层需求",
-                bubble: "王奶奶说腿脚不便、李爷爷说灯太暗了、刘阿姨说希望有一个显眼的按钮……到底怎么问有意义的问题？",
-                tone: C.orange,
-              },
-              {
-                img: cdnUrl("/picture/id-project/tongji-works/idea-salon-figma/pain3-huatu.png"),
-                tag: "PAIN THREE · DEVELOP",
-                cn: "急于画图，忽略需求，产出同质化",
-                bubble: "做一个炫酷的机械臂很帅，不如设计一个老年人适用的下肢外骨骼装置吧…怎么他也做机械臂！",
-                tone: C.cyan,
-              },
-              {
-                img: cdnUrl("/picture/id-project/tongji-works/idea-salon-figma/pain4-review.png"),
-                tag: "PAIN FOUR · DELIVER",
-                cn: "眼高手低，无法自我评估",
-                bubble: "老师说排版太乱……确实感觉怪怪的，但是我改不动了…",
-                tone: C.indigo,
-              },
-            ].map((p, i) => (
-              <motion.div
-                key={p.tag}
-                className="rounded-2xl overflow-hidden"
-                style={{ background: C.cardBg, border: `1px solid ${C.border}`, boxShadow: "0 4px 14px rgba(40,60,120,0.05)" }}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 0.5, delay: i * 0.06 }}
-              >
-                <div className="flex gap-3 p-4">
-                  <div className="relative w-24 h-32 flex-shrink-0">
-                    <Image src={p.img} alt={p.cn} fill sizes="96px" className="object-contain" unoptimized />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-[10px] tracking-[0.2em] font-bold mb-1" style={{ color: p.tone }}>
-                      {p.tag}
-                    </div>
-                    <div className="text-sm font-bold leading-snug mb-2" style={{ color: C.text }}>
-                      {p.cn}
-                    </div>
-                    <div
-                      className="rounded-xl p-2.5 leading-relaxed"
-                      style={{
-                        background: "#FFFFFF",
-                        color: "#7B8299",
-                        fontFamily: "var(--font-ma-shan-zheng), 'Kaiti', cursive",
-                        fontSize: "10px",
-                        border: `1px solid ${C.border}`,
-                        boxShadow: "0 2px 6px rgba(40,60,120,0.05)",
-                      }}
-                    >
-                      {p.bubble}
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          <p className="mt-10 text-center text-base font-semibold leading-relaxed" style={{ color: C.text }}>
-            从「方法论会背不会用」到「不知道作品好不好」，
-            <br />
-            Idea Salon 一站式解决 ——
-            <span style={{ color: C.cyan }}> 覆盖设计工作坊全流程</span>
           </p>
         </div>
       </section>

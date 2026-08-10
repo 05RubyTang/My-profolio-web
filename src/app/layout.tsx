@@ -5,6 +5,7 @@ import {
   Inter,
   Caveat,
   ZCOOL_KuaiLe,
+  Ma_Shan_Zheng,
 } from "next/font/google";
 import "./globals.css";
 
@@ -39,6 +40,13 @@ const zcoolKuaile = ZCOOL_KuaiLe({
   weight: ["400"],
 });
 
+// 手写体 · 用于 Idea Salon Section 2 学生吐槽气泡
+const maShanZheng = Ma_Shan_Zheng({
+  variable: "--font-ma-shan-zheng",
+  subsets: ["latin"],
+  weight: ["400"],
+});
+
 export const metadata: Metadata = {
   title: "Ruby Tang | AI Product Designer",
   description:
@@ -54,7 +62,7 @@ export default function RootLayout({
   return (
     <html
       lang="zh-CN"
-      className={`${notoSans.variable} ${notoSerif.variable} ${inter.variable} ${caveat.variable} ${zcoolKuaile.variable} antialiased`}
+      className={`${notoSans.variable} ${notoSerif.variable} ${inter.variable} ${caveat.variable} ${zcoolKuaile.variable} ${maShanZheng.variable} antialiased`}
     >
       <body className="min-h-screen">{children}</body>
     </html>

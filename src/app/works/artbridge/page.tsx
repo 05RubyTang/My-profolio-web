@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Cpu, Users, LineChart, Palette } from "lucide-react";
+import { Cpu, Users, Palette } from "lucide-react";
 import WorkLayout from "../_components/WorkLayout";
 import ProcessDrawer, { ProcessItem, ProcessImageGroup } from "../_components/ProcessDrawer";
 import FeatureEntries, { FeatureKey } from "../_components/artbridge/FeatureEntries";
@@ -42,40 +42,21 @@ const yiqidaCdnImages = [
 
 const processItems: ProcessItem[] = [
   {
-    id: "market",
-    icon: <LineChart size={20} />,
-    label: "市场调研",
-    title: "市场调研",
-    subtitle: "AI 穿搭赛道格局 · 用户需求缺口",
-    content: (
-      <div>
-        <p className="text-sm text-black/70 leading-relaxed mb-6">
-          在启动设计前，我们扫描了国内外主要的 AI 穿搭 / 时尚推荐产品，
-          梳理出「工具型」与「陪伴型」两类核心竞品，找到差异化机会。
-        </p>
-        <ProcessImageGroup
-          srcs={yiqidaCdnImages.slice(0, 3)}
-          altPrefix="市场调研"
-        />
-      </div>
-    ),
-  },
-  {
-    id: "user",
+    id: "insight",
     icon: <Users size={20} />,
-    label: "用户调研",
-    title: "用户调研",
-    subtitle: "9 位深访用户 · 3 类核心人群画像",
+    label: "用户需要的穿搭AI是生活化的",
+    title: "用户需要的穿搭 AI 是生活化的",
+    subtitle: "市场扫描 + 9 位深访 · 提炼 3 类核心人群",
     content: (
       <div>
         <p className="text-sm text-black/70 leading-relaxed mb-6">
-          通过 9 位深度访谈用户，我们提炼出 3 类核心人群：
-          「风格实验型」、「懒人穿搭型」、「场合焦虑型」，
-          并归纳出各自最关心的场景与痛点。
+          我们先扫描国内外主要的 AI 穿搭 / 时尚推荐产品，梳理出「工具型」与「陪伴型」两类核心竞品；
+          再通过 9 位深度访谈，提炼出「风格实验型」、「懒人穿搭型」、「场合焦虑型」3 类核心人群，
+          归纳出各自最关心的场景与痛点。
         </p>
         <ProcessImageGroup
-          srcs={yiqidaCdnImages.slice(3, 6)}
-          altPrefix="用户调研"
+          srcs={yiqidaCdnImages.slice(0, 6)}
+          altPrefix="用户与市场洞察"
         />
       </div>
     ),
@@ -83,8 +64,8 @@ const processItems: ProcessItem[] = [
   {
     id: "tech",
     icon: <Cpu size={20} />,
-    label: "技术架构",
-    title: "技术架构",
+    label: "我们如何做到越来越懂你？",
+    title: "我们如何做到越来越懂你？",
     subtitle: "多模态感知 · Agent 编排 · 记忆系统",
     content: (
       <div>
@@ -102,8 +83,8 @@ const processItems: ProcessItem[] = [
   {
     id: "design",
     icon: <Palette size={20} />,
-    label: "设计产出",
-    title: "设计产出",
+    label: "智慧穿搭Agent的设计策略",
+    title: "智慧穿搭 Agent 的设计策略",
     subtitle: "视觉体系 · 交互稿 · 场景可视化",
     content: (
       <div>
@@ -199,24 +180,28 @@ export default function ArtBridgePage() {
             <p className="mt-4 text-xl md:text-3xl text-white/90 font-light tracking-wide">
               小艺 · 你的私人穿搭搭子
             </p>
-            <p className="mt-6 max-w-xl text-base md:text-lg text-white/60 leading-relaxed">
-              为「风格实验型」用户打造的 AI 穿搭伙伴。
-              每天早上告诉你今天穿什么，出行时帮你规划整趟旅行的穿搭方案，
-              也可以陪你尝试从没试过的风格。
+            <p className="mt-6 max-w-xl text-base md:text-lg text-white/75 leading-relaxed">
+              <span className="text-[#FFB0DE]">旧衣新穿</span>
+              ，小艺 Agent 带你搭出私人风格
             </p>
 
-            {/* 4 个 icon 入口（浮在标题下方） */}
-            <div className="mt-10 flex flex-wrap gap-3">
+            {/* 3 个 icon 入口（垂直排 · 无底色 · 保留 icon） */}
+            <p className="mt-10 mb-3 text-xs text-white/45 tracking-wide">
+              点击查看项目报告：
+            </p>
+            <div className="flex flex-col gap-2 items-start">
               {processItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => setOpenId(item.id)}
-                  className="group flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-white/90 hover:text-white text-sm backdrop-blur-sm transition-all"
+                  className="group flex items-center gap-2.5 py-1.5 text-white/80 hover:text-white text-sm transition-colors"
                 >
                   <span className="text-[#FFB0DE] group-hover:scale-110 transition-transform">
                     {item.icon}
                   </span>
-                  <span>{item.label}</span>
+                  <span className="border-b border-transparent group-hover:border-[#FFB0DE]/60 transition-colors">
+                    {item.label}
+                  </span>
                 </button>
               ))}
             </div>
@@ -235,6 +220,9 @@ export default function ArtBridgePage() {
               </div>
               <span className="text-xs text-white/50">
                 同济大学 × 华为 · 联合课程作业
+              </span>
+              <span className="text-xs text-white/40">
+                · 项目时间 2025 / 11
               </span>
             </div>
           </motion.div>

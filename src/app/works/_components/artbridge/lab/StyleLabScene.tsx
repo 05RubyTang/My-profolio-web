@@ -121,15 +121,18 @@ export default function StyleLabScene() {
             Feature Demo · 风格实验台
           </div>
           <h3 className="text-3xl md:text-4xl font-semibold leading-tight text-white">
-            像做实验一样
+            分阶段
+            <span className="text-[#FFB0DE]">改造计划</span>
             <br />
-            <span className="text-[#FFB0DE]">挑战</span>
-            穿搭的固有认知
+            找到你的最优解
           </h3>
         </div>
 
-        <p className="text-white/60 text-sm leading-relaxed">
-          风格试验台是任务式的成长空间。每天生成一道穿搭研究课题，小艺会用「假设 → 3 套实验方案 → 详情器材清单」的方式陪你完成挑战。完成后穿搭力 +10，逐步解锁下一等级徽章。
+        <p className="text-white/75 text-sm leading-relaxed">
+          害怕风格突变？<span className="text-[#FFB0DE]">分阶段的风格介入</span>，让你偷偷变美！
+        </p>
+        <p className="text-white/45 text-xs leading-relaxed">
+          不认识服装风格？不知道怎么搭配？领取穿搭 Agent 为你定制的每日穿搭任务，让学习穿搭知识更轻松
         </p>
 
         <div className="grid grid-cols-2 gap-3 text-xs">

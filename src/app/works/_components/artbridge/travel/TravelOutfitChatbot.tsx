@@ -421,9 +421,12 @@ export default function TravelOutfitChatbot() {
           </h3>
         </div>
 
-        <p className="text-white/60 text-sm leading-relaxed">
-          小艺会同时启动天气、风格、衣橱、购物 4 个子 Agent，交叉规划每一天的搭配，
-          并主动识别你衣橱里缺少的关键单品，把补货一次性完成。
+        <p className="text-white/75 text-sm leading-relaxed">
+          旅游规划麻烦？不知道怎么搭出片？不知道要带多少件衣服？
+        </p>
+
+        <p className="text-white/45 text-xs leading-relaxed">
+          场景化智能风格适配，从方案到购买一站解决
         </p>
 
         <div className="grid grid-cols-2 gap-3 text-xs">

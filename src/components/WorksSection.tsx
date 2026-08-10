@@ -164,41 +164,6 @@ interface TongjiModule {
   images: { image: string; text: string }[];
 }
 
-/** 修图助手的两大模块（Research+PainPoints 合并、Concept+Output 合并） */
-const xiutuModules: TongjiModule[] = [
-  {
-    key: "research-insights",
-    label: "调研与洞察",
-    labelEn: "Research & Insights",
-    images: [
-      { image: cdnUrl("/picture/id-project/tongji-works/修图助手/1.jpg"), text: "" },
-      { image: cdnUrl("/picture/id-project/tongji-works/修图助手/2.jpg"), text: "" },
-      { image: cdnUrl("/picture/id-project/tongji-works/修图助手/3.jpg"), text: "" },
-      { image: cdnUrl("/picture/id-project/tongji-works/修图助手/4.jpg"), text: "" },
-      { image: cdnUrl("/picture/id-project/tongji-works/修图助手/5.jpg"), text: "" },
-      { image: cdnUrl("/picture/id-project/tongji-works/修图助手/6.jpg"), text: "" },
-      { image: cdnUrl("/picture/id-project/tongji-works/修图助手/7.jpg"), text: "" },
-      { image: cdnUrl("/picture/id-project/tongji-works/修图助手/8.jpg"), text: "" },
-    ],
-  },
-  {
-    key: "concept-output",
-    label: "概念与产出",
-    labelEn: "Design",
-    images: [
-      { image: cdnUrl("/picture/id-project/tongji-works/修图助手/9.jpg"), text: "" },
-      { image: cdnUrl("/picture/id-project/tongji-works/修图助手/10.jpg"), text: "" },
-      { image: cdnUrl("/picture/id-project/tongji-works/修图助手/11.jpg"), text: "" },
-      { image: cdnUrl("/picture/id-project/tongji-works/修图助手/12.jpg"), text: "" },
-      { image: cdnUrl("/picture/id-project/tongji-works/修图助手/13.jpg"), text: "" },
-      { image: cdnUrl("/picture/id-project/tongji-works/修图助手/14.jpg"), text: "" },
-      { image: cdnUrl("/picture/id-project/tongji-works/修图助手/15.jpg"), text: "" },
-      { image: cdnUrl("/picture/id-project/tongji-works/修图助手/16.jpg"), text: "" },
-      { image: cdnUrl("/picture/id-project/tongji-works/修图助手/17.jpg"), text: "" },
-      { image: cdnUrl("/picture/id-project/tongji-works/修图助手/18.jpg"), text: "" },
-    ],
-  },
-];
 
 /** 艺起搭的两大模块（Research+PainPoints 合并、Concept+Output 合并） */
 const yiqidaModules: TongjiModule[] = [
@@ -238,7 +203,6 @@ const yiqidaModules: TongjiModule[] = [
 
 /** 项目 id → 模块映射 */
 const tongjiModulesMap: Record<number, TongjiModule[]> = {
-  101: xiutuModules,
   102: yiqidaModules,
 };
 
@@ -262,20 +226,6 @@ const tongjiProjects: IDProject[] = [
     detailHref: "/works/artbridge",
   },
   {
-    id: 101,
-    name: "Photo Editor",
-    nameCn: "修图助手",
-    subtitle: "同济课程作业",
-    subtitleEn: "Tongji Course Project",
-    tags: "课程作业",
-    slogan: "",
-    sloganEn: "",
-    projectImage: cdnUrl("/picture/id-project/tongji-works/修图助手-封面.png"),
-    ticketImage: "",
-    galleryItems: [],
-    detailHref: "/works/photo-editor",
-  },
-  {
     id: 103,
     name: "IdeaSalon",
     nameCn: "IdeaSalon设计Skill",
@@ -287,8 +237,7 @@ const tongjiProjects: IDProject[] = [
     projectImage: cdnUrl("/picture/id-project/tongji-works/IdeaSalon-封面.png"),
     ticketImage: "",
     galleryItems: [],
-    // 点击直接打开外链，不进入二级页
-    videoUrl: "https://www.xiaohongshu.com/explore/6a4e65ec000000001503e8f5",
+    detailHref: "/works/idea-salon",
   },
 ];
 
@@ -2028,7 +1977,8 @@ export default function WorksSection() {
             </div>
             <div className="w-12 h-[2px] bg-accent/30 mt-3 rounded-full" />
             <p className="text-xs md:text-sm text-ink-muted mt-3 px-4 text-center">
-              点击左侧另一本书切换查看
+              <span className="hidden md:inline">点击左侧另一本书切换查看</span>
+              <span className="md:hidden">点击上方切换查看</span>
             </p>
           </div>
         </ScrollReveal>
@@ -2055,8 +2005,29 @@ export default function WorksSection() {
             {/* 默认展开：桌面端 左侧书本 + 右侧内容；移动端 顶部横向书本 tab + 下方内容 */}
             {openedBook && (
               <div className="flex flex-col md:flex-row items-start gap-4 md:gap-6">
-                {/* 书本栏 - 移动端顶部横向，桌面端左侧纵向 */}
-                <div className="flex flex-row md:flex-col items-center md:items-center gap-3 md:gap-4 flex-shrink-0 pt-2 w-full md:w-auto justify-center overflow-x-auto">
+                {/* 移动端：简洁 tab 按钮（不展示书封面图） */}
+                <div className="flex md:hidden flex-row items-center gap-2 w-full justify-center pt-1 pb-1">
+                  {books.map((book, index) => {
+                    const isActive = index === openBookIndex;
+                    return (
+                      <button
+                        key={book.name}
+                        onClick={() => handleBookClick(index)}
+                        className={[
+                          "flex-1 max-w-[48%] px-3 py-2 rounded-lg text-sm font-handwriting font-bold leading-tight transition-all",
+                          isActive
+                            ? "bg-white text-ink shadow-md ring-1 ring-accent/40"
+                            : "bg-white/40 text-ink-muted",
+                        ].join(" ")}
+                      >
+                        {book.name}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* 桌面端：原书本封面栏 - 左侧纵向 */}
+                <div className="hidden md:flex md:flex-col items-center gap-4 flex-shrink-0 pt-2">
                   {books.map((book, index) => {
                     const variant = index === openBookIndex ? "selected" : "unselected";
                     return (

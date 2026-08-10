@@ -129,7 +129,7 @@ export default function DailyOutfitChatbot() {
     55
   );
 
-  /** 循环重置 · 不再自动进入 chat，等用户主动点击首页任一明星单品卡 */
+  /** 循环重置 · 曝光 2s 后自动点击「城市酷感」明星单品卡启动 timeline */
   useEffect(() => {
     setState(INIT_STATE);
     setComposerPhase(null);
@@ -137,6 +137,11 @@ export default function DailyOutfitChatbot() {
     setScrollTick(0);
     timersRef.current.forEach((id) => window.clearTimeout(id));
     timersRef.current = [];
+    // 2s 后自动点「城市酷感」（key = "B" = DEFAULT_PICKED_KEY）
+    const autoEnterId = window.setTimeout(() => {
+      handleEnter(DEFAULT_PICKED_KEY);
+    }, 2000);
+    timersRef.current.push(autoEnterId);
     return () => {
       timersRef.current.forEach((id) => window.clearTimeout(id));
       timersRef.current = [];
@@ -171,12 +176,18 @@ export default function DailyOutfitChatbot() {
     }));
     bumpScroll();
 
-    // 只派发到「两张对比卡出现」为止，后续等用户交互
+    // 派发到「两张对比卡出现」为止，之后停留 2s 自动点击「有点小不同」(twist)
     const stopStep: StepName = "plans_show";
+    let plansShowAt = 0;
     for (const t of TIMELINE) {
       scheduleTimer(t.at, () => applyStep(t.step));
-      if (t.step === stopStep) break;
+      if (t.step === stopStep) {
+        plansShowAt = t.at;
+        break;
+      }
     }
+    // 卡片出现后停 2s，自动点击「有点小不同」
+    scheduleTimer(plansShowAt + 2000, () => handlePlanPick("twist"));
   };
 
   const applyStep = (step: StepName) => {

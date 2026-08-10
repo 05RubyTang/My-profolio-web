@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { X, FileText, ArrowLeft } from "lucide-react";
+import { X, FileText, ArrowLeft, ChevronUp, ChevronDown } from "lucide-react";
 import VariableProximity from "./VariableProximity";
 import { cdnUrl } from "@/lib/cdn";
+import { useIsMobile } from "@/lib/useIsMobile";
 
 /* ============================================================
    简历数据
@@ -468,6 +469,11 @@ function StampGallery({
   onClose: () => void;
 }) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const isMobile = useIsMobile();
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<Array<HTMLDivElement | null>>([]);
+  // 手机端：当前居中的邮票 index（用于底部圆点与顶部 description 同步）
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -484,7 +490,37 @@ function StampGallery({
     };
   }, []);
 
-  const hoveredStamp = hoveredIndex !== null ? stamps[hoveredIndex] : null;
+  // 手机端：用 IntersectionObserver 判断哪张邮票居中
+  useEffect(() => {
+    if (!isMobile) return;
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // 找出可见比例最高的那个
+        let bestIdx = -1;
+        let bestRatio = 0;
+        entries.forEach((entry) => {
+          const idx = Number((entry.target as HTMLElement).dataset.stampIndex);
+          if (entry.intersectionRatio > bestRatio) {
+            bestIdx = idx;
+            bestRatio = entry.intersectionRatio;
+          }
+        });
+        if (bestIdx >= 0 && bestRatio > 0.5) {
+          setActiveIndex(bestIdx);
+        }
+      },
+      { root: scroller, threshold: [0.5, 0.75, 1] }
+    );
+    cardRefs.current.forEach((el) => el && observer.observe(el));
+    return () => observer.disconnect();
+  }, [isMobile]);
+
+  // 手机端居中邮票即视为 hovered，用来同步顶部 description
+  const effectiveHoveredIndex = isMobile ? activeIndex : hoveredIndex;
+  const hoveredStamp =
+    effectiveHoveredIndex !== null ? stamps[effectiveHoveredIndex] : null;
 
   return (
     <div className="fixed inset-0 z-[1000] flex flex-col">
@@ -514,10 +550,11 @@ function StampGallery({
 
       {/* 邮票 + 职责说明 */}
       <div
-        className="relative z-10 flex-1 flex flex-col items-center justify-center px-8"
+        className="relative z-10 flex-1 flex flex-col items-center justify-center md:px-8"
         style={{ animation: "fadeIn 0.5s ease-out 0.1s both" }}
       >
-        <div className="h-[72px] flex items-end justify-center mb-40 max-w-[700px] w-full">
+        {/* 顶部 description — 桌面端悬浮触发；手机端居中卡自动同步 */}
+        <div className="min-h-[72px] px-6 flex items-end justify-center md:mb-40 mb-6 max-w-[700px] w-full">
           {hoveredStamp ? (
             <div
               key={hoveredStamp.id}
@@ -535,7 +572,8 @@ function StampGallery({
           )}
         </div>
 
-        <div className="flex items-end justify-center gap-5">
+        {/* 桌面端：原横排 */}
+        <div className="hidden md:flex items-end justify-center gap-5">
           {stamps.map((stamp, index) => (
             <div
               key={stamp.id}
@@ -549,6 +587,95 @@ function StampGallery({
               />
             </div>
           ))}
+        </div>
+
+        {/* 手机端：横向 scroll-snap 画廊 */}
+        <div className="md:hidden w-full flex flex-col items-center">
+          <style>{`.hide-scrollbar::-webkit-scrollbar{display:none}.hide-scrollbar{scrollbar-width:none;-ms-overflow-style:none;}`}</style>
+          <div
+            ref={scrollerRef}
+            className="w-full overflow-x-auto snap-x snap-mandatory scroll-smooth hide-scrollbar"
+            style={{
+              scrollPaddingLeft: "17.5%",
+              scrollPaddingRight: "17.5%",
+            }}
+          >
+            <div className="flex items-center gap-4 px-[17.5%] py-6">
+              {stamps.map((stamp, index) => {
+                const isActive = index === activeIndex;
+                return (
+                  <div
+                    key={stamp.id}
+                    ref={(el) => {
+                      cardRefs.current[index] = el;
+                    }}
+                    data-stamp-index={index}
+                    className="snap-center shrink-0 w-[65%] transition-transform duration-300"
+                    style={{
+                      transform: isActive ? "scale(1)" : "scale(0.85)",
+                      opacity: isActive ? 1 : 0.55,
+                    }}
+                  >
+                    <StampCard
+                      stamp={stamp}
+                      index={index}
+                      onClick={() => {
+                        // 未居中：先滑到中间；已居中：进入详情
+                        if (!isActive) {
+                          cardRefs.current[index]?.scrollIntoView({
+                            behavior: "smooth",
+                            inline: "center",
+                            block: "nearest",
+                          });
+                        } else {
+                          onSelectStamp(index);
+                        }
+                      }}
+                      disableArc
+                      style={{
+                        height: "auto",
+                        width: "100%",
+                        aspectRatio: "259 / 368",
+                      }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* 底部圆点指示器 */}
+          <div className="flex items-center gap-2 mt-4">
+            {stamps.map((stamp, index) => {
+              const isActive = index === activeIndex;
+              return (
+                <button
+                  key={stamp.id}
+                  onClick={() => {
+                    cardRefs.current[index]?.scrollIntoView({
+                      behavior: "smooth",
+                      inline: "center",
+                      block: "nearest",
+                    });
+                  }}
+                  aria-label={`查看 ${stamp.company} 邮票`}
+                  className="transition-all duration-200"
+                  style={{
+                    width: isActive ? "22px" : "6px",
+                    height: "6px",
+                    borderRadius: "999px",
+                    backgroundColor: isActive
+                      ? stamp.color
+                      : "rgba(255,255,255,0.25)",
+                  }}
+                />
+              );
+            })}
+          </div>
+
+          <p className="text-[11px] text-white/35 mt-4 tracking-wider">
+            左右滑动切换 · 点击居中邮票查看详情
+          </p>
         </div>
       </div>
     </div>
@@ -572,6 +699,14 @@ function ResumeDetailView({
   const selectedStamp = stamps[stampIndex];
   const otherStamps = stamps.filter((_, i) => i !== stampIndex);
   const contentRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
+  // 手机端：邮票区是否折叠（默认收起，把空间让给内容）
+  const [stampsCollapsed, setStampsCollapsed] = useState(true);
+
+  // 切换到别的邮票时，保持折叠状态（用户已经通过顶部小邮票行完成切换）
+  useEffect(() => {
+    setStampsCollapsed(true);
+  }, [stampIndex]);
 
   // 合并该邮票对应的所有 resumeData 条目的项目
   const allProjects: { entry: ResumeEntry; project: ResumeProject }[] = [];
@@ -600,6 +735,218 @@ function ResumeDetailView({
       document.body.style.overflow = "";
     };
   }, []);
+
+  if (isMobile) {
+    return (
+      <div
+        className="fixed inset-0 z-[1000] resume-detail-selection flex flex-col"
+        style={{
+          animation: "fadeIn 0.3s ease-out",
+          "--selection-color": selectedStamp.color,
+        } as React.CSSProperties}
+      >
+        {/* 背景图 */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${selectedStamp.detailBg})` }}
+        />
+        <div className="absolute inset-0 bg-black/85" />
+
+        {/* ===== 顶部固定区：导航 + (可折叠)邮票 + 公司信息头 ===== */}
+        <div className="relative z-10 flex-shrink-0 px-5 pt-5">
+          {/* 顶部导航 */}
+          <div className="flex items-center justify-between mb-3">
+            <button
+              onClick={onBack}
+              className="flex items-center gap-1.5 text-white/60 active:text-white/90 transition-colors"
+            >
+              <ArrowLeft size={16} />
+              <span className="text-xs tracking-wider">返回</span>
+            </button>
+            <div className="flex items-center gap-2">
+              {/* 折叠/展开邮票 按钮 */}
+              <button
+                onClick={() => setStampsCollapsed((v) => !v)}
+                aria-label={stampsCollapsed ? "展开邮票" : "收起邮票"}
+                className="h-8 px-3 rounded-full bg-white/10 active:bg-white/20 flex items-center gap-1 text-white/70 text-[11px] tracking-wider"
+              >
+                {stampsCollapsed ? (
+                  <>
+                    <ChevronDown size={14} />
+                    <span>展开邮票</span>
+                  </>
+                ) : (
+                  <>
+                    <ChevronUp size={14} />
+                    <span>收起邮票</span>
+                  </>
+                )}
+              </button>
+              <button
+                onClick={onClose}
+                className="w-8 h-8 rounded-full bg-white/10 active:bg-white/20 flex items-center justify-center text-white/80"
+              >
+                <X size={16} />
+              </button>
+            </div>
+          </div>
+
+          {/* 可折叠的邮票区 */}
+          <div
+            className="overflow-hidden transition-[max-height,opacity,margin] duration-400 ease-in-out"
+            style={{
+              maxHeight: stampsCollapsed ? 0 : 520,
+              opacity: stampsCollapsed ? 0 : 1,
+              marginBottom: stampsCollapsed ? 0 : 12,
+            }}
+          >
+            {/* 大邮票 —— 居中，宽度自适应 */}
+            <div
+              className="mx-auto w-[52%] max-w-[210px]"
+              style={{ animation: "fadeIn 0.5s ease-out 0.1s both" }}
+            >
+              <StampCard
+                stamp={selectedStamp}
+                index={stampIndex}
+                disableArc
+                style={{
+                  height: "auto",
+                  width: "100%",
+                  aspectRatio: "259 / 368",
+                }}
+              />
+            </div>
+
+            {/* 其他邮票 —— 底部横排，点击切换 */}
+            <div
+              className="flex items-center justify-center gap-2 mt-4"
+              style={{ animation: "fadeIn 0.5s ease-out 0.2s both" }}
+            >
+              {otherStamps.map((stamp) => {
+                const originalIndex = stamps.findIndex((s) => s.id === stamp.id);
+                return (
+                  <StampCard
+                    key={stamp.id}
+                    stamp={stamp}
+                    index={originalIndex}
+                    size="small"
+                    disableArc
+                    onClick={() => onSwitchStamp(originalIndex)}
+                    className="cursor-pointer opacity-55 active:opacity-100 transition-opacity"
+                  />
+                );
+              })}
+            </div>
+          </div>
+
+          {/* 公司信息头 —— 固定在顶部，永远可见 */}
+          <div
+            className="pt-3 pb-3 border-t border-white/8"
+            style={{ animation: "fadeIn 0.5s ease-out 0.15s both" }}
+          >
+            {/* 英文部门名 */}
+            <span
+              className="text-[11px] font-light tracking-[0.2em] uppercase block mb-1.5"
+              style={{ color: selectedStamp.color }}
+            >
+              {selectedStamp.departmentEn}
+            </span>
+
+            {/* 公司 + 部门 */}
+            <h2 className="text-xl font-black text-white leading-tight mb-0.5">
+              {mainEntry.company}
+            </h2>
+            <p className="text-[13px] font-bold text-white/60 mb-2">
+              {mainEntry.department}
+            </p>
+
+            {/* Role tag + period */}
+            <div className="flex items-center flex-wrap gap-2">
+              <span
+                className="text-[11px] font-bold px-2.5 py-0.5 text-white"
+                style={{ backgroundColor: selectedStamp.color }}
+              >
+                {mainEntry.role}
+              </span>
+              <span className="text-[11px] text-white/50 tracking-wider">
+                {selectedStamp.period}
+              </span>
+              {mainEntry.location && (
+                <span className="text-[11px] text-white/40 inline-flex items-center gap-1">
+                  <svg viewBox="0 0 1024 1024" fill="currentColor" className="w-3 h-3 flex-shrink-0">
+                    <path d="M511.983627 1022.005576c-177.413666 0-356.430852-48.131207-356.430852-155.653059 0-83.935668 122.605386-135.997394 236.549507-148.835793l6.237051-0.718361L240.863766 464.627063c-5.077645-9.096169-9.868765-18.74697-14.093996-28.512381l-4.1536-8.400321-0.652869-3.360538c-13.843286-35.848463-20.852934-73.371054-20.852934-111.49842 0-171.404812 139.484821-310.86098 310.917262-310.86098 171.427324 0 310.887586 139.456169 310.887586 310.86098 0 38.164205-7.024997 75.670423-20.906146 111.49842l-2.082428 5.38873 0.194428 0-1.603521 3.300162c-4.535293 10.694573-9.552563 20.965497-15.000646 30.699186L511.853667 914.597311l-64.345494-105.092523-2.430352 0.211824c-104.22783 8.933463-170.69873 37.702694-188.130751 53.720505l-3.148713 2.898003 3.148713 2.914376c22.738887 21.12411 110.175285 54.535057 248.78825 55.520501l12.375865 0.020466-0.016373-0.020466c138.357138-0.969071 225.969545-34.304294 248.898767-55.385425l3.229554-2.967588-3.284813-2.898003c-12.722766-11.271718-59.075467-33.511231-130.370233-46.566572l54.754045-87.675852c114.248044 25.745361 177.125093 74.360592 177.125093 137.074935 0 107.527992-179.017186 155.653059-356.453365 155.653059L511.983627 1022.004553zM511.977487 145.159054c-73.081459 0-132.527362 59.488883-132.527362 132.598994 0 73.05076 59.440787 132.48029 132.527362 132.48029 73.132624 0 132.62253-59.429531 132.62253-132.48029C644.600017 204.647937 585.110111 145.159054 511.977487 145.159054L511.977487 145.159054zM511.977487 145.159054" />
+                  </svg>
+                  {mainEntry.location}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* ===== 底部可滚动区：职责概述 + 项目列表 ===== */}
+        <div
+          ref={contentRef}
+          className="relative z-10 flex-1 min-h-0 overflow-y-auto overflow-x-hidden resume-book-scroll"
+          style={{ animation: "fadeIn 0.5s ease-out 0.2s both" }}
+        >
+          <div className="px-5 pt-4 pb-16">
+            {/* 职责概述 */}
+            {mainEntry.responsibility && (
+              <p className="text-[13px] leading-[1.9] tracking-wide text-white/80 mb-6">
+                {mainEntry.responsibility}
+              </p>
+            )}
+
+            {/* Projects 分隔线 */}
+            <div className="flex items-center gap-2 mb-5">
+              <div
+                className="w-6 h-[2px] rounded-full"
+                style={{ backgroundColor: selectedStamp.color, opacity: 0.5 }}
+              />
+              <span className="text-[10px] text-white/30 tracking-[0.3em] uppercase">
+                Projects
+              </span>
+              <div className="flex-1 h-px bg-white/10" />
+            </div>
+
+            {/* 项目列表 */}
+            <div className="space-y-7">
+              {allProjects.map(({ project }, pi) => (
+                <div key={pi}>
+                  <div className="flex items-baseline gap-2 mb-2.5">
+                    <span
+                      className="w-1.5 h-1.5 rounded-full flex-shrink-0 mt-1.5"
+                      style={{ backgroundColor: selectedStamp.color }}
+                    />
+                    <h3 className="text-[15px] font-bold text-white/90 leading-snug">
+                      {project.name}
+                    </h3>
+                  </div>
+                  <div className="pl-3.5 space-y-2">
+                    {project.details.map((detail, di) => (
+                      <p
+                        key={di}
+                        className="text-[12.5px] leading-[1.9] tracking-wide text-white/70"
+                      >
+                        {detail}
+                      </p>
+                    ))}
+                  </div>
+                  {pi < allProjects.length - 1 && (
+                    <div className="mt-5 flex items-center gap-1.5">
+                      <div className="w-1 h-1 rounded-full bg-white/10" />
+                      <div className="flex-1 border-t border-dashed border-white/10" />
+                      <div className="w-1 h-1 rounded-full bg-white/10" />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
   <div

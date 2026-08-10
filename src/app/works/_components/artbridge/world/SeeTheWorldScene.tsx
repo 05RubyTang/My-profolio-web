@@ -125,10 +125,6 @@ export default function SeeTheWorldScene() {
           <div className="text-[11px] tracking-widest uppercase text-[#FFB0DE]">
             Digital Companion · 小艺数字人智能衣橱
           </div>
-          <p className="text-white/70 text-[12px] leading-relaxed">
-            粉色花苞外套一录入衣橱，右边锁屏立刻联动 ——
-            甜酷学姐打招呼、书桌前学习陪伴，一整天都在你身边。
-          </p>
         </div>
       </div>
 
@@ -147,8 +143,12 @@ export default function SeeTheWorldScene() {
           </h3>
         </div>
 
-        <p className="text-white/60 text-sm leading-relaxed">
-          与小艺视频通话，把新买的衣服举到摄像头前。AI 视觉引擎会实时识别品类、色彩、材质与季节标签，一键录入你的数字衣柜，并结合已有单品生成 2 套推荐搭配。看到世界里明星、博主与街拍的灵感，都可以随手复刻。
+        <p className="text-white/75 text-sm leading-relaxed">
+          <span className="text-[#FFB0DE]">小艺伴穿搭</span>
+          ：灵活实现从数字衣橱走向穿搭伴侣
+        </p>
+        <p className="text-white/45 text-xs leading-relaxed">
+          基于华为小艺看世界，无感化打通衣服录入 - 多样化推荐 - 趣味陪伴
         </p>
 
         <div className="grid grid-cols-2 gap-3 text-xs">

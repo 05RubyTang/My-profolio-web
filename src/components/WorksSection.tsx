@@ -213,14 +213,14 @@ const tongjiModulesMap: Record<number, TongjiModule[]> = {
 const tongjiProjects: IDProject[] = [
   {
     id: 102,
-    name: "ArtBridge",
+    name: "艺起搭 · 华为原生 AI Agent 穿搭场景探索",
     nameCn: "艺起搭",
     subtitle: "同济课程作业",
     subtitleEn: "Tongji Course Project",
     tags: "课程作业",
     slogan: "",
     sloganEn: "",
-    projectImage: cdnUrl("/picture/id-project/tongji-works/艺起搭-封面.png"),
+    projectImage: cdnUrl("/picture/id-project/tongji-works/艺起搭-封面-v2.png"),
     ticketImage: "",
     galleryItems: [],
     detailHref: "/works/artbridge",

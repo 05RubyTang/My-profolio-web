@@ -126,16 +126,6 @@ const skills = [
   { num: "5", cn: "设计评审员", phase: "DELIVER", desc: "按设计法则量化评估，给出具体改法", icon: Award },
 ];
 
-/* 6 个角色（用于界面层展示） */
-const roles = [
-  { key: "method", cn: "方法论顾问", en: "METHODOLOGY", color: C.blue },
-  { key: "research", cn: "资深研究员", en: "RESEARCH", color: C.cyan },
-  { key: "review", cn: "设计评审员", en: "REVIEW", color: C.orange },
-  { key: "creative", cn: "创意陪练", en: "CREATIVE", color: C.pink },
-  { key: "logic", cn: "逻辑检查员", en: "LOGIC", color: C.purple },
-  { key: "host", cn: "圆桌主持", en: "FACILITATOR", color: C.indigo },
-];
-
 /* ============ 数据 · Section 5 3 步工作坊流程 ============ */
 const flowSteps = [
   {
@@ -828,7 +818,7 @@ export default function IdeaSalonPage() {
               <div className="text-3xl" style={{ color: C.textMuted }}>×</div>
             </div>
 
-            {/* 界面层 */}
+            {/* 界面层 · 直接用大图（3 老师圆桌 + 6 能力徽章 + 3 老师名片） */}
             <div className="rounded-2xl p-6 md:p-8" style={{ background: `${C.orange}0D`, border: `1px solid ${C.orange}33` }}>
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: C.orange }}>
@@ -846,46 +836,24 @@ export default function IdeaSalonPage() {
                 人格化表达由老师分身包装。
               </p>
 
-              {/* 6 张老师卡片 */}
-              <div className="grid grid-cols-3 gap-3">
-                {roles.map((r) => (
-                  <div
-                    key={r.key}
-                    className="rounded-xl p-3 text-center"
-                    style={{ background: C.cardBg, border: `1px solid ${C.border}` }}
-                  >
-                    <div
-                      className="mx-auto w-12 h-12 rounded-full mb-2 flex items-center justify-center text-white font-bold text-[11px]"
-                      style={{
-                        background: `linear-gradient(135deg, ${r.color}, ${r.color}88)`,
-                        boxShadow: `0 4px 12px ${r.color}44`,
-                      }}
-                    >
-                      {r.cn.slice(0, 2)}
-                    </div>
-                    <div className="text-xs font-bold leading-tight" style={{ color: C.text }}>
-                      {r.cn}
-                    </div>
-                    <div className="text-[9px] tracking-widest mt-0.5" style={{ color: C.textMuted }}>
-                      {r.en}
-                    </div>
-                  </div>
-                ))}
+              {/* 老师圆桌大图（内含 6 能力标签 + 3 老师详细名片） */}
+              <div
+                className="relative w-full rounded-xl overflow-hidden"
+                style={{ aspectRatio: "2028 / 1482", background: "#FFFFFF" }}
+              >
+                <Image
+                  src={cdnUrl("/picture/id-project/tongji-works/idea-salon-figma/mentor-layer.webp")}
+                  alt="Idea Salon 界面层 · 老师阵容"
+                  fill
+                  sizes="(min-width: 1024px) 560px, 100vw"
+                  className="object-contain"
+                  unoptimized
+                />
               </div>
 
-              <div className="mt-5 pt-4 grid grid-cols-3 gap-2 text-center" style={{ borderTop: `1px solid ${C.border}` }}>
-                {["主持/系统价值", "用户/服务系统", "交互锚点", "AI/HCI", "原型落地", "表达/Ardot"].map(
-                  (t) => (
-                    <div
-                      key={t}
-                      className="text-[10px] py-1.5 px-1 rounded-lg"
-                      style={{ background: `${C.cyan}18`, color: C.textSub }}
-                    >
-                      {t}
-                    </div>
-                  )
-                )}
-              </div>
+              <p className="mt-4 text-xs leading-relaxed text-center" style={{ color: C.textMuted }}>
+                Prof.lou · 琦老师 · 郭炜炜老师 等 —— 覆盖 主持/用户/交互/AI/原型/表达 六大能力
+              </p>
             </div>
           </div>
         </div>

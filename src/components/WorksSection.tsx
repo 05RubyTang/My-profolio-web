@@ -234,7 +234,7 @@ const tongjiProjects: IDProject[] = [
     tags: "课程作业 / 竞赛",
     slogan: "",
     sloganEn: "",
-    projectImage: cdnUrl("/picture/id-project/tongji-works/IdeaSalon-封面.png"),
+    projectImage: cdnUrl("/picture/id-project/tongji-works/idea-salon-封面.png"),
     ticketImage: "",
     galleryItems: [],
     detailHref: "/works/idea-salon",

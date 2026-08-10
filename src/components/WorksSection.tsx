@@ -806,47 +806,8 @@ function TongjiProjectCard({
 }
 
 /* ============================================================
-   同济项目自由画布 — 封面卡片可自由拖拽
+   同济项目展示 —— 整齐的响应式网格（PC 2 列 · 窄屏 1 列）
    ============================================================ */
-
-const TONGJI_CARD_WIDTH_PCT = 28; // 封面卡片宽度占画布百分比（普通卡片）
-/** 主推卡片（艺起搭）宽度倍率：PC 端首位卡片放大 1.5× */
-const TONGJI_EMPHASIZE_MULTIPLIER = 1.5;
-const TONGJI_CARD_WIDTH_EMPHASIZE_PCT =
-  TONGJI_CARD_WIDTH_PCT * TONGJI_EMPHASIZE_MULTIPLIER; // 42
-
-function getTongjiDefaultPositions(count: number): TicketPosition[] {
-  // 2 个项目：左右分布，略微错开
-  if (count === 2) {
-    return [
-      { id: 0, x: 15, y: 10, rotation: -3 },
-      { id: 1, x: 55, y: 15, rotation: 4 },
-    ];
-  }
-  // 3 个项目：主推卡（艺起搭）大幅居左，两张副卡右侧上下错落
-  if (count === 3) {
-    return [
-      { id: 0, x: 4, y: 8, rotation: -3 },   // 艺起搭 · 大卡 · 左侧 42% 宽
-      { id: 1, x: 62, y: 4, rotation: 3 },   // 修图助手 · 小卡 · 右上
-      { id: 2, x: 65, y: 46, rotation: -2 }, // IdeaSalon · 小卡 · 右下
-    ];
-  }
-  // 通用布局（确定性 rotation，避免 SSR 不一致）
-  const positions: TicketPosition[] = [];
-  const cols = Math.min(count, 3);
-  const spacing = (100 - TONGJI_CARD_WIDTH_PCT) / Math.max(cols, 1);
-  for (let i = 0; i < count; i++) {
-    const col = i % cols;
-    const row = Math.floor(i / cols);
-    positions.push({
-      id: i,
-      x: spacing * 0.3 + col * spacing,
-      y: 8 + row * 40,
-      rotation: (i % 2 === 0 ? -1 : 1) * (2 + (i % 3)),
-    });
-  }
-  return positions;
-}
 
 function TongjiFreeCanvas({
   projects,
@@ -855,255 +816,52 @@ function TongjiFreeCanvas({
   projects: IDProject[];
   onSelectProject: (project: IDProject) => void;
 }) {
-  const isMobile = useIsMobile();
   const router = useRouter();
-  const canvasRef = useRef<HTMLDivElement>(null);
-  const [positions, setPositions] = useState<TicketPosition[]>(() =>
-    getTongjiDefaultPositions(projects.length)
-  );
-  const [draggingId, setDraggingId] = useState<number | null>(null);
-  const [activeZId, setActiveZId] = useState<number | null>(null);
-  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const isLongPressActive = useRef(false);
-  const hasMoved = useRef(false);
-  const dragStartMouse = useRef({ x: 0, y: 0 });
-  const dragStartPos = useRef({ x: 0, y: 0 });
 
-  /** 长按开始 → 激活拖拽 */
-  const handlePointerDown = useCallback(
-    (e: React.PointerEvent, idx: number) => {
-      const startX = e.clientX;
-      const startY = e.clientY;
-      hasMoved.current = false;
-
-      longPressTimer.current = setTimeout(() => {
-        isLongPressActive.current = true;
-        setDraggingId(idx);
-        setActiveZId(idx);
-        dragStartMouse.current = { x: startX, y: startY };
-        const pos = positions.find((p) => p.id === idx);
-        if (pos) {
-          dragStartPos.current = { x: pos.x, y: pos.y };
-        }
-      }, 400);
-    },
-    [positions]
-  );
-
-  const handlePointerMove = useCallback(
-    (e: React.PointerEvent) => {
-      if (
-        !isLongPressActive.current ||
-        draggingId === null ||
-        !canvasRef.current
-      )
-        return;
-
-      hasMoved.current = true;
-      const canvas = canvasRef.current;
-      const rect = canvas.getBoundingClientRect();
-      const dx = e.clientX - dragStartMouse.current.x;
-      const dy = e.clientY - dragStartMouse.current.y;
-
-      const dxPct = (dx / rect.width) * 100;
-      const dyPct = (dy / rect.height) * 100;
-
-      setPositions((prev) =>
-        prev.map((p) => {
-          if (p.id !== draggingId) return p;
-          // 主推卡（id=0 艺起搭）宽度更大，右边界要相应收窄
-          const draggedWidthPct =
-            p.id === 0
-              ? TONGJI_CARD_WIDTH_EMPHASIZE_PCT
-              : TONGJI_CARD_WIDTH_PCT;
-          return {
-            ...p,
-            x: Math.max(
-              0,
-              Math.min(100 - draggedWidthPct, dragStartPos.current.x + dxPct)
-            ),
-            y: Math.max(0, Math.min(75, dragStartPos.current.y + dyPct)),
-          };
-        })
-      );
-
-      e.preventDefault();
-    },
-    [draggingId]
-  );
-
-  const handlePointerUp = useCallback(
-    (idx: number) => {
-      if (longPressTimer.current) {
-        clearTimeout(longPressTimer.current);
-        longPressTimer.current = null;
-      }
-      if (isLongPressActive.current) {
-        isLongPressActive.current = false;
-        setDraggingId(null);
-        // 如果拖拽过就不触发点击
+  const handleClick = useCallback(
+    (project: IDProject) => {
+      // 优先级 1：独立落地页 → 路由跳转
+      if (project.detailHref) {
+        router.push(project.detailHref);
         return;
       }
-      // 短按 → 点击打开项目
-      const project = projects[idx];
-      if (project && !hasMoved.current) {
-        // 优先级 1：有独立落地页 → 路由跳转
-        if (project.detailHref) {
-          router.push(project.detailHref);
-          return;
-        }
-        // 优先级 2：有外链 → 新标签打开
-        if (project.videoUrl) {
-          window.open(project.videoUrl, "_blank", "noopener,noreferrer");
-        } else {
-          // 优先级 3：内联详情
-          onSelectProject(project);
-        }
+      // 优先级 2：外链 → 新标签打开
+      if (project.videoUrl) {
+        window.open(project.videoUrl, "_blank", "noopener,noreferrer");
+        return;
       }
+      // 优先级 3：内联详情
+      onSelectProject(project);
     },
-    [projects, onSelectProject, router]
+    [onSelectProject, router]
   );
-
-  // 全局 pointer up 兜底
-  useEffect(() => {
-    const handleGlobalUp = () => {
-      if (longPressTimer.current) {
-        clearTimeout(longPressTimer.current);
-        longPressTimer.current = null;
-      }
-      if (isLongPressActive.current) {
-        isLongPressActive.current = false;
-        setDraggingId(null);
-      }
-    };
-    window.addEventListener("pointerup", handleGlobalUp);
-    window.addEventListener("pointercancel", handleGlobalUp);
-    return () => {
-      window.removeEventListener("pointerup", handleGlobalUp);
-      window.removeEventListener("pointercancel", handleGlobalUp);
-    };
-  }, []);
-
-  // ============ 移动端垂直列表模式 ============
-  if (isMobile) {
-    return (
-      <div className="w-full space-y-4 pb-6">
-        {projects.map((project) => (
-          <div key={project.id} className="w-full">
-            <TongjiProjectCard
-              project={project}
-              onClick={() => {
-                if (project.detailHref) {
-                  router.push(project.detailHref);
-                } else if (project.videoUrl) {
-                  window.open(project.videoUrl, "_blank", "noopener,noreferrer");
-                } else {
-                  onSelectProject(project);
-                }
-              }}
-            />
-          </div>
-        ))}
-        <p className="text-[11px] text-ink-muted/40 tracking-wider text-center pt-2">
-          点击卡片查看项目详情
-        </p>
-      </div>
-    );
-  }
 
   return (
-    <div
-      ref={canvasRef}
-      className="relative w-full select-none"
-      style={{
-        /* 主推卡放大 1.5× 后纵向占位更大，画布高度适度加高 */
-        height: "clamp(480px, 72vh, 780px)",
-        cursor: draggingId !== null ? "grabbing" : "default",
-      }}
-      onPointerMove={handlePointerMove}
-      onPointerUp={() => {
-        if (isLongPressActive.current) {
-          isLongPressActive.current = false;
-          setDraggingId(null);
-        }
-      }}
-      onPointerCancel={() => {
-        if (longPressTimer.current) {
-          clearTimeout(longPressTimer.current);
-          longPressTimer.current = null;
-        }
-        isLongPressActive.current = false;
-        setDraggingId(null);
-      }}
-    >
-      {/* 画布底部网格装饰 */}
+    <div className="w-full pb-6">
+      {/*
+         响应式两列网格：
+         - >= 900px：2 列并排
+         - <  900px：单列纵向堆叠（第二个卡片自动换到下一行）
+         用 minmax(260px, 1fr) 让每列不小于 260px，避免过度压缩
+      */}
       <div
-        className="absolute inset-0 pointer-events-none opacity-[0.04]"
+        className="grid gap-5 md:gap-6"
         style={{
-          backgroundImage:
-            "linear-gradient(rgba(0,0,0,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.3) 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
+          gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))",
         }}
-      />
-
-      {positions.map((pos, idx) => {
-        const project = projects[idx];
-        if (!project) return null;
-
-        const isDragging = draggingId === pos.id;
-        const isTopZ = activeZId === pos.id;
-        // 首位卡片（艺起搭）主推：PC 端封面放大 1.5×
-        const isEmphasize = idx === 0;
-        const widthPct = isEmphasize
-          ? TONGJI_CARD_WIDTH_EMPHASIZE_PCT
-          : TONGJI_CARD_WIDTH_PCT;
-
-        return (
-          <div
-            key={pos.id}
-            className="absolute"
-            style={{
-              left: `${pos.x}%`,
-              top: `${pos.y}%`,
-              width: `${widthPct}%`,
-              transform: `rotate(${pos.rotation}deg) ${isDragging ? "scale(1.05)" : ""}`,
-              transition: isDragging
-                ? "transform 0.1s ease, box-shadow 0.2s ease"
-                : "left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), top 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.3s ease",
-              zIndex: isDragging ? 100 : isTopZ ? 50 : 1,
-              filter: isDragging
-                ? "drop-shadow(0 12px 24px rgba(0,0,0,0.25))"
-                : "drop-shadow(0 4px 12px rgba(0,0,0,0.12))",
-            }}
-            onPointerDown={(e) => handlePointerDown(e, idx)}
-            onPointerUp={() => handlePointerUp(idx)}
-          >
-            <TongjiProjectCard
-              project={project}
-              onClick={() => {
-                // 优先级 1：独立落地页 → 路由跳转
-                if (project.detailHref) {
-                  router.push(project.detailHref);
-                  return;
-                }
-                // 优先级 2：外链 → 新标签打开
-                if (project.videoUrl) {
-                  window.open(project.videoUrl, "_blank", "noopener,noreferrer");
-                } else {
-                  onSelectProject(project);
-                }
-              }}
-            />
-          </div>
-        );
-      })}
-
-      {/* 提示文字 */}
-      <div className="absolute bottom-3 left-0 right-0 text-center pointer-events-none">
-        <span className="text-[11px] text-ink-muted/40 tracking-wider">
-          长按封面可自由拖拽摆放 · 点击封面查看项目详情 · 首推「艺起搭」放大展示
-        </span>
+      >
+        {projects.map((project) => (
+          <TongjiProjectCard
+            key={project.id}
+            project={project}
+            onClick={() => handleClick(project)}
+          />
+        ))}
       </div>
+
+      <p className="mt-5 text-[11px] text-ink-muted/40 tracking-wider text-center">
+        点击封面查看项目详情
+      </p>
     </div>
   );
 }

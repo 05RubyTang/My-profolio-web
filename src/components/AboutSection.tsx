@@ -264,7 +264,7 @@ export default function AboutSection() {
             <div className="relative inline-flex items-center">
               {/* 小黑猫 - 滑板猫在标题左上方（移动端缩小并靠近标题） */}
               <img
-                src={cdnUrl("/cat-skateboard.png")}
+                src={cdnUrl("/picture/Experience-cat.png")}
                 alt="小黑猫"
                 className="absolute -left-16 -top-10 w-14 md:-left-28 md:-top-16 md:w-24 h-auto pointer-events-none select-none"
                 draggable={false}

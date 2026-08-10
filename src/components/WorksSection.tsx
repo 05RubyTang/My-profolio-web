@@ -1727,7 +1727,7 @@ export default function WorksSection() {
               <h2 className="text-2xl md:text-4xl font-handwriting font-bold text-ink">Works</h2>
               {/* 小黑猫 - 跳舞猫在标题右侧（移动端缩小并靠近） */}
               <img
-                src={cdnUrl("/cat-dance.png")}
+                src={cdnUrl("/picture/Works-cat.png")}
                 alt="小黑猫"
                 className="absolute -right-16 -top-6 w-12 md:-right-28 md:-top-10 md:w-20 h-auto pointer-events-none select-none"
                 draggable={false}

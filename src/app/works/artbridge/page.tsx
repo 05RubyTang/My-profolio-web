@@ -306,7 +306,7 @@ export default function ArtBridgePage() {
               搭子
             </h2>
             <p className="mt-4 text-white/60 text-base md:text-lg">
-              点击下方入口查看对应的产品演示（当前仅「旅游穿搭规划」已实装）
+              点击下方入口查看对应的产品演示
             </p>
           </motion.div>
 

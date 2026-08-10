@@ -97,9 +97,13 @@ const IDEA_SALON_HEROES = [
 ].map(cdnUrl);
 
 // —— 6. ClickSparkle 5 个 emoji ——
-const CLICK_SPARKLE_EMOJIS = [1, 2, 3, 4, 5].map((n) =>
-  cdnUrl(`/picture/emoji-face${n}.png`)
-);
+const CLICK_SPARKLE_EMOJIS = [
+  "/picture/emoji/point.png",
+  "/picture/emoji/point1.png",
+  "/picture/emoji/point2.png",
+  "/picture/emoji/point3.png",
+  "/picture/emoji/point4.png",
+].map(cdnUrl);
 
 /**
  * 按优先级分批

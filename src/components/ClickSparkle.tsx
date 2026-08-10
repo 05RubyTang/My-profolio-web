@@ -5,11 +5,11 @@ import { cdnUrl } from "@/lib/cdn";
 
 // 5 张随机小表情
 const SPARKLE_ICONS = [
-  cdnUrl("/emoji-face1.png"),
-  cdnUrl("/emoji-face2.png"),
-  cdnUrl("/emoji-face3.png"),
-  cdnUrl("/emoji-face4.png"),
-  cdnUrl("/emoji-face5.png"),
+  cdnUrl("/picture/emoji/point.png"),
+  cdnUrl("/picture/emoji/point1.png"),
+  cdnUrl("/picture/emoji/point2.png"),
+  cdnUrl("/picture/emoji/point3.png"),
+  cdnUrl("/picture/emoji/point4.png"),
 ];
 
 // 图标大小（px）

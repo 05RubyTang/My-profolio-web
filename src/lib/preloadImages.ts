@@ -35,6 +35,7 @@ const WORKS_COVERS = [
   // Tongji 项目封面
   "/picture/id-project/tongji-works/艺起搭-封面-v2.png",
   "/picture/id-project/tongji-works/idea-salon-封面.png",
+  "/picture/id-project/tongji-works/hci-paper-skill-封面.png",
   // books 封面
   "/picture/id-project/In Tongji Works.png",
   "/picture/id-project/My Industrial Design.png",

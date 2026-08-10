@@ -239,6 +239,21 @@ const tongjiProjects: IDProject[] = [
     galleryItems: [],
     detailHref: "/works/idea-salon",
   },
+  {
+    id: 104,
+    name: "HCI论文Skill",
+    nameCn: "HCI论文Skill",
+    subtitle: "2026 / 4 · HCI 论文雷达 · 自动扫 arXiv cs.HC 生成日报",
+    subtitleEn: "HCI Paper Radar · Auto arXiv cs.HC digest",
+    tags: "个人项目 / Skill",
+    slogan: "",
+    sloganEn: "",
+    projectImage: cdnUrl("/picture/id-project/tongji-works/hci-paper-skill-封面.png"),
+    ticketImage: "",
+    galleryItems: [],
+    // 外链 → 新标签打开 GitHub 仓库
+    videoUrl: "https://github.com/05RubyTang/HCI_PAPER_RADAR",
+  },
 ];
 
 /* ============================================================

@@ -81,42 +81,6 @@ const painPhases = [
   },
 ];
 
-/* ============ 数据 · Section 3 四大创新点 ============ */
-const innovations = [
-  {
-    idx: "01",
-    painTitle: "上下文丢失",
-    painDesc: "换对话就像重新开始",
-    innoTitle: "把记忆交给 Skill",
-    innoDesc: "项目状态持续写入",
-    result: "结果：流程可追溯、可恢复、可接续。",
-  },
-  {
-    idx: "02",
-    painTitle: "单用户模式",
-    painDesc: "成员各自生成，信息形成孤岛",
-    innoTitle: "把协作分层",
-    innoDesc: "先独立，再汇聚",
-    result: "结果：避免信息孤岛，也避免过早从众。",
-  },
-  {
-    idx: "03",
-    painTitle: "缺乏流程指导",
-    painDesc: "工具只会生成，学生仍要自己判断何时用什么方法",
-    innoTitle: "把方法嵌入阶段",
-    innoDesc: "给模板和下一步",
-    result: "结果：AI 提供起点，但不替学生完成判断。",
-  },
-  {
-    idx: "04",
-    painTitle: "表面化处理",
-    painDesc: "停在摘要和关键词，洞察、HMW 与方案容易断裂",
-    innoTitle: "把摘要变成洞察",
-    innoDesc: "保留证据链",
-    result: "结果：洞察可解释、可回溯、可推进。",
-  },
-];
-
 /* ============ 数据 · Section 4 5 个 Skill 分工 ============ */
 const skills = [
   { num: "1", cn: "方法论顾问", phase: "DISCOVER", desc: "诊断调研阶段，推荐并陪你用完分析工具", icon: Compass },
@@ -124,31 +88,6 @@ const skills = [
   { num: "3", cn: "逻辑检查员", phase: "DEFINE", desc: "生成 3–5 个 HMW，校验方案与洞察对齐", icon: CheckCircle2 },
   { num: "4", cn: "创意陪练", phase: "DEVELOP", desc: "9 个框架发散创意，自动生成 Moodboard", icon: Lightbulb },
   { num: "5", cn: "设计评审员", phase: "DELIVER", desc: "按设计法则量化评估，给出具体改法", icon: Award },
-];
-
-/* ============ 数据 · Section 5 3 步工作坊流程 ============ */
-const flowSteps = [
-  {
-    step: "STEP 01",
-    title: "独立思考",
-    desc: "与专属 AI 角色一对一 半生成式共创",
-    highlight: "私人空间 · PRIVATE",
-    color: C.blue,
-  },
-  {
-    step: "STEP 02",
-    title: "团队碰撞",
-    desc: "生成结构化设计流程，团队在 Ardot 平台完成共创",
-    highlight: "共创界面 · SHARED WALL",
-    color: C.orange,
-  },
-  {
-    step: "STEP 03",
-    title: "收敛推进",
-    desc: "汇总、设计、执行，AI 导师评审，产出质量 up",
-    highlight: "下一步 · NEXT STEP",
-    color: C.blue,
-  },
 ];
 
 /* ============ 数据 · Section 6 3 个价值对象 ============ */
@@ -686,59 +625,24 @@ export default function IdeaSalonPage() {
             </p>
           </ScrollFadeIn>
 
-          <div className="mt-14 space-y-4">
-            {innovations.map((it, i) => (
-              <motion.div
-                key={it.idx}
-                className="grid grid-cols-1 md:grid-cols-[80px_1fr_60px_1fr] gap-4 md:gap-5 items-stretch rounded-2xl overflow-hidden"
-                style={{ border: `1px solid ${C.border}`, background: C.cardBg, boxShadow: "0 4px 14px rgba(40,60,120,0.05)" }}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 0.5, delay: i * 0.08 }}
-              >
-                {/* 序号 */}
-                <div className="hidden md:flex items-center justify-center text-3xl font-bold" style={{ background: `${C.orange}12`, color: C.orange }}>
-                  {it.idx}
-                </div>
-
-                {/* 痛点 */}
-                <div className="p-5">
-                  <div className="text-[10px] tracking-widest font-bold mb-2 md:hidden" style={{ color: C.orange }}>
-                    痛点 {it.idx}
-                  </div>
-                  <div className="text-xs tracking-widest mb-2 hidden md:block" style={{ color: C.textMuted }}>
-                    现有 AI 设计工具痛点
-                  </div>
-                  <div className="text-lg font-bold mb-1" style={{ color: C.text }}>{it.painTitle}</div>
-                  <div className="text-sm leading-relaxed" style={{ color: C.textSub }}>
-                    {it.painDesc}
-                  </div>
-                </div>
-
-                {/* 转化 */}
-                <div className="hidden md:flex items-center justify-center">
-                  <div className="text-3xl" style={{ color: C.indigo }}>→</div>
-                </div>
-
-                {/* 创新 */}
-                <div className="p-5" style={{ background: `${C.indigo}0D`, borderLeft: `1px solid ${C.indigo}33` }}>
-                  <div className="text-xs tracking-widest font-bold mb-2" style={{ color: C.indigo }}>
-                    创新 · Idea Salon
-                  </div>
-                  <div className="text-lg font-bold mb-1" style={{ color: C.indigo }}>
-                    {it.innoTitle}
-                  </div>
-                  <div className="text-sm leading-relaxed mb-2" style={{ color: C.textSub }}>
-                    {it.innoDesc}
-                  </div>
-                  <div className="text-xs font-medium leading-relaxed" style={{ color: C.cyan }}>
-                    {it.result}
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+          {/* 竞品痛点 → 四大创新点 · 直接贴图 */}
+          <motion.div
+            className="mt-14 relative w-full mx-auto"
+            style={{ aspectRatio: "3372 / 1163", maxWidth: "1400px" }}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.6 }}
+          >
+            <Image
+              src={cdnUrl("/picture/id-project/tongji-works/idea-salon-figma/innovations.webp")}
+              alt="竞品痛点 → Idea Salon 四大创新点"
+              fill
+              sizes="(min-width: 1024px) 1200px, 100vw"
+              className="object-contain"
+              unoptimized
+            />
+          </motion.div>
 
           <p className="mt-14 text-center text-base md:text-lg font-semibold" style={{ color: C.text }}>
             四个创新点共同解决：
@@ -818,42 +722,16 @@ export default function IdeaSalonPage() {
               <div className="text-3xl" style={{ color: C.textMuted }}>×</div>
             </div>
 
-            {/* 界面层 · 直接用大图（3 老师圆桌 + 6 能力徽章 + 3 老师名片） */}
-            <div className="rounded-2xl p-6 md:p-8" style={{ background: `${C.orange}0D`, border: `1px solid ${C.orange}33` }}>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: C.orange }}>
-                  <Users size={20} color="#FFFFFF" />
-                </div>
-                <div>
-                  <div className="text-xs tracking-widest font-bold" style={{ color: C.textMuted }}>
-                    ② MENTOR LAYER
-                  </div>
-                  <div className="text-lg font-bold" style={{ color: C.text }}>界面层</div>
-                </div>
-              </div>
-              <p className="text-sm leading-relaxed mb-6" style={{ color: C.textSub }}>
-                可选择数位老师参与到设计的各个阶段，
-                人格化表达由老师分身包装。
-              </p>
-
-              {/* 老师圆桌大图（内含 6 能力标签 + 3 老师详细名片） */}
-              <div
-                className="relative w-full rounded-xl overflow-hidden"
-                style={{ aspectRatio: "2028 / 1482", background: "#FFFFFF" }}
-              >
-                <Image
-                  src={cdnUrl("/picture/id-project/tongji-works/idea-salon-figma/mentor-layer.webp")}
-                  alt="Idea Salon 界面层 · 老师阵容"
-                  fill
-                  sizes="(min-width: 1024px) 560px, 100vw"
-                  className="object-contain"
-                  unoptimized
-                />
-              </div>
-
-              <p className="mt-4 text-xs leading-relaxed text-center" style={{ color: C.textMuted }}>
-                Prof.lou · 琦老师 · 郭炜炜老师 等 —— 覆盖 主持/用户/交互/AI/原型/表达 六大能力
-              </p>
+            {/* 界面层 · 直接贴图（图内已包含 ② MENTOR LAYER 标题、6 能力徽章、3 老师详细名片） */}
+            <div className="relative w-full" style={{ aspectRatio: "2028 / 1482" }}>
+              <Image
+                src={cdnUrl("/picture/id-project/tongji-works/idea-salon-figma/mentor-layer.webp")}
+                alt="Idea Salon 界面层 · 老师阵容"
+                fill
+                sizes="(min-width: 1024px) 560px, 100vw"
+                className="object-contain"
+                unoptimized
+              />
             </div>
           </div>
         </div>
@@ -879,130 +757,24 @@ export default function IdeaSalonPage() {
             </p>
           </ScrollFadeIn>
 
-          <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-5">
-            {flowSteps.map((f, i) => (
-              <motion.div
-                key={f.step}
-                className="relative rounded-2xl p-6 md:p-8"
-                style={{ background: C.cardBg, border: `1px solid ${C.border}`, boxShadow: "0 4px 14px rgba(40,60,120,0.05)" }}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-              >
-                {/* 大序号背景 */}
-                <div className="absolute top-3 right-4 text-6xl font-bold select-none" style={{ color: `${C.text}0D` }}>
-                  0{i + 1}
-                </div>
-
-                <div
-                  className="text-[10px] tracking-[0.25em] font-bold mb-2"
-                  style={{ color: f.color }}
-                >
-                  {f.step}
-                </div>
-                <div className="text-2xl md:text-3xl font-bold mb-4" style={{ color: C.text }}>
-                  {f.title}
-                </div>
-                <p className="text-sm leading-relaxed mb-5" style={{ color: C.textSub }}>
-                  {f.desc}
-                </p>
-                <div
-                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold"
-                  style={{
-                    background: `${f.color}18`,
-                    color: f.color,
-                    border: `1px solid ${f.color}44`,
-                  }}
-                >
-                  {f.highlight}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* 人机协作旅程图（简化文字版） */}
-          <div className="mt-16 rounded-2xl p-6 md:p-8 overflow-x-auto" style={{ background: C.cardBg, border: `1px solid ${C.border}`, boxShadow: "0 4px 14px rgba(40,60,120,0.05)" }}>
-            <div className="text-center text-sm md:text-base font-bold mb-6" style={{ background: `linear-gradient(90deg, ${C.blue}, ${C.indigo})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-              人机协作旅程图（以双钻模型为例）
-            </div>
-            <div className="min-w-[720px] grid grid-cols-[110px_1fr_1fr_1fr_1fr_1fr] gap-2 text-xs">
-              {/* 表头 */}
-              <div />
-              {["项目初始化", "发现期", "定义期", "发展期", "交付期"].map((h) => (
-                <div
-                  key={h}
-                  className="text-center py-2 px-2 rounded-md font-bold"
-                  style={{ background: `${C.indigo}18`, color: C.indigo }}
-                >
-                  {h}
-                </div>
-              ))}
-
-              {/* Row · 学生/团队 */}
-              <div className="flex items-center px-2 py-2 font-semibold" style={{ color: C.text }}>
-                学生 / 团队
-              </div>
-              {[
-                "输入学科主题",
-                "认领调研任务、思考 HMW",
-                "确认设计洞察、思考用户痛点",
-                "私人空间发散、组内评审",
-                "汇报与交付",
-              ].map((c) => (
-                <div
-                  key={c}
-                  className="px-2 py-2 rounded-md text-center"
-                  style={{ background: `${C.text}08`, color: C.textSub }}
-                >
-                  {c}
-                </div>
-              ))}
-
-              {/* Row · LearnBuddy AI */}
-              <div className="flex items-center px-2 py-2 font-semibold" style={{ color: C.text }}>
-                LearnBuddy AI
-              </div>
-              {[
-                "匹配导师",
-                "推荐工具、辅助调研",
-                "HMW 撰写辅助、需求逻辑审查",
-                "框架发散、1v1 出图",
-                "六维评审、实操建议",
-              ].map((c) => (
-                <div
-                  key={c}
-                  className="px-2 py-2 rounded-md text-center"
-                  style={{ background: `${C.cyan}14`, color: "#1F7986" }}
-                >
-                  {c}
-                </div>
-              ))}
-
-              {/* Row · Ardot 共享看板 */}
-              <div className="flex items-center px-2 py-2 font-semibold" style={{ color: C.text }}>
-                Ardot 共享看板
-              </div>
-              {[
-                "Brief 页生成",
-                "调研计划板 / 结论可视化",
-                "HMW 看板 / 定义图",
-                "概念方向板 / Moodboard",
-                "高保真与产品图",
-              ].map((c) => (
-                <div
-                  key={c}
-                  className="px-2 py-2 rounded-md text-center"
-                  style={{ background: `${C.orange}14`, color: "#B8451A" }}
-                >
-                  {c}
-                </div>
-              ))}
-            </div>
-            <p className="mt-4 text-xs text-center md:hidden" style={{ color: C.textMuted }}>
-              ← 左右滑动查看完整流程 →
-            </p>
-          </div>
+          {/* 3 步流程 + 人机协作旅程图 · 直接贴图 */}
+          <motion.div
+            className="mt-14 relative w-full mx-auto"
+            style={{ aspectRatio: "3365 / 1234", maxWidth: "1400px" }}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.6 }}
+          >
+            <Image
+              src={cdnUrl("/picture/id-project/tongji-works/idea-salon-figma/workshop-flow.webp")}
+              alt="Idea Salon 工作坊流程 · 人机协作旅程图"
+              fill
+              sizes="(min-width: 1024px) 1200px, 100vw"
+              className="object-contain"
+              unoptimized
+            />
+          </motion.div>
         </div>
       </section>
 

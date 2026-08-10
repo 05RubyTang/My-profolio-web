@@ -15,6 +15,8 @@ import {
   Layers,
   Award,
   X,
+  Download,
+  ExternalLink,
 } from "lucide-react";
 import WorkLayout from "../_components/WorkLayout";
 import { cdnUrl } from "@/lib/cdn";
@@ -140,11 +142,15 @@ export default function IdeaSalonPage() {
                 <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
               </button>
               <a
-                href="#painpoints"
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-full text-sm transition-all"
-                style={{ border: `1px solid ${C.border}`, color: C.textSub, background: "#FFFFFF" }}
+                href="https://github.com/05RubyTang/Idea-Salon-Skill"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-2 px-5 py-3 rounded-full text-sm font-semibold transition-all hover:shadow-md"
+                style={{ border: `1px solid ${C.indigo}`, color: C.indigo, background: "#FFFFFF" }}
               >
-                向下了解项目
+                <Download size={16} />
+                下载 skill 包体验
+                <ExternalLink size={13} className="opacity-70 group-hover:translate-x-0.5 transition-transform" />
               </a>
             </div>
 

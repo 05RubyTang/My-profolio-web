@@ -674,15 +674,14 @@ export default function DailyOutfitChatbot() {
                 </h3>
               </div>
 
-              <p className="text-white/60 text-sm leading-relaxed">
-                清晨打开小艺，明星单品卡片替你先选好当天的风格。选中即进入对话：
-                AI 结合衣橱、天气、体征生成两套对比方案，你若说「没有绿色卫衣」，
-                「优选购物助手」立刻从回头客、销量、评价、性价比 4 个维度筛好衣，
-                代下单后自动收录进穿搭手帐。
-                <span className="text-[#FFB0DE]">
-                  {" "}选完套装的瞬间，右侧样机的锁屏会同步亮起「小艺数字人智能衣橱」——
-                  3 张玻璃卡挂上今日方案，一整天都陪着你。
-                </span>
+              <p className="text-white/75 text-sm leading-relaxed">
+                旧衣不会搭配压箱底？每天随机一个旧衣明星单品，为你搭配
+                <span className="text-[#FFB0DE]">一衣多穿</span>
+                ，总有一个风格你喜欢。
+              </p>
+
+              <p className="text-white/45 text-xs leading-relaxed">
+                基于华为原生态，实现衣橱检索 + 天气分析 + 出行日历 + 行为数据的多维度推荐策略
               </p>
 
               <div className="grid grid-cols-2 gap-3 text-xs">

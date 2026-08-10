@@ -26,8 +26,12 @@ import { cdnUrl } from "@/lib/cdn";
    ============================================================ */
 
 // Bilibili 项目视频（点击按钮 → 弹窗打开）
+// - 用 https:// 显式协议，避免 protocol-relative URL 在部分环境下加载失败
+// - autoplay=1 打开就播；high_quality=1 高清；danmaku=0 关弹幕
+const VIDEO_BVID = "BV1KduR6dE4q";
 const VIDEO_IFRAME_SRC =
-  "//player.bilibili.com/player.html?isOutside=true&aid=117071044154443&bvid=BV1KduR6dE4q&cid=40782661079&p=1&high_quality=1&danmaku=0";
+  `https://player.bilibili.com/player.html?isOutside=true&aid=117071044154443&bvid=${VIDEO_BVID}&cid=40782661079&p=1&autoplay=1&high_quality=1&danmaku=0`;
+const VIDEO_FALLBACK_URL = `https://www.bilibili.com/video/${VIDEO_BVID}`;
 const ROUNDTABLE_IMG = cdnUrl("/picture/id-project/tongji-works/idea-salon-圆桌.png");
 
 /* 全站统一背景：linear-gradient(90deg, #F1F6FF 0%, #F9FEFF 100%) */
@@ -520,7 +524,7 @@ export default function IdeaSalonPage() {
                 type="button"
                 onClick={() => setVideoOpen(false)}
                 aria-label="关闭视频"
-                className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer"
+                className="absolute top-3 right-3 z-20 w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer"
                 style={{ background: "rgba(0,0,0,0.55)", color: "#FFF", border: "1px solid rgba(255,255,255,0.2)" }}
               >
                 <X size={18} />
@@ -529,11 +533,26 @@ export default function IdeaSalonPage() {
                 <iframe
                   src={VIDEO_IFRAME_SRC}
                   title="Idea Salon 项目视频"
+                  allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
                   allowFullScreen
                   scrolling="no"
-                  frameBorder="0"
-                  className="absolute inset-0 w-full h-full"
+                  referrerPolicy="no-referrer"
+                  className="absolute inset-0 w-full h-full border-0"
                 />
+              </div>
+              {/* 兜底：万一 iframe 加载不出来（B 站防盗链 / 网络屏蔽），直接跳 B 站 */}
+              <div className="flex items-center justify-between gap-3 px-4 py-2.5 text-xs" style={{ background: "#0a0a0a", color: "rgba(255,255,255,0.6)" }}>
+                <span>加载有问题？</span>
+                <a
+                  href={VIDEO_FALLBACK_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all hover:bg-white/10"
+                  style={{ color: "#FFB0DE", border: "1px solid rgba(255,176,222,0.4)" }}
+                >
+                  在 Bilibili 打开
+                  <ExternalLink size={11} />
+                </a>
               </div>
             </motion.div>
           </motion.div>

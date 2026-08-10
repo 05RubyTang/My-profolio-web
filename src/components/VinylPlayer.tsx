@@ -473,7 +473,7 @@ export default function VinylPlayer() {
       {/* 弹吉他猫 - 仅桌面端 */}
       {!isMobile && (
         <img
-          src={cdnUrl("/cat-guitar.png")}
+          src={cdnUrl("/picture/cat-guitar.png")}
           alt="弹吉他猫"
           className="absolute -right-14 -top-4 w-14 h-auto pointer-events-none select-none"
           draggable={false}
